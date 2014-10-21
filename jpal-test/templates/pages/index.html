@@ -1,0 +1,63 @@
+<html ng-app="surveyApp">
+    <head>
+    <title>{{"{{title}}"}}</title>
+        <link rel="stylesheet" type="text/css" href="css/bootcards.css"> 
+        <link rel="stylesheet" type="text/css" href="css/bootcards-desktop.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/site.css">
+        <link rel="stylesheet" href="css/ng-table.min.css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+        <script src="js/angular.min.js"></script>
+        <script src="js/angular-route.min.js"></script>
+        <script src="js/main.js"></script>
+        <base href="/">
+    </head>
+    <body ng-controller="mainController">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="appController">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" title="ENTREinfo" href="profile">ENTREinfo</a>
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="profile" data-title="profile"><i class="fa fa-user"></i> Profile</a>          
+                        </li>
+                        <li>
+                            <a href="surveys"><i class="fa fa-files-o"></i> Surveys</a>          
+                        </li>
+                        <li>
+                            <a href="researchers"><i class="fa fa-users"></i> Reseachers</a>          
+                        </li>
+                        <li>
+                            <a href="manager"><i class="fa fa-suitcase"></i> Project Manager</a>          
+                        </li>
+                        <li>
+                            <a href="sms"><i class="fa fa-mobile"></i> SMS</a>          
+                        </li>
+                        <li>
+                            <a href="data"><i class="fa fa-list"></i> View Data</a>          
+                        </li>
+                        <li>
+                            <a href="entrepreneur"><i class="fa fa-dollar"></i> Entrepreneur</a>          
+                        </li>
+                        <li class="dropdown left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> Hi {{"{{user.fName}}"}} !<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="settings">My Account</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Log Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="app">
+            <div ng-view></div>
+        </div>
+        <script src="js/jquery-2.1.1.min.js"></script>
+        <script src="js/bootcards.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/site.js"></script>
+        <script src="js/ng-table.min.js"></script>
+    </body>
+</html>
