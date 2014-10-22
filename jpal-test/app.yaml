@@ -9,6 +9,8 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /pages
+  static_dir: templates/pages
 - url: /images
   static_dir: templates/images
 - url: /fonts
