@@ -90,7 +90,7 @@ class GetData():
 
         nav = {'navs' : data}
         conn.close()
-        return json.loads(nav)
+        return nav
     
     
    

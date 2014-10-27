@@ -4,7 +4,7 @@ import jinja2
 from gaesessions import get_current_session
 import webapp2
 import cloudDbHandler as dbHandler
-
+import json
 jinja_environment = jinja2.Environment(autoescape = True,
 	loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/pages')))
 
@@ -23,7 +23,7 @@ class Login(webapp2.RequestHandler):
 	def get(self):
 		login = self.request.get('username')
 		pwd = self.request.get('password')
-
+		session = get_current_session()
 		user_id=dbHandler.GetData().checkUserAuth(login,pwd)
 		# self.response.write(user_id)
 		session = get_current_session()
@@ -32,10 +32,11 @@ class Login(webapp2.RequestHandler):
 			session['user_id'] = user_id
 			# session['error'] = "None"
 			functionality=dbHandler.GetData().getRoleFunctionality(user_id)
-			print functionality
-			return functionality
+			# print functionality
+			func = json.dumps(functionality, ensure_ascii=False)
+			# return functionality
 			# template = jinja_environment.get_template('login.html')
-			# self.response.write(functionality)
+			self.response.write(func)
 
 
 

@@ -2,10 +2,24 @@
 var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
-	 
-	 var url = '/login?username=admin&password=123&json=true';
+	 var nv;
+	$.ajax({
+        url: "/login?username=admin&password=123",
+        type: "get",
+        async: false,
+        dataType: "html",
+        success: function (data) {
+            console.log(data)
+            nv=JSON.parse(data)
+            console.log(nv)
+        },
+    });
 
-	 return { navs : $http.get(url)} ;
+
+	 // var url = '/login?username=admin&password=123&json=true';
+	 // var nv = $http.get(url)  
+	 
+	 return nv;
 }]);
 
 surveyApp.config(function($routeProvider,$locationProvider) {
