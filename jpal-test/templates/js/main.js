@@ -4,9 +4,10 @@ var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 var nv;
 	$.ajax({
-        url: "/login?username=admin&password=123",
-        type: "get",
+        url: "/login",
+        type: "post",
         async: false,
+        data: {username:"admin",password:"123"},
         dataType: "html",
         success: function (data) {
             console.log(data)

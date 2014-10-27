@@ -20,7 +20,7 @@ class MainHandler(webapp2.RequestHandler):
 		self.response.write(template.render())
 
 class Login(webapp2.RequestHandler):
-	def get(self):
+	def post(self):
 		login = self.request.get('username')
 		pwd = self.request.get('password')
 		session = get_current_session()
