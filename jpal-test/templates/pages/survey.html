@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="">
+        <h3 class="page-header">
+            {{Type}}
+        </h3>
+        <!-- ************************************************************************************ -->
+        <div class="col-sm-5 bootcards-list" id="list">
+            <div class="panel panel-default">
+                <div class="list-group" ng-repeat="section in survey">
+                    <a class="list-group-item pjax" href="#">
+                        <h4 class="list-group-item-heading">{{section.name}}</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7 bootcards-cards hidden-xs" id="listDetails">
+            <div id="contactCard">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title pull-left">Questions</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="search-form">
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Add Question...">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <a class="btn btn-primary btn-block" href="">
+                                    <i class="fa fa-plus"></i> 
+                                    <span> Add</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group" ng-repeat="section in survey">
+                        <div class="list-group-item" ng-repeat="question in questions">
+                            <label>Question {{question.ID}}</label>
+                            <h4 class="list-group-item-heading">{{question.Content}}</h4>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-info pull-right" href="#" data-toggle="modal" data-target="#editQuestion">
+                        Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editQuestion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Edit Questions
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" ng-repeat="question in questions">
+                    <label class="col-xs-4 control-label">Question</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="question" class="form-control" placeholder="Qestion" value="{{question.Content}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group pull-left">
+                        <button class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-success" data-dismiss="modal">
+                        Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
