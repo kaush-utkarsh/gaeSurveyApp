@@ -11,19 +11,36 @@ jinja_environment = jinja2.Environment(autoescape = True,
 class MainHandler(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
-		login = session.get('login')
-		template = jinja_environment.get_template('index.html')
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
+class APIResearcher(webapp2.RequestHandler):
+	def get(self):
+		functionality=dbHandler.GetData().getResearchers()
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+	def post(self):
+		functionality=dbHandler.GetData().getResearchers()
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+class Logout(webapp2.RequestHandler):
+	def get(self):
+		get_current_session().terminate(clear_data=True)
+		self.response.write("session ended")
+	def post(self):
+		get_current_session().terminate(clear_data=True)
+		self.response.write("session ended")
+		
 class Login(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('profile.html')
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
 		else:
-			session['error'] = "Login first"
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 		
@@ -32,27 +49,37 @@ class Login(webapp2.RequestHandler):
 		pwd = self.request.get('password')
 		session = get_current_session()
 		user_id=dbHandler.GetData().checkUserAuth(login,pwd)
-		# self.response.write(user_id)
-		session = get_current_session()
 		if len(user_id)>1:
 			session['login'] = login
 			session['user_id'] = user_id
-			# session['error'] = "None"
 			functionality=dbHandler.GetData().getRoleFunctionality(user_id)
-			# print functionality
 			func = json.dumps(functionality, ensure_ascii=False)
-			# return functionality
-			# template = jinja_environment.get_template('login.html')
 			self.response.write(func)
+
+class ManageResearcher(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
 
 
 class Profile(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+	def post(self):
 		session = get_current_session()
 		login = session.get('login')
 		if login == "admin":
-			template = jinja_environment.get_template('profile.html')
+			template = jinja_environment.get_template('index.html')
 		else:
 			session['error'] = "Login first"
 			template = jinja_environment.get_template('login.html')
@@ -150,6 +177,7 @@ class Reports(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
+	('/logout', Logout),
 	('/profile', Profile),
 	('/profile-edit',Edit_Form),
 	('/user', UserManage),
@@ -157,5 +185,8 @@ app = webapp2.WSGIApplication([
 	('/data-view',DataViewer),
 	('/sms',Scheduler),
 	('/manage-projects',ManageProject),
+	('/apiResearcher',APIResearcher),
+	('/manage_researcher',ManageResearcher),
 	('/entrepeneur',Reports)
+
 ], debug = True)

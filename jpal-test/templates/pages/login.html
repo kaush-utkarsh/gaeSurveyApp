@@ -5,32 +5,11 @@
         <link rel="stylesheet" type="text/css" href="css/bootcards-desktop.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/site.css">
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"> -->
         <script src="js/jquery-2.1.1.min.js"></script>
         <script src="js/bootcards.js"></script>
         <script src="js/bootstrap.min.js"></script>
-        <script>
-        function SignIn(item)
-        {
-
-        un=$(item).parent().parent().find('input[type="text"]').val()
-        pd=$(item).parent().parent().find('input[type="password"]').val()
-        $.ajax({
-            url: "/login",
-            type: "post",
-            async: false,
-            data: {username:un,password:pd},
-            dataType: "html",
-            success: function (data) {
-                console.log(data)
-                // nv=JSON.parse(data)
-                localStorage.dataObject = data;
-                // console.log(nv)
-                window.location.assign("/")
-            },
-        });
-    }
-        </script>
+        <script src="js/site.js"></script>
     </head>
     <body>
         <div class="container" id="main">

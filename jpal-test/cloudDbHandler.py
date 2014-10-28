@@ -69,6 +69,27 @@ class GetData():
         conn.close()
         return info
 
+    def getResearchers(self):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = "select f_name, l_name , email, city from user where role='RE'"
+        # print sqlcmd
+        cursor.execute(sqlcmd)
+        info = []
+        data=[]
+        for row in cursor.fetchall():
+            info={
+                    'Name': row[0]+" "+row[1],
+                    'Email': row[2],
+                    'Location': row[3]
+                }
+            data.append(info)
+        return_data = {'researchers' : data}
+        conn.close()
+        return return_data
+
+
+
     def getRoleFunctionality(self,user_id):
         conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
         cursor = conn.cursor()
@@ -76,7 +97,7 @@ class GetData():
                 left join user u on u.user_id = %s
                 left join role_functionality rf  on u.role=rf.role
                 where rf.functionality = f.id"""
-        print sqlcmd
+        # print sqlcmd
         cursor.execute(sqlcmd,(user_id))
         info = []
         data=[]
@@ -88,9 +109,34 @@ class GetData():
                 }
             data.append(info)
 
-        nav = {'navs' : data}
+        cursor = conn.cursor()
+        sqlcmd = """select user_id as ID, f_name as fname, l_name as lname, email, primary_phone as phone, secondary_phone as altphone, 
+                role as accounttype, address, line_1 as street, city, state, country
+                from user where user_id= %s"""
+
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id))
+        # info = []
+        user=[]
+        for row in cursor.fetchall():
+            user={
+                    'ID': row[0],
+                    'fName': row[1],
+                    'lName': row[2],
+                    'Email': row[3],
+                    'Phone': row[4],
+                    'altphone': row[5],
+                    'accountType': row[6],
+                    'HouseNumber': row[7],
+                    'Street': row[8],
+                    'City': row[9],
+                    'State': row[10],
+                    'Country': row[11]
+                }
+            # user.append(info)
+        return_data = {'navs' : data, 'user': user}
         conn.close()
-        return nav
+        return return_data
     
     
    
