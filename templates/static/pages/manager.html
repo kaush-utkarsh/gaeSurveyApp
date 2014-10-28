@@ -1,0 +1,166 @@
+<div class="container">
+    <div class="col-xs-10">
+        <h3 class="page-header">
+            Project Manager
+        </h3>
+        <div class="pull-right marg">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addproject">Create New Project</button>
+        </div>
+        <div class="pull-right marg">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addmanager">Create New Project Manager Profile</button>
+        </div>
+    </div>
+    <div class="col-xs-10">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+            <tr>
+                <th>ID</th>
+                <th>Project Manager</th>
+                <th>Project</th>
+                <th></th>
+                <tr ng-repeat="manager in managers">
+                    <td>{{manager.ID}}</td>
+                    <td>{{manager.Name}}</td>
+                    <td>{{manager.Project}}</td>
+                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm"> Delete </button></td>
+                </tr>
+            </tr>
+        </table>
+    </div>
+    <div class="col-xs-10">
+        <h3 class="page-header">
+            Existing Projects
+        </h3>
+        <div class="pull-right marg">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addproject">Create New Project</button>
+        </div>
+    </div>
+    <div class="col-xs-10">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+            <tr>
+                <th>ID</th>
+                <th>Project Name</th>
+                <th></th>
+                <tr ng-repeat="project in projects">
+                    <td>{{project.ID}}</td>
+                    <td>{{project.Name}}</td>
+                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm"> Delete </button></td>
+                </tr>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="addmanager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Add Project Manager
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="page-header" style="margin-top:10px">
+                        Basic Info
+                    </h5>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">First Name</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="managerFirstName" class="form-control" placeholder="First Name" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Last Name</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="managerLastName" class="form-control" placeholder="Last Name" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Email Address</label>
+                        <div class="col-xs-8">
+                            <input type="email" name="email" class="form-control" placeholder="Email Address" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Phone Number</label>
+                        <div class="col-xs-8">
+                            <input type="tel" name="Phone Number" class="form-control" placeholder="Location" value="">
+                        </div>
+                    </div>
+                    <h5 class="page-header">
+                        Assigned Project
+                    </h5>
+                    <select data-ng-model="projects"
+                            data-ng-options="project for project in projects">                
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group pull-left">
+                        <button class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-success" data-dismiss="modal">
+                        Add
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addproject" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Project
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="page-header" style="margin-top:10px">
+                        Basic Info
+                    </h5>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Project ID</label>
+                        <div class="col-xs-8">
+                            <input type="number" name="projectID" class="form-control" placeholder="Project ID" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Project Name</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="projectName" class="form-control" placeholder="Project Name" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group pull-left">
+                        <button class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-success" data-dismiss="modal"> Add </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+                <div class="modal-header">
+                    <h4>Are you Sure you want to Delete {{manager.Name}}?</h4>
+                </div>
+                <div class="modal-body">
+                    <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger pull-right" data-dismiss="modal">Confirm Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

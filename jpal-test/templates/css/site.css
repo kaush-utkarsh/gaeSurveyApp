@@ -1,0 +1,119 @@
+.body{
+	padding-top: 70px;
+}
+.bor{
+	border-bottom: 1 px black solid;
+}
+.navbar-default {
+	background-color: #425fb2;
+	border-color: #425fb2;
+}
+.navbar-default .navbar-nav>li>a {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav>li>a {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus{
+	border-bottom: 2px solid #58D3F7;
+	color: #fff;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus  {
+	color: #ffffff;
+}
+
+.bootcards-summary .panel-body .bootcards-summary-item > i, .bootcards-summary .panel-body .bootcards-summary-item > i:hover {
+	color: #777;
+}
+
+.usimg{
+	height: 30%;
+}
+
+.up{
+	margin-top: 20px;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+	background-color: #425fb2;
+	color: #fff;
+}
+
+.left{
+	margin-left: 100px;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    min-height: 200px;
+}
+.list-group-item, .list-group-item:hover {
+ margin-left: 15px; 
+padding-left: 0;
+}
+
+.checkbox{
+    position: relative;
+    background-color: #d9534f;
+    padding: 2px 4px;
+    margin-right: 40px;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 14px;
+    color: #ffffff;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.back{
+	background-color: #4679BD;
+	color: #fff;
+}
+
+.caret-up{
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: -7px;
+	margin-bottom: 10px;
+	vertical-align: middle;
+	border-bottom: 4px solid;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+
+.right{
+	padding-right: 40px;
+}
+
+.top{
+	margin-top: 50px;
+}
+
+.bottom{
+	margin-bottom: 50px;
+}
+
+.marg{
+	margin: 20px;
+}
+
+.ng-table .start {
+    color: red;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.centre {
+	text-align: center;
+}
