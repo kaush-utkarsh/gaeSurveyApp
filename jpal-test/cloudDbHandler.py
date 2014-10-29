@@ -12,9 +12,18 @@ _INSTANCE_NAME = 'localhost'
 dbname = 'innovaccer_jpal'
 usr='root'
 pss='root'
-class AddData():
+
+class PostData():
     
-    
+    def saveProfileData(self,post_data):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = "update user set f_name = %s , l_name = %s , DOB = %s ,primary_phone = %s, address = %s, line_1 = %s , city = %s ,state = %s, country = %s where user_id = %s "
+        # print sqlcmd
+        cursor.execute(sqlcmd,(post_data['f_name'],post_data['l_name'],post_data['DOB'],post_data['primary_phone'],post_data['address'],post_data['line_1'],post_data['city'],post_data['state'],post_data['country'],post_data['user_id'],))
+        conn.commit()
+        conn.close()       
+
     def addListDetails(self,listname,list_type,status):
         try:
             conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname)
@@ -118,7 +127,7 @@ class GetData():
         conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
         cursor = conn.cursor()
         sqlcmd = """select user_id as ID, f_name as fname, l_name as lname, email, primary_phone as phone, secondary_phone as altphone, 
-                r.role_desc as accounttype, address, line_1 as street, city, state, country
+                r.role_desc as accounttype, address, line_1 as street, city, state, country, DOB
                 from user left join role r on r.role_id=user.role where user_id= %s"""
 
         # print sqlcmd
@@ -138,7 +147,8 @@ class GetData():
                     'Street': row[8],
                     'City': row[9],
                     'State': row[10],
-                    'Country': row[11]
+                    'Country': row[11],
+                    'DOB': row[12]
                 }
             # user.append(info)
         conn.close()

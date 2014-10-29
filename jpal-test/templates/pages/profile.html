@@ -17,19 +17,20 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">First Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="fName" class="form-control" placeholder="First Name"value="{{user.fName}}">
+                    <input type="text" name="f_name" class="form-control" placeholder="First Name" value="{{user.fName}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Last Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="lName" class="form-control" placeholder="Last Name" value="{{user.lName}}">
+                    <input type="text" name="l_name" class="form-control" placeholder="Last Name" value="{{user.lName}}">
                 </div>
             </div>
+            <input type="hidden" name="user_id" class="form-control" value="{{user.ID}}">
             <div class="form-group">
                 <label class="col-xs-4 control-label">Email Address</label>
                 <div class="col-xs-8">
-                    <input type="text" name="Email" class="form-control" placeholder="Email" value="{{user.Email}}" disabled>
+                    <input type="text" name="email" class="form-control" placeholder="Email" value="{{user.Email}}" disabled>
                 </div>
             </div>
             <div class="">
@@ -40,7 +41,7 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">Date Of Birth</label>
                 <div class="col-xs-8">
-                    <input type="text" id="DOB" name="DOB" class="datepicker form-control" placeholder="Date Of Birth">
+                    <input type="text" id="DOB" name="DOB" class="datepicker form-control" placeholder="Date Of Birth" value="{{user.DOB}}">
                 </div>
             </div>
         <script>
@@ -52,37 +53,37 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
-                    <input type="text" name="Phone" class="form-control" placeholder="Phone Number" value="{{user.Phone}}">
+                    <input type="text" name="primary_phone" class="form-control" placeholder="Phone Number" value="{{user.Phone}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Address Line 1</label>
                 <div class="col-xs-8">
-                    <input type="text" name="HouseNumber" class="form-control" placeholder="House Number" value="{{user.HouseNumber}}">
+                    <input type="text" name="address" class="form-control" placeholder="House Number" value="{{user.HouseNumber}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Street</label>
                 <div class="col-xs-8">
-                    <input type="text" name="Street" class="form-control" placeholder="Street" value="{{user.Street}}">
+                    <input type="text" name="line_1" class="form-control" placeholder="Street" value="{{user.Street}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">City</label>
                 <div class="col-xs-8">
-                    <input type="text" name="City" class="form-control" placeholder="City" value="{{user.City}}">
+                    <input type="text" name="city" class="form-control" placeholder="City" value="{{user.City}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">State</label>
                 <div class="col-xs-8">
-                    <input type="text" name="State" class="form-control" placeholder="State" value="{{user.State}}">
+                    <input type="text" name="state" class="form-control" placeholder="State" value="{{user.State}}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Country</label>
                 <div class="col-xs-8">
-                    <input type="text" name="Country" class="form-control" placeholder="Country" value="{{user.Country}}">
+                    <input type="text" name="country" class="form-control" placeholder="Country" value="{{user.Country}}">
                 </div>
             </div>
             <div class="">
@@ -93,7 +94,7 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">Account Type</label>
                 <div class="col-xs-8">
-                    <input type="text" name="accountType" class="form-control" placeholder="accountType" value="{{user.accountType}}" disabled>
+                    <input type="text" name="role" class="form-control" placeholder="accountType" value="{{user.accountType}}" disabled>
                 </div>
             </div>
             <div class="footer">
@@ -109,8 +110,8 @@ console.log($('form').serialize())
                 </div>
             </div>
         </form>
-        <div class="col-sm-3 col-sm-offset-2">
-            <img src="http://www.clker.com/cliparts/b/1/f/a/1195445301811339265dagobert83_female_user_icon.svg.med.png" class="usimg">
+        <div class="col-sm-3 col-sm-offset-2" align="center">
+            <img src="images/noPic.png" class="usimg">
             <button class="btn btn-success btn-block up">Change Image</button>
         </div>
     </div>

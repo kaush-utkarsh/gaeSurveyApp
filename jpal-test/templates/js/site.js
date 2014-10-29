@@ -5,7 +5,18 @@ $(window).on('resize load', function() {
 
 function saveProfile(item)
         {
-            console.log($('form').serialize())
+       
+        $.ajax({
+            url: "/apiSaveProfile",
+            type: "post",
+            async: false,
+            data: $('form').serializeArray(),
+            dataType: "html",
+            success: function (data) {
+                // console.log(data)
+                window.location.assign("/")
+            },
+        });
         }
 
 
@@ -21,10 +32,7 @@ function saveProfile(item)
             data: {username:un,password:pd},
             dataType: "html",
             success: function (data) {
-                // console.log(data)
-                // nv=JSON.parse(data)
                 localStorage.user = data;
-                // console.log(nv)
                 window.location.assign("/")
             },
         });

@@ -17,6 +17,106 @@ class MainHandler(webapp2.RequestHandler):
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
+class Profile(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+	def post(self):
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template = jinja_environment.get_template('index.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
+
+class Edit_Form(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template = jinja_environment.get_template('profile.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+class UserManage(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template=jinja_environment.get_template('manager.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
+class SurveyManage(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template = jinja_environment.get_template('surveys.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+class DataViewer(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template = jinja_environment.get_template('sms.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+class Scheduler(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		count = session.get('count',0)
+		session['count'] = count+1
+		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
+		template = jinja_environment.get_template('index.html')
+		tpl_vars = {'counter':session['count']}
+		self.response.write(template.render(tpl_vars))
+
+
+class ManageProject(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		session = get_current_session()
+		login = session.get('login')
+		if login == "admin":
+			template = jinja_environment.get_template('data.html')
+		else:
+			session['error'] = "Login first"
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
+class Reports(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		count = session.get('count',0)
+		session['count'] = count+1
+		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
+		template = jinja_environment.get_template('index.html')
+		tpl_vars = {'counter':session['count']}
+		self.response.write(template.render(tpl_vars))
+
 class APIResearcher(webapp2.RequestHandler):
 	def get(self):
 		functionality=dbHandler.GetData().getResearchers()
@@ -85,111 +185,12 @@ class ManageResearcher(webapp2.RequestHandler):
 		self.response.write(template.render())
 
 
-class Profile(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
-		else:
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
+class SaveProfile(webapp2.RequestHandler):
 
 	def post(self):
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('index.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-
-
-class Edit_Form(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('profile.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-class UserManage(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template=jinja_environment.get_template('manager.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-
-class SurveyManage(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('surveys.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-class DataViewer(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('sms.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-class Scheduler(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		count = session.get('count',0)
-		session['count'] = count+1
-		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
-		template = jinja_environment.get_template('index.html')
-		tpl_vars = {'counter':session['count']}
-		self.response.write(template.render(tpl_vars))
-
-
-class ManageProject(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('data.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-
-class Reports(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		count = session.get('count',0)
-		session['count'] = count+1
-		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
-		template = jinja_environment.get_template('index.html')
-		tpl_vars = {'counter':session['count']}
-		self.response.write(template.render(tpl_vars))
-
-
+		post_data = self.request.POST
+		dbHandler.PostData().saveProfileData(post_data)
+		self.response.write('true')
 
 
 
@@ -206,6 +207,7 @@ app = webapp2.WSGIApplication([
 	('/manage-projects',ManageProject),
 	('/apiResearcher',APIResearcher),
 	('/apiUserProfile',UserProfile),
+	('/apiSaveProfile',SaveProfile),
 	('/manage_researcher',ManageResearcher),
 	('/entrepeneur',Reports)
 
