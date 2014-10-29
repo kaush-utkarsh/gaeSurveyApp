@@ -6,7 +6,7 @@ import webapp2
 import cloudDbHandler as dbHandler
 import json
 jinja_environment = jinja2.Environment(autoescape = True,
-	loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/pages')))
+	loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
 class MainHandler(webapp2.RequestHandler):
 	def get(self):

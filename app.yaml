@@ -19,7 +19,7 @@ handlers:
   static_dir: templates/js
 - url: /css
   static_dir: templates/css
-- url: .*
+- url: /.*
   script: main.app
 
 libraries:

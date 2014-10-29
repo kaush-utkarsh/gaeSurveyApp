@@ -6,9 +6,12 @@
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/site.css">
         <link rel="stylesheet" href="css/ng-table.min.css">
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/jquery-ui.css">
+        <!-- <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"> -->
+        <link href="css/font-awesome.min.css" rel="stylesheet">
         <script src="js/angular.min.js"></script>
         <script src="js/angular-route.min.js"></script>
+        
         <script src="js/main.js"></script>
         <base href="/">
     </head>
@@ -26,7 +29,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="settings">My Account</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#">Log Out</a></li>
+                                <li><button class="btn btn-danger btn-block" onclick="LogOut()">Log Out</button></li>
                             </ul>
                         </li>
                     </ul>
@@ -37,6 +40,7 @@
             <div ng-view></div>
         </div>
         <script src="js/jquery-2.1.1.min.js"></script>
+         <script src="js/jquery-ui.js"></script>
         <script src="js/bootcards.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/site.js"></script>
