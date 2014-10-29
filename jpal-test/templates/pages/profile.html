@@ -1,3 +1,10 @@
+
+   <script>
+$(document).ready(function(){
+    alert('hi')
+console.log($('form').serialize())
+});
+</script>
 <div class="container">
     <div class="col-sm-12">
         <form class="form-horizontal col-sm-7" method="POST" action="" data-pjax="#main">
@@ -92,11 +99,11 @@
             <div class="footer">
                 <div class="btn-group pull-left">
                     <button class="btn btn-danger" data-dismiss="modal">
-                    Cancel
+                    Reset
                     </button>
                 </div>
                 <div class="btn-group pull-right">
-                    <button class="btn btn-success" data-dismiss="modal">
+                    <button class="btn btn-success" onclick="saveProfile()" data-dismiss="modal">
                     Save
                     </button>
                 </div>
@@ -107,5 +114,5 @@
             <button class="btn btn-success btn-block up">Change Image</button>
         </div>
     </div>
-   
 </div>
+

@@ -109,10 +109,17 @@ class GetData():
                 }
             data.append(info)
 
+        # return_data = {'navs' : data, 'user': user}
+        conn.close()
+        return data
+    
+    
+    def getProfile(self,user_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
         cursor = conn.cursor()
         sqlcmd = """select user_id as ID, f_name as fname, l_name as lname, email, primary_phone as phone, secondary_phone as altphone, 
-                role as accounttype, address, line_1 as street, city, state, country
-                from user where user_id= %s"""
+                r.role_desc as accounttype, address, line_1 as street, city, state, country
+                from user left join role r on r.role_id=user.role where user_id= %s"""
 
         # print sqlcmd
         cursor.execute(sqlcmd,(user_id))
@@ -134,9 +141,8 @@ class GetData():
                     'Country': row[11]
                 }
             # user.append(info)
-        return_data = {'navs' : data, 'user': user}
         conn.close()
-        return return_data
+        return user
     
     
    

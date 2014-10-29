@@ -34,6 +34,24 @@ class Logout(webapp2.RequestHandler):
 	def post(self):
 		get_current_session().terminate(clear_data=True)
 		self.response.write("session ended")
+
+class UserProfile(webapp2.RequestHandler):
+	def get(self):
+		user_id = self.request.get('user_id')
+		data=dbHandler.GetData().getRoleFunctionality(user_id)
+		user=dbHandler.GetData().getProfile(user_id)
+		functionality={'navs' : data, 'user': user}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+	
+	def post(self):
+		user_id = self.request.get('user_id')
+		data=dbHandler.GetData().getRoleFunctionality(user_id)
+		user=dbHandler.GetData().getProfile(user_id)
+		functionality={'navs' : data, 'user': user}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
 		
 class Login(webapp2.RequestHandler):
 	def get(self):
@@ -52,9 +70,10 @@ class Login(webapp2.RequestHandler):
 		if len(user_id)>1:
 			session['login'] = login
 			session['user_id'] = user_id
-			functionality=dbHandler.GetData().getRoleFunctionality(user_id)
-			func = json.dumps(functionality, ensure_ascii=False)
-			self.response.write(func)
+			self.response.write(user_id)
+		else:
+			template = jinja_environment.get_template('login.html')
+			self.response.write(template.render())
 
 class ManageResearcher(webapp2.RequestHandler):
 	def get(self):
@@ -186,6 +205,7 @@ app = webapp2.WSGIApplication([
 	('/sms',Scheduler),
 	('/manage-projects',ManageProject),
 	('/apiResearcher',APIResearcher),
+	('/apiUserProfile',UserProfile),
 	('/manage_researcher',ManageResearcher),
 	('/entrepeneur',Reports)
 

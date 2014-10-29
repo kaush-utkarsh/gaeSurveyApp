@@ -3,10 +3,24 @@ var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 
-	 var nv=JSON.parse(localStorage.dataObject)
-	 console.log(nv)
-	  // localStorage.dataObject=''
-     return nv;
+	 var user=localStorage.user
+	 var datum;
+        $.ajax({
+            url: "/apiUserProfile",
+            type: "post",
+            async: false,
+            data: {user_id:user},
+            dataType: "html",
+            success: function (data) {
+                // console.log(data)
+                datum=JSON.parse(data)
+                // localStorage.user = data;
+                // console.log(nv)
+                // window.location.assign("/")
+            },
+        });
+
+     return datum;
 }]);
 
 surveyApp.config(function($routeProvider,$locationProvider) {
@@ -64,19 +78,11 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 });
 
 surveyApp.controller('appController', function($scope,surveyFactory) {
-	console.log('inside controller');
-	console.log(surveyFactory.navs);
-	console.log(surveyFactory.user); 
-
 	$scope.user = surveyFactory.user;
 	$scope.navs = surveyFactory.navs;
 });
 
 surveyApp.controller('profileController', function($scope,surveyFactory) {
-	console.log('inside controller');
-	console.log(surveyFactory.navs);
-	console.log(surveyFactory.user); 
-
 	$scope.user = surveyFactory.user;
 	$scope.navs = surveyFactory.navs;
 });
@@ -93,9 +99,7 @@ surveyApp.controller('researchersController', function($scope,surveyFactory) {
             dataType: "html",
             success: function (data) {
                 console.log(data)
-                // nv=JSON.parse(data)
                 localStorage.Researchers = data;
-                // console.log(nv)
             },
         });
 

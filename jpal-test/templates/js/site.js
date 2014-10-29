@@ -3,6 +3,12 @@ $(window).on('resize load', function() {
 		    $('body').css({"padding-top": $(".navbar").height() + 20 + "px"});
 		});
 
+function saveProfile(item)
+        {
+            console.log($('form').serialize())
+        }
+
+
  function SignIn(item)
         {
 
@@ -15,9 +21,9 @@ $(window).on('resize load', function() {
             data: {username:un,password:pd},
             dataType: "html",
             success: function (data) {
-                console.log(data)
+                // console.log(data)
                 // nv=JSON.parse(data)
-                localStorage.dataObject = data;
+                localStorage.user = data;
                 // console.log(nv)
                 window.location.assign("/")
             },
