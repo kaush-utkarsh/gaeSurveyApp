@@ -54,3 +54,39 @@ function saveProfile(item)
         });
    		}
 
+function deleteUserRow(item)
+        {
+            // console.log($(item).parents('tr').find('input[type="hidden"]').val())
+            $.ajax({
+            url: "/deleteUser",
+            type: "post",
+            async: false,
+            data: {user_id: $(item).parents('tr').find('input[type="hidden"]').val()},
+            dataType: "html",
+            success: function (data) {
+               $(item).attr('disabled','disabled')
+               $(item).parent().find('button:eq(1)').show()
+            },
+        });
+
+            
+        }
+
+        function undoDelete(item)
+        {
+            // console.log($(item).parents('tr').find('input[type="hidden"]').val())
+            $.ajax({
+            url: "/undoUserDelete",
+            type: "post",
+            async: false,
+            data: {user_id: $(item).parents('tr').find('input[type="hidden"]').val()},
+            dataType: "html",
+            success: function (data) {
+               
+               $(item).parent().find('button:eq(0)').removeAttr('disabled')
+               $(item).attr('style','display:none')
+            },
+        });
+
+            
+        }

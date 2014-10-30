@@ -17,12 +17,13 @@
                 <th>Email ID</th>
                 <th></th>
             <tr ng-repeat="researcher in researchers">
+                <input type="hidden" class="form-control" value="{{researcher.ID}}">
                 <td>{{researcher.ID}}</td>
                 <td>{{researcher.Name}}</td>
                 <td>{{researcher.Location}}</td>
                 <td>{{researcher.Age}}</td>
                 <td>{{researcher.Email}}</td>
-                <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm"> Delete </button></td>
+                <td><button class="btn btn-danger" onclick="deleteUserRow(this)" > Delete </button><button style="display:none" class="btn btn-success" onclick="undoDelete(this)" > Undo </button></td>
             </tr>
             </tr>
         </table>
@@ -81,7 +82,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
@@ -95,4 +96,4 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->

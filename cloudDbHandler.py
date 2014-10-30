@@ -22,7 +22,25 @@ class PostData():
         # print sqlcmd
         cursor.execute(sqlcmd,(post_data['f_name'],post_data['l_name'],post_data['DOB'],post_data['primary_phone'],post_data['address'],post_data['line_1'],post_data['city'],post_data['state'],post_data['country'],post_data['user_id'],))
         conn.commit()
-        conn.close()       
+        conn.close() 
+
+    def deleteUser(self,user_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = "update user set status=0 where user_id = %s "
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id))
+        conn.commit()
+        conn.close()    
+
+    def undoDeleteUser(self,user_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = "update user set status=1 where user_id = %s "
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id))
+        conn.commit()
+        conn.close()   
 
     def addListDetails(self,listname,list_type,status):
         try:
@@ -69,7 +87,7 @@ class GetData():
     def checkUserAuth(self,user_id,password):
         conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
         cursor = conn.cursor()
-        sqlcmd = "select * from user where login_id = %s and login_password = %s"
+        sqlcmd = "select * from user where login_id = %s and login_password = %s and status=1"
         # print sqlcmd
         cursor.execute(sqlcmd,(user_id, password))
         info = []
@@ -81,7 +99,7 @@ class GetData():
     def getResearchers(self):
         conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
         cursor = conn.cursor()
-        sqlcmd = "select f_name, l_name , email, city from user where role='RE'"
+        sqlcmd = "select f_name, l_name , email, city, user_id, age from user where role='RE' and status=1"
         # print sqlcmd
         cursor.execute(sqlcmd)
         info = []
@@ -90,7 +108,9 @@ class GetData():
             info={
                     'Name': row[0]+" "+row[1],
                     'Email': row[2],
-                    'Location': row[3]
+                    'Location': row[3],
+                    'ID': row[4],
+                    'Age':row[5]
                 }
             data.append(info)
         return_data = {'researchers' : data}

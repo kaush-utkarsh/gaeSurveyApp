@@ -192,7 +192,19 @@ class SaveProfile(webapp2.RequestHandler):
 		dbHandler.PostData().saveProfileData(post_data)
 		self.response.write('true')
 
+class DelUser(webapp2.RequestHandler):
 
+	def post(self):
+		user_id = self.request.get('user_id')
+		dbHandler.PostData().deleteUser(user_id)
+		self.response.write('true')
+
+class UndoDelUser(webapp2.RequestHandler):
+
+	def post(self):
+		user_id = self.request.get('user_id')
+		dbHandler.PostData().undoDeleteUser(user_id)
+		self.response.write('true')
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
@@ -209,6 +221,8 @@ app = webapp2.WSGIApplication([
 	('/apiUserProfile',UserProfile),
 	('/apiSaveProfile',SaveProfile),
 	('/manage_researcher',ManageResearcher),
+	('/deleteUser',DelUser),
+	('/undoUserDelete',UndoDelUser),
 	('/entrepeneur',Reports)
 
 ], debug = True)
