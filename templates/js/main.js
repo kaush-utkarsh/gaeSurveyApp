@@ -45,7 +45,7 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 			controller  : 'researchersController'
 		})
 
-		.when('/survey', {
+		.when('/view_survey', {
 			templateUrl : 'pages/survey.html',
 			controller  : 'surveyController'
 		})

@@ -61,14 +61,12 @@ class UserManage(webapp2.RequestHandler):
 		self.response.write(template.render())
 
 
-class SurveyManage(webapp2.RequestHandler):
+class Survey(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('surveys.html')
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
 		else:
-			session['error'] = "Login first"
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
@@ -213,7 +211,7 @@ app = webapp2.WSGIApplication([
 	('/profile', Profile),
 	('/profile-edit',Edit_Form),
 	('/user', UserManage),
-	('/surveys',SurveyManage),
+	('/view_survey',Survey),
 	('/data-view',DataViewer),
 	('/sms',Scheduler),
 	('/manage-projects',ManageProject),
