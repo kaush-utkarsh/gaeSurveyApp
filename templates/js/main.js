@@ -46,8 +46,13 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 		})
 
 		.when('/view_survey', {
-			templateUrl : 'pages/survey.html',
+			templateUrl : 'pages/surveys.html',
 			controller  : 'surveyController'
+		})
+
+		.when('/flag_survey', {
+			templateUrl : 'pages/survey.html',
+			controller  : 'surveyFlagController'
 		})
 
 		.when('/data', {
@@ -113,6 +118,28 @@ surveyApp.controller('settingsController', function($scope,surveyFactory) {
 });
 
 surveyApp.controller('surveyController', function($scope,surveyFactory) {
+
+	 var user=localStorage.user
+	 var datum;
+        $.ajax({
+            url: "/apiUserProfile",
+            type: "post",
+            async: false,
+            data: {user_id:user},
+            dataType: "html",
+            success: function (data) {
+                // console.log(data)
+                datum=JSON.parse(data)
+                // localStorage.user = data;
+                // console.log(nv)
+                // window.location.assign("/")
+            },
+        });
+
+
+
+
+
 	$scope.Type = surveyFactory.surveys[0].Type;
 	$scope.survey = surveyFactory.surveys[0].Sections;
 	$scope.questions = surveyFactory.surveys[0].Sections[0].Question;

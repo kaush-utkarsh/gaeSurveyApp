@@ -68,13 +68,11 @@ function deleteUserRow(item)
                $(item).parent().find('button:eq(1)').show()
             },
         });
-
-            
-        }
+         }
 
         function undoDelete(item)
         {
-            // console.log($(item).parents('tr').find('input[type="hidden"]').val())
+        // console.log($(item).parents('tr').find('input[type="hidden"]').val())
             $.ajax({
             url: "/undoUserDelete",
             type: "post",
@@ -87,6 +85,4 @@ function deleteUserRow(item)
                $(item).attr('style','display:none')
             },
         });
-
-            
         }
