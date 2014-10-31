@@ -86,3 +86,21 @@ function deleteUserRow(item)
             },
         });
         }
+
+        function returnSurveyData(item)
+        {
+        console.log($(item).parents('tr').find('#pID').val())
+        /*  $.ajax({
+            url: "/undoUserDelete",
+            type: "post",
+            async: false,
+            data: {user_id: $(item).parents('tr').find('input[type="hidden"]').val()},
+            dataType: "html",
+            success: function (data) {
+               
+               $(item).parent().find('button:eq(0)').removeAttr('disabled')
+               $(item).attr('style','display:none')
+            },
+        }); 
+        */
+        }

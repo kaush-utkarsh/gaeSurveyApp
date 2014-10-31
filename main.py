@@ -204,6 +204,15 @@ class UndoDelUser(webapp2.RequestHandler):
 		dbHandler.PostData().undoDeleteUser(user_id)
 		self.response.write('true')
 
+class apiViewSurveys(webapp2.RequestHandler):
+
+	def post(self):
+		user_id = self.request.get('user_id')
+		data=dbHandler.GetData().getDeSurveys(user_id)
+		functionality=data #{'surveys' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
@@ -221,6 +230,7 @@ app = webapp2.WSGIApplication([
 	('/manage_researcher',ManageResearcher),
 	('/deleteUser',DelUser),
 	('/undoUserDelete',UndoDelUser),
-	('/entrepeneur',Reports)
+	('/entrepeneur',Reports),
+	('/apiViewSurveys',apiViewSurveys)
 
 ], debug = True)

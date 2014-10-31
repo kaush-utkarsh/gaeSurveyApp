@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-controller="surveyController">
     <div class="">
         <h3 class="page-header">
             {{Type}}
@@ -36,13 +36,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="list-group  scrl" ng-repeat="section in survey">
+                    <div class="list-group" ng-repeat="section in survey">
                         <div class="list-group-item" ng-repeat="question in questions">
-                            <div class="">
-                                <input type="checkbox" class="col-xs-1" />
-                                <h4 class="list-group-item-heading"><label>{{question.ID}} . </label>{{question.Content}}</h4>
-                                <h5 class="list-group-item-heading">{{question.Answer}}</h5>
-                            </div>
+                            <label>Question {{question.ID}}</label>
+                            <h4 class="list-group-item-heading">{{question.Content}}</h4>
                         </div>
                     </div>
                     <div class="panel-footer">

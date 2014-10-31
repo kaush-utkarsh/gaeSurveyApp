@@ -141,7 +141,37 @@ class GetData():
         # return_data = {'navs' : data, 'user': user}
         conn.close()
         return data
-    
+
+
+
+    def getDeSurveys(self,user_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = """ SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,', ',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
+            join de_surveyor ds on ds.survey_id=sda.survey_id
+            join survey_details sde on sde.survey_id=sda.survey_id
+            join user u on u.user_id=SUBSTRING( sda.part_id ,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)
+            where ds.de_id= %s 
+            group by sda.part_id"""
+
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id))
+        info = []
+        user=[]
+        for row in cursor.fetchall():
+            info={
+                    'ID': row[0],
+                    'name': row[1],
+                    'surveyorName': row[2],
+                    'pID': row[3],
+                    'company': row[4],
+                    'location': row[5],
+                    'date': row[6],
+                    'deID': row[7]
+                }
+            user.append(info)
+        conn.close()
+        return user
     
     def getProfile(self,user_id):
         conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
