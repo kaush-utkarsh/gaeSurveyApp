@@ -203,6 +203,49 @@ class GetData():
             # user.append(info)
         conn.close()
         return user
+
+    def getSurveySections(self,user_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = """ SELECT sda.sect_id,sec.sect_name FROM survey_data sda
+                    join section_details sec on sec.sect_id=sda.sect_id
+                     where part_id = %s group by sda.sect_id"""
+
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id))
+        info = []
+        user=[]
+        for row in cursor.fetchall():
+            info={
+                    'sect_id': row[0],
+                    'sect_text': row[1]
+                }
+            user.append(info)
+        conn.close()
+        return user
+
+
+    def getSectionQuest(self,user_id,sect_id):
+        conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+        cursor = conn.cursor()
+        sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text FROM survey_data sda
+            join ques_details qde on qde.q_no=sda.ques_no
+            where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s """
+
+        # print sqlcmd
+        cursor.execute(sqlcmd,(user_id, sect_id))
+        info = []
+        user=[]
+        for row in cursor.fetchall():
+            info={
+                    'ques_no': row[2],
+                    'ques_text': row[3],
+                    'op_id': row[4],
+                    'ans_text': row[5]
+                }
+            user.append(info)
+        conn.close()
+        return user
     
     
    

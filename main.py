@@ -213,6 +213,63 @@ class apiViewSurveys(webapp2.RequestHandler):
 		func = json.dumps(functionality, ensure_ascii=False)
 		self.response.write(func)
 
+class apiReturnSurvey(webapp2.RequestHandler):
+
+	def get(self):
+		user_id = self.request.get('part_id')
+		data=dbHandler.GetData().getSurveySections(user_id)
+		# sect_id=data[0].sect_id
+		sect_id=data[0]['sect_id']
+		sect_name=data[0]['sect_text']
+		sectdat=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
+
+		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+	
+	def post(self):
+		user_id = self.request.get('part_id')
+		data=dbHandler.GetData().getSurveySections(user_id)
+		# sect_id=data[0].sect_id
+		sect_id=data[0]['sect_id']
+		sect_name=data[0]['sect_text']
+		sectdat=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
+
+		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+class apiReturnSection(webapp2.RequestHandler):
+
+	def get(self):
+		user_id = self.request.get('part_id')
+		sect_id = self.request.get('sect_id')
+		sect_name = self.request.get('sect_name')
+		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+	def post(self):
+		user_id = self.request.get('part_id')
+		sect_id = self.request.get('sect_id')
+		sect_name = self.request.get('sect_name')
+		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+		
+class FlagSurvey(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
@@ -231,6 +288,10 @@ app = webapp2.WSGIApplication([
 	('/deleteUser',DelUser),
 	('/undoUserDelete',UndoDelUser),
 	('/entrepeneur',Reports),
-	('/apiViewSurveys',apiViewSurveys)
+	('/apiViewSurveys',apiViewSurveys),
+	('/returnSurvey',apiReturnSurvey),
+	('/returnSection',apiReturnSection),
+	('/flag_survey',FlagSurvey)
+
 
 ], debug = True)

@@ -96,6 +96,58 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
 	$scope.surveys = surveyFactory.surveys;
 });
 
+
+surveyApp.controller('surveyFlagController', function($scope,surveyFactory) {
+	
+	var pid=localStorage.pID
+
+
+	        $.ajax({
+            url: "/returnSurvey",
+            type: "post",
+            async: false,
+            data: {part_id:pid},
+            dataType: "html",
+            success: function (data) {
+              $scope.PID=JSON.parse(data).part_id 
+              $scope.sections=JSON.parse(data).sections  
+              $scope.questions=JSON.parse(data).sect.ques
+              $scope.sect_ID=JSON.parse(data).sect.sect_id
+              $scope.sect_Name=JSON.parse(data).sect.sect_name
+            }
+       		 }); 
+
+
+
+	   	$scope.getQuestions = function(sec_ID,sec_Name) {
+	   	    $.ajax({
+            url: "/returnSection",
+            type: "post",
+            async: false,
+            data: {part_id:$scope.PID,sect_id:sec_ID,sect_name:sec_Name},
+            dataType: "html",
+            success: function (data) {
+            	$scope.questions=JSON.parse(data).ques
+            	$scope.sect_ID=JSON.parse(data).sect_id
+            	$scope.sect_Name=JSON.parse(data).sect_name
+           }
+        }); 
+	};
+
+
+// angular.element(document).ready(function () {
+//  // angular.element('#upload').trigger('click');.
+//  // getThatQuest()
+//  console.log('hmmmm')
+
+//     angular.element('#sectbox')
+//    $scope.getQuestions($scope.sections[0].sect_id,$scope.sections[0].sect_text)
+// });
+	// $scope.sections = surveyFactory.sections;
+
+	// $scope.researchers = rs.researchers
+});
+
 surveyApp.controller('researchersController', function($scope,surveyFactory) {
 	$.ajax({
             url: "/apiResearcher",
@@ -128,22 +180,18 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
             data: {user_id:user},
             dataType: "html",
             success: function (data) {
-                // console.log(data)
                $scope.surveys=JSON.parse(data)
-                // localStorage.user = data;
-                // console.log(nv)
-                // window.location.assign("/")
-            },
+              },
         });
-	// $scope.surveys=datum
 
-
-
-
-	// $scope.Type = surveyFactory.surveys[0].Type;
-	// $scope.surveys = surveyFactory.surveys[0].Sections;
-	// $scope.questions = surveyFactory.surveys[0].Sections[0].Question;
-});
+ //        $scope.getSurveyData = function($item) {
+				
+	// 			console.log('ufgg')
+ //       			console.log(($item).parents('tr').find('input[type="hidden"]:eq(0)').val())
+	// 	//get Ajax call here
+	// 	//and then success : $scope.questions = GET Questions JSON
+	// };
+ });
 
 surveyApp.controller('mainController', function($scope,surveyFactory) {
 });

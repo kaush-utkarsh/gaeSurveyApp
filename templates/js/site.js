@@ -86,21 +86,25 @@ function deleteUserRow(item)
             },
         });
         }
-
+        // function getThatQuest()
+        // {
+        //   $('#sectbox').find('a:eq(0)').trigger('ng-click')
+        //   console.log($('#sectbox'))
+        // }
         function returnSurveyData(item)
         {
         console.log($(item).parents('tr').find('#pID').val())
-        /*  $.ajax({
-            url: "/undoUserDelete",
-            type: "post",
-            async: false,
-            data: {user_id: $(item).parents('tr').find('input[type="hidden"]').val()},
-            dataType: "html",
-            success: function (data) {
-               
-               $(item).parent().find('button:eq(0)').removeAttr('disabled')
-               $(item).attr('style','display:none')
-            },
-        }); 
-        */
+        localStorage.pID=$(item).parents('tr').find('#pID').val()
+        window.location.assign('/flag_survey')
+          // $.ajax({
+          //   url: "/returnSurvey",
+          //   type: "post",
+          //   async: false,
+          //   data: {part_id: $(item).parents('tr').find('#pID').val()},
+          //   dataType: "html",
+          //   success: function (data) {
+          //     console.log(data)              
+          //   }
+        // }); 
+        
         }

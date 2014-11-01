@@ -1,25 +1,29 @@
 <div class="container">
     <div class="">
-        <h3 class="page-header">
-            {{Type}}
-        </h3>
+        <h4 class="page-header">
+           Participant ID: {{PID}}
+        </h4>
         <!-- ************************************************************************************ -->
         <div class="col-sm-5 bootcards-list" id="list">
-            <div class="panel panel-default">
-                <div class="list-group" ng-repeat="section in survey">
-                    <a class="list-group-item pjax" href="#">
-                        <h4 class="list-group-item-heading">{{section.name}}</h4>
+            <div name="sectbox" id="sectbox" class="panel panel-default">
+                <div class="list-group" ng-repeat="section in sections">
+                    <a class="list-group-item pjax" ng-click="getQuestions(section.sect_id,section.sect_text)">
+                        <input type="hidden" value='{{section.sect_id}}'/>
+                        <h5 class="list-group-item-heading">{{section.sect_text}}</h5>
                     </a>
                 </div>
             </div>
         </div>
+        <input type="hidden" value="{{part_ID}}"/>
         <div class="col-sm-7 bootcards-cards hidden-xs" id="listDetails">
             <div id="contactCard">
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <h3 class="panel-title pull-left">Questions</h3>
                     </div>
-                    <div class="panel-body">
+                    <input type="hidden" value="{{sect_ID}}"/>
+                    <input type="hidden" value="{{sect_Name}}"/>
+           <!--          <div class="panel-body">
                         <div class="search-form">
                             <div class="row">
                                 <div class="col-xs-9">
@@ -35,19 +39,20 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="list-group  scrl" ng-repeat="section in survey">
+                    </div> -->
+                    <div class="list-group  scrl">
                         <div class="list-group-item" ng-repeat="question in questions">
                             <div class="">
-                                <input type="checkbox" class="col-xs-1" />
-                                <h4 class="list-group-item-heading"><label>{{question.ID}} . </label>{{question.Content}}</h4>
-                                <h5 class="list-group-item-heading">{{question.Answer}}</h5>
+                                <input type="checkbox" class="col-xs-1" ng-model="flag"/>
+                                <input type="hidden" value="{{op_id}}"/>
+                                <h4 class="list-group-item-heading"><label>{{question.ques_no}} . </label>{{question.ques_text}}</h4>
+                                <h5 class="list-group-item-heading">Answer: {{question.ans_text}}</h5>
                             </div>
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-info pull-right" href="#" data-toggle="modal" data-target="#editQuestion">
-                        Edit</button>
+                        <button class="btn btn-danger pull-right" >
+                        Submit Flags</button>
                     </div>
                 </div>
             </div>
@@ -88,4 +93,3 @@
         </div>
     </div>
 </div>
-
