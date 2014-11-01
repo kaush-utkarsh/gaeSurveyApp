@@ -70,7 +70,7 @@ class PostData():
 			return False
 
 	def checkInitSection(self,checked):
-		# print checked
+		print checked
 		# check="("
 		# for ch in checked:
 		# 	check=check+str(ch)+","
@@ -79,7 +79,7 @@ class PostData():
 		# print check
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, null where survey_data_id in "+check
+		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, null from survey_data where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
