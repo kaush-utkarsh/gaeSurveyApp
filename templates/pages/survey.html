@@ -13,7 +13,10 @@
                     </a>
                 </div>
             </div>
+                <button class="btn btn-danger btn-block pull-right" >
+        Submit Flags</button>
         </div>
+
         <input type="hidden" value="{{part_ID}}"/>
         <div class="col-sm-7 bootcards-cards hidden-xs" id="listDetails">
             <div id="contactCard">
@@ -43,20 +46,31 @@
                     <div class="list-group  scrl">
                         <div class="list-group-item" ng-repeat="question in questions">
                             <div class="">
-                                <input type="checkbox" class="col-xs-1" ng-model="flag"/>
-                                <input type="hidden" value="{{op_id}}"/>
+                                <input type="hidden" name="flag" value='{{question.flag}}'>
+                                <div ng-if="question.flag==0 || question.flag==1">
+                                <input type="checkbox"  onchange="checkBoxToggle(this)" class="col-xs-1" checked value="{{question.sda_id}}"/> 
+                                </div>
+                                <div ng-if="question.flag!=0 && question.flag!=1">
+                                <input type="checkbox"  onchange="checkBoxToggle(this)" class="col-xs-1" value="{{question.sda_id}}"/> 
+                                </div>
+
+                                <input type="hidden" value="{{question.op_id}}"/>
                                 <h4 class="list-group-item-heading"><label>{{question.ques_no}} . </label>{{question.ques_text}}</h4>
-                                <h5 class="list-group-item-heading">Answer: {{question.ans_text}}</h5>
+                                <h4 class="list-group-item-heading lft green">{{question.ans_text}}</h4>
                             </div>
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-danger pull-right" >
-                        Submit Flags</button>
+
+                        <button onClick="flagSection()" class="btn btn-primary pull-right" >
+                        Flag this Section</button>
+                        
                     </div>
                 </div>
             </div>
         </div>
+
+        
     </div>
 </div>
 

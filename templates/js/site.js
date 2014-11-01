@@ -72,7 +72,6 @@ function deleteUserRow(item)
 
         function undoDelete(item)
         {
-        // console.log($(item).parents('tr').find('input[type="hidden"]').val())
             $.ajax({
             url: "/undoUserDelete",
             type: "post",
@@ -86,25 +85,44 @@ function deleteUserRow(item)
             },
         });
         }
-        // function getThatQuest()
-        // {
-        //   $('#sectbox').find('a:eq(0)').trigger('ng-click')
-        //   console.log($('#sectbox'))
-        // }
+
         function returnSurveyData(item)
         {
         console.log($(item).parents('tr').find('#pID').val())
         localStorage.pID=$(item).parents('tr').find('#pID').val()
         window.location.assign('/flag_survey')
-          // $.ajax({
-          //   url: "/returnSurvey",
-          //   type: "post",
-          //   async: false,
-          //   data: {part_id: $(item).parents('tr').find('#pID').val()},
-          //   dataType: "html",
-          //   success: function (data) {
-          //     console.log(data)              
-          //   }
-        // }); 
-        
+        }
+
+        function checkBoxToggle(item)
+        {
+          if($(item).attr('checked')=='checked')
+            $(item).removeAttr('checked')
+          else
+            $(item).attr('checked','checked')
+        }
+
+        function flagSection()
+        { 
+          var arr_checked=[]
+          var arr_unchecked=[]
+          $('input[type="checkbox"]').each(function(i,item){
+          if($(item).attr('checked')=="checked")
+            arr_checked.push(item.value)
+          else
+            arr_unchecked.push(item.value)
+          })
+          console.log(arr_checked)
+          // console.log(arr_unchecked)
+
+           $.ajax({
+            url: "/checkSection",
+            type: "post",
+            async: false,
+            data: {checked: JSON.stringify(arr_checked), unchecked: JSON.stringify(arr_unchecked)},
+            dataType: "html",
+            success: function (data) {
+
+            },
+        });
+
         }

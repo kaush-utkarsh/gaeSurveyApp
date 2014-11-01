@@ -270,6 +270,17 @@ class FlagSurvey(webapp2.RequestHandler):
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
+class apiCheckSection(webapp2.RequestHandler):
+
+	def post(self):
+		checked = self.request.get('checked')
+		# self.response.write(checked)
+		unchecked = self.request.get('unchecked')
+		dbHandler.PostData().checkInitSection(checked)
+		# dbHandler.PostData().unCheckInitSection(uchecked)
+		self.response.write('true')
+
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
@@ -291,7 +302,8 @@ app = webapp2.WSGIApplication([
 	('/apiViewSurveys',apiViewSurveys),
 	('/returnSurvey',apiReturnSurvey),
 	('/returnSection',apiReturnSection),
-	('/flag_survey',FlagSurvey)
+	('/flag_survey',FlagSurvey),
+	('/checkSection',apiCheckSection)
 
 
 ], debug = True)

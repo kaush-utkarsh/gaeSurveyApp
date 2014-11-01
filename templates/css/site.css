@@ -117,3 +117,12 @@ padding-left: 0;
 .centre {
 	text-align: center;
 }
+
+.scrl {
+	max-height: 500px;
+	overflow-y: scroll; 
+}     
+
+.lft {
+	margin-left: 50px;
+}
