@@ -70,18 +70,29 @@ class PostData():
 			return False
 
 	def checkInitSection(self,checked):
-		print checked
-		# check="("
-		# for ch in checked:
-		# 	check=check+str(ch)+","
-		# check=check[:len(check)-1]
-		# check=check+")"
-		# print check
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
 		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, null from survey_data where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
 		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()  
+
+	def unCheckInitSection(self,unchecked):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "DELETE FROM correction where survey_data_id in "+str(unchecked.replace("[","(").replace("]",")"))
+		print sqlcmd
+		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()  
+	
+	def submitFlag(self,part_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "Update correction set flag = 1 where part_id = %s"
+		print sqlcmd
+		cursor.execute(sqlcmd,(part_id))
 		conn.commit()
 		conn.close()  
 
@@ -163,7 +174,7 @@ class GetData():
 	def getDeSurveys(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = """ SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,', ',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
+		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,', ',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
 			join de_surveyor ds on ds.survey_id=sda.survey_id
 			join survey_details sde on sde.survey_id=sda.survey_id
 			join user u on u.user_id=SUBSTRING( sda.part_id ,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)

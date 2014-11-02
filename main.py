@@ -276,10 +276,24 @@ class apiCheckSection(webapp2.RequestHandler):
 		checked = self.request.get('checked')
 		# self.response.write(checked)
 		unchecked = self.request.get('unchecked')
-		dbHandler.PostData().checkInitSection(checked)
-		# dbHandler.PostData().unCheckInitSection(uchecked)
+		try:
+			dbHandler.PostData().checkInitSection(checked)
+		except Exception,e:
+			pass
+		try:
+			dbHandler.PostData().unCheckInitSection(unchecked)
+		except Exception,e:
+			pass
 		self.response.write('true')
 
+class apiSubmitFlag(webapp2.RequestHandler):
+
+	def post(self):
+		part_id = self.request.get('part_id')
+		# self.response.write(checked)
+		dbHandler.PostData().submitFlag(part_id)
+
+		self.response.write('true')
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
@@ -303,7 +317,8 @@ app = webapp2.WSGIApplication([
 	('/returnSurvey',apiReturnSurvey),
 	('/returnSection',apiReturnSection),
 	('/flag_survey',FlagSurvey),
-	('/checkSection',apiCheckSection)
+	('/checkSection',apiCheckSection),
+	('/submitFlags',apiSubmitFlag)
 
 
 ], debug = True)

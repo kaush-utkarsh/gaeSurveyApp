@@ -2,6 +2,7 @@
     <div class="">
         <h4 class="page-header">
            Participant ID: {{PID}}
+            <input type="hidden" name="partId" id="partId" value="{{PID}}"/>
         </h4>
         <!-- ************************************************************************************ -->
         <div class="col-sm-5 bootcards-list" id="list">
@@ -13,7 +14,7 @@
                     </a>
                 </div>
             </div>
-                <button class="btn btn-danger btn-block pull-right" >
+                <button class="btn btn-danger btn-block pull-right" onClick="submitFlag()">
         Submit Flags</button>
         </div>
 
@@ -24,8 +25,8 @@
                     <div class="panel-heading clearfix">
                         <h3 class="panel-title pull-left">Questions</h3>
                     </div>
-                    <input type="hidden" value="{{sect_ID}}"/>
-                    <input type="hidden" value="{{sect_Name}}"/>
+                    <input type="hidden" name="sectId" value="{{sect_ID}}"/>
+                    <input type="hidden" name="sectName" value="{{sect_Name}}"/>
            <!--          <div class="panel-body">
                         <div class="search-form">
                             <div class="row">
