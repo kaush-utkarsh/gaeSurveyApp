@@ -105,15 +105,14 @@ class ManageProject(webapp2.RequestHandler):
 		self.response.write(template.render())
 
 
-class Reports(webapp2.RequestHandler):
+class VerifySurvey(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
-		count = session.get('count',0)
-		session['count'] = count+1
-		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
-		template = jinja_environment.get_template('index.html')
-		tpl_vars = {'counter':session['count']}
-		self.response.write(template.render(tpl_vars))
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
 
 class APIResearcher(webapp2.RequestHandler):
 	def get(self):
@@ -369,7 +368,7 @@ class apiViewFlaggedQuestion(webapp2.RequestHandler):
 		user_id = self.request.get('part_id')
 		sect_id = self.request.get('sect_id')
 		sect_name = self.request.get('sect_name')
-		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		data=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
 		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
 		func = json.dumps(functionality, ensure_ascii=False)
 		self.response.write(func)
@@ -393,7 +392,6 @@ app = webapp2.WSGIApplication([
 	('/manage_researcher',ManageResearcher),
 	('/deleteUser',DelUser),
 	('/undoUserDelete',UndoDelUser),
-	('/entrepeneur',Reports),
 	('/apiViewSurveys',apiViewSurveys),
 	('/returnSurvey',apiReturnSurvey),
 	('/returnSection',apiReturnSection),
@@ -403,7 +401,8 @@ app = webapp2.WSGIApplication([
 	('/submitFlags',apiSubmitFlag),
 	('/apiVerifySurveys',apiVerifySurveys),
 	('/apiViewFlaggedSection',apiViewFlaggedSection),
-	('/apiViewFlaggedQuestion',apiViewFlaggedQuestion)
+	('/apiViewFlaggedQuestion',apiViewFlaggedQuestion),
+	('/verify_survey',VerifySurvey)
 
 
 

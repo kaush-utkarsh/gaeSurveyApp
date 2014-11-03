@@ -22,7 +22,7 @@
                 <th>Date Completed</th>
                 <th></th>
                 
-                <tr ng-repeat="survey in surveys">
+                <tr ng-repeat="survey in approval_surveys">
                     <input type="hidden" name="surveyID" id="surveyID" value="{{survey.ID}}">
                     <input type="hidden" name="pID" id="pID" value="{{survey.pID}}">
                     <input type="hidden" name="surveyorID" id="surveyorID" value="{{survey.surveyorID}}">
@@ -35,9 +35,8 @@
                     <td>{{survey.location}}</td>
                     <td>{{survey.date}}</td>
                     <td>
-                        <button onClick="returnSurveyData(this)" class="btn btn-info"> View </button>
+                        <button onClick="returnCorrectedSurvey(this)" class="btn btn-info"> Verify </button>
                     </td>
-                    
                 </tr>
             </tr>
         </table>

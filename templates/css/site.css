@@ -48,8 +48,8 @@
     min-height: 200px;
 }
 .list-group-item, .list-group-item:hover {
- margin-left: 15px; 
-padding-left: 0;
+ margin-left: 0px; 
+ /*padding-left: 0;*/
 }
 
 .checkbox{

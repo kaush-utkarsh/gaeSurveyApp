@@ -1,0 +1,108 @@
+<div class="container">
+    <div class="">
+        <h4 class="page-header">
+           Participant ID: {{PID}}
+            <input type="hidden" name="partId" id="partId" value="{{PID}}"/>
+        </h4>
+        <!-- ************************************************************************************ -->
+        <div class="col-sm-5 bootcards-list" id="list">
+            <div name="sectbox" id="sectbox" class="panel panel-default">
+                <ul class="list-group">
+                    <li class="list-group-item pjax" ng-click="getQuestions($index, section.sect_id, section.sect_text)" ng-class="{'active': activeSection == $index}" ng-repeat="section in sections track by $index">
+                        {{section.sect_text}}
+                    </li>
+                </ul>
+            </div>
+              
+        </div>
+
+        <input type="hidden" value="{{part_ID}}"/>
+        <div class="col-sm-7 bootcards-cards hidden-xs" id="listDetails">
+            <div id="contactCard">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title pull-left">Questions</h3>
+                    </div>
+                    <input type="hidden" name="sectId" value="{{sect_ID}}"/>
+                    <input type="hidden" name="sectName" value="{{sect_Name}}"/>
+           <!--          <div class="panel-body">
+                        <div class="search-form">
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Add Question...">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <a class="btn btn-primary btn-block" href="">
+                                    <i class="fa fa-plus"></i> 
+                                    <span> Add</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="list-group  scrl">
+                        <div class="list-group-item" ng-repeat="question in questions">
+                            <div class="">
+                                <input type="hidden" name="flag" value='{{question.flag}}'>
+                                <div ng-if="question.flag==0 || question.flag==1">
+                                <input type="checkbox"  onchange="checkBoxToggle(this)" class="col-xs-1" checked value="{{question.sda_id}}"/> 
+                                </div>
+                                <div ng-if="question.flag!=0 && question.flag!=1">
+                                <input type="checkbox"  onchange="checkBoxToggle(this)" class="col-xs-1" value="{{question.sda_id}}"/> 
+                                </div>
+
+                                <input type="hidden" value="{{question.op_id}}"/>
+                                <h4 class="list-group-item-heading"><label>{{question.ques_no}} . </label>{{question.ques_text}}</h4>
+                                <h4 class="list-group-item-heading lft green">{{question.ans_text}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+
+                        <button onClick="submitVerifiedSection()" class="btn btn-primary pull-right" >
+                        Approve the Flagged Questions in This Section</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+<div class="modal fade" id="editQuestion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Edit Questions
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" ng-repeat="question in questions">
+                    <label class="col-xs-4 control-label">Question</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="question" class="form-control" placeholder="Qestion" value="{{question.Content}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group pull-left">
+                        <button class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-success" data-dismiss="modal">
+                        Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

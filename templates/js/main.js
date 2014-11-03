@@ -51,15 +51,20 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 		})
 
         .when('/survey_approval', {
-            templateUrl : 'pages/surveys.html',
+            templateUrl : 'pages/approval_surveys.html',
             controller  : 'approvalController'
         })
 
 
-		.when('/flag_survey', {
-			templateUrl : 'pages/survey.html',
-			controller  : 'surveyFlagController'
-		})
+        .when('/flag_survey', {
+            templateUrl : 'pages/survey.html',
+            controller  : 'surveyFlagController'
+        })
+
+        .when('/verify_survey', {
+            templateUrl : 'pages/approval_survey.html',
+            controller  : 'surveyVerifyController'
+        })
 
 		.when('/data', {
 			templateUrl : 'pages/data.html',
@@ -141,18 +146,54 @@ surveyApp.controller('surveyFlagController', function($scope,surveyFactory) {
 	};
 
 
-// angular.element(document).ready(function () {
-//  // angular.element('#upload').trigger('click');.
-//  // getThatQuest()
-//  console.log('hmmmm')
-
-//     angular.element('#sectbox')
-//    $scope.getQuestions($scope.sections[0].sect_id,$scope.sections[0].sect_text)
-// });
-	// $scope.sections = surveyFactory.sections;
-
-	// $scope.researchers = rs.researchers
 });
+
+surveyApp.controller('surveyVerifyController', function($scope,surveyFactory) {
+    
+    var pid=localStorage.pID
+
+
+            $.ajax({
+            url: "/apiViewFlaggedSection",
+            type: "post",
+            async: false,
+            data: {part_id:pid},
+            dataType: "html",
+            success: function (data) {
+              $scope.PID=JSON.parse(data).part_id 
+              $scope.sections=JSON.parse(data).sections  
+              $scope.questions=JSON.parse(data).sect.ques
+              $scope.sect_ID=JSON.parse(data).sect.sect_id
+              $scope.sect_Name=JSON.parse(data).sect.sect_name
+            }
+             }); 
+
+
+
+        $scope.getQuestions = function(index, sec_ID, sec_Name) {
+            $scope.activeSection = index;
+            
+            $.ajax({
+            url: "/apiViewFlaggedQuestion",
+            type: "post",
+            async: false,
+            data: {part_id:$scope.PID,sect_id:sec_ID,sect_name:sec_Name},
+            dataType: "html",
+            success: function (data) {
+                $scope.questions=JSON.parse(data).ques
+                $scope.sect_ID=JSON.parse(data).sect_id
+                $scope.sect_Name=JSON.parse(data).sect_name
+           }
+        }); 
+    };
+
+});
+
+
+
+
+
+
 
 surveyApp.controller('researchersController', function($scope,surveyFactory) {
 	$.ajax({
@@ -204,7 +245,7 @@ surveyApp.controller('approvalController', function($scope,surveyFactory) {
             data: {user_id:user},
             dataType: "html",
             success: function (data) {
-               $scope.surveys=JSON.parse(data)
+               $scope.approval_surveys=JSON.parse(data)
                console.log(data)
                console.log($scope.surveys)
               },

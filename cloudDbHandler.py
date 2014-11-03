@@ -29,7 +29,7 @@ class PostData():
 		cursor = conn.cursor()
 		sqlcmd = "update user set status=0 where user_id = %s "
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		conn.commit()
 		conn.close()    
 
@@ -38,7 +38,7 @@ class PostData():
 		cursor = conn.cursor()
 		sqlcmd = "update user set status=1 where user_id = %s "
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		conn.commit()
 		conn.close()   
 
@@ -92,7 +92,7 @@ class PostData():
 		cursor = conn.cursor()
 		sqlcmd = "Update correction set flag = 1 where part_id = %s"
 		print sqlcmd
-		cursor.execute(sqlcmd,(part_id))
+		cursor.execute(sqlcmd,(part_id,))
 		conn.commit()
 		conn.close()  
 
@@ -116,7 +116,7 @@ class GetData():
 		cursor = conn.cursor()
 		sqlcmd = "select * from user where login_id = %s and login_password = %s and status=1"
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id, password))
+		cursor.execute(sqlcmd,(user_id, password,))
 		info = []
 		for row in cursor.fetchall():
 			info=row[0]
@@ -154,7 +154,7 @@ class GetData():
 				left join role_functionality rf  on u.role=rf.role
 				where rf.functionality = f.id"""
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		data=[]
 		for row in cursor.fetchall():
@@ -174,15 +174,17 @@ class GetData():
 	def getDeSurveys(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,', ',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
-			join de_surveyor ds on ds.survey_id=sda.survey_id
-			join survey_details sde on sde.survey_id=sda.survey_id
-			join user u on u.user_id=SUBSTRING( sda.part_id ,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)
-			where ds.de_id= %s and part_id not in (select part_id from correction where flag=1)
-			group by sda.part_id"""
+		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
+					join de_surveyor ds on ds.surveyor_id=SUBSTRING( sda.part_id,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)
+					join survey_details sde on sde.survey_id=sda.survey_id
+					join user u on u.user_id=SUBSTRING( sda.part_id,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)
+					where ds.de_id= %s 
+					and part_id not in (select part_id from correction where flag=1) 
+					group by sda.part_id
+					"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -208,7 +210,7 @@ class GetData():
 				from user left join role r on r.role_id=user.role where user_id= %s"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		# info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -239,7 +241,7 @@ class GetData():
 					 where part_id = %s group by sda.sect_id"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -261,7 +263,7 @@ class GetData():
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s """
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id, sect_id))
+		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -282,17 +284,17 @@ class GetData():
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
 		sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
-			join survey_data sda on sda.survey_data_id=corr.survey_data_id 
-			join de_surveyor ds on ds.survey_id=corr.survey_id
-			join survey_details sde on sde.survey_id=corr.survey_id
-			join user u on u.user_id=SUBSTRING( corr.part_id,length(corr.survey_id)+1 ,length(corr.part_id)-locate('EN',corr.part_id)+1)
-			where ds.de_id= %s
-			and sda.correction_flag=1 and corr.flag!=0
-			group by sda.part_id;
-			"""
+					join survey_data sda on sda.survey_data_id=corr.survey_data_id 
+					join de_surveyor ds on ds.surveyor_id=SUBSTRING( corr.part_id,length(corr.survey_id)+1 ,length(corr.part_id)-locate('EN',corr.part_id)+1)
+					join survey_details sde on sde.survey_id=corr.survey_id
+					join user u on u.user_id=SUBSTRING( corr.part_id,length(corr.survey_id)+1 ,length(corr.part_id)-locate('EN',corr.part_id)+1)
+					where ds.de_id= %s
+					and sda.correction_flag=1 and corr.flag!=0
+					group by sda.part_id;
+				"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -322,7 +324,7 @@ class GetData():
 				"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id))
+		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():
@@ -345,7 +347,7 @@ class GetData():
 			"""
 
 		# print sqlcmd
-		cursor.execute(sqlcmd,(user_id, sect_id))
+		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
 		user=[]
 		for row in cursor.fetchall():

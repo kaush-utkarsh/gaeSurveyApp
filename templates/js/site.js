@@ -146,7 +146,7 @@ function deleteUserRow(item)
         {
         console.log($(item).parents('tr').find('#pID').val())
         localStorage.pID=$(item).parents('tr').find('#pID').val()
-        window.location.assign('/flag_survey')
+        window.location.assign('/verify_survey')
         }
 
         function checkBoxToggle(item)
@@ -155,4 +155,34 @@ function deleteUserRow(item)
             $(item).removeAttr('checked')
           else
             $(item).attr('checked','checked')
+        }
+        
+        function submitVerifiedSection()
+        { 
+          var arr_checked=[]
+          var arr_unchecked=[]
+          $('input[type="checkbox"]').each(function(i,item){
+          if($(item).attr('checked')=="checked")
+            arr_checked.push(item.value)
+          else
+            arr_unchecked.push(item.value)
+          })
+          // console.log(arr_checked)
+          // console.log(arr_unchecked)
+          if($('#sectbox').find('div[class="list-group ng-scope"]').length==1)
+            window.location.assign('/survey_approval')
+          else
+            $('input[value='+$('input[name="sectId"]').val()+']:eq(0)').parents('div[class="list-group ng-scope"]').remove()
+
+        //    $.ajax({
+        //     url: "/checkSection",
+        //     type: "post",
+        //     async: false,
+        //     data: {checked: JSON.stringify(arr_checked), unchecked: JSON.stringify(arr_unchecked)},
+        //     dataType: "html",
+        //     success: function (data) {
+
+        //     },
+        // });
+
         }
