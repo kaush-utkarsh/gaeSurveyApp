@@ -270,6 +270,15 @@ class FlagSurvey(webapp2.RequestHandler):
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
+class SurveyApprovalView(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
 class apiCheckSection(webapp2.RequestHandler):
 
 	def post(self):
@@ -295,6 +304,78 @@ class apiSubmitFlag(webapp2.RequestHandler):
 
 		self.response.write('true')
 
+
+class apiVerifySurveys(webapp2.RequestHandler):
+
+	def get(self):
+		user_id = self.request.get('user_id')
+		data=dbHandler.GetData().getVerifySurveys(user_id)
+		functionality=data #{'surveys' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+	def post(self):
+		user_id = self.request.get('user_id')
+		data=dbHandler.GetData().getVerifySurveys(user_id)
+		functionality=data #{'surveys' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+
+class apiViewFlaggedSection(webapp2.RequestHandler):
+
+	def get(self):
+		user_id = self.request.get('part_id')
+		data=dbHandler.GetData().getFlaggedSections(user_id)
+		# sect_id=data[0].sect_id
+		if len(data)>0:
+			sect_id=data[0]['sect_id']
+			sect_name=data[0]['sect_text']
+			sectdat=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
+			sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
+		else:
+			sectfunc={'sect_id': 'null','sect_name': 'null', 'ques' : 'null'}
+		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+	
+	def post(self):
+		user_id = self.request.get('part_id')
+		data=dbHandler.GetData().getFlaggedSections(user_id)
+		# sect_id=data[0].sect_id
+		if len(data)>0:
+			sect_id=data[0]['sect_id']
+			sect_name=data[0]['sect_text']
+			sectdat=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
+			sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
+		else:
+			sectfunc={'sect_id': 'null','sect_name': 'null', 'ques' : 'null'}
+		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+class apiViewFlaggedQuestion(webapp2.RequestHandler):
+
+	def get(self):
+		user_id = self.request.get('part_id')
+		sect_id = self.request.get('sect_id')
+		sect_name = self.request.get('sect_name')
+		data=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
+		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+
+	def post(self):
+		user_id = self.request.get('part_id')
+		sect_id = self.request.get('sect_id')
+		sect_name = self.request.get('sect_name')
+		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
+		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
+		func = json.dumps(functionality, ensure_ascii=False)
+		self.response.write(func)
+		
+
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
@@ -318,7 +399,13 @@ app = webapp2.WSGIApplication([
 	('/returnSection',apiReturnSection),
 	('/flag_survey',FlagSurvey),
 	('/checkSection',apiCheckSection),
-	('/submitFlags',apiSubmitFlag)
+	('/survey_approval',SurveyApprovalView),
+	('/submitFlags',apiSubmitFlag),
+	('/apiVerifySurveys',apiVerifySurveys),
+	('/apiViewFlaggedSection',apiViewFlaggedSection),
+	('/apiViewFlaggedQuestion',apiViewFlaggedQuestion)
+
+
 
 
 ], debug = True)

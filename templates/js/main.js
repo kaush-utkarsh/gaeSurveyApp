@@ -50,6 +50,12 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 			controller  : 'surveysController'
 		})
 
+        .when('/survey_approval', {
+            templateUrl : 'pages/surveys.html',
+            controller  : 'approvalController'
+        })
+
+
 		.when('/flag_survey', {
 			templateUrl : 'pages/survey.html',
 			controller  : 'surveyFlagController'
@@ -92,9 +98,9 @@ surveyApp.controller('profileController', function($scope,surveyFactory) {
 	$scope.navs = surveyFactory.navs;
 });
 
-surveyApp.controller('surveysController', function($scope,surveyFactory) {
-	$scope.surveys = surveyFactory.surveys;
-});
+// surveyApp.controller('surveysController', function($scope,surveyFactory) {
+// 	$scope.surveys = surveyFactory.surveys;
+// });
 
 
 surveyApp.controller('surveyFlagController', function($scope,surveyFactory) {
@@ -184,14 +190,30 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
               },
         });
 
- //        $scope.getSurveyData = function($item) {
-				
-	// 			console.log('ufgg')
- //       			console.log(($item).parents('tr').find('input[type="hidden"]:eq(0)').val())
-	// 	//get Ajax call here
-	// 	//and then success : $scope.questions = GET Questions JSON
-	// };
  });
+
+
+surveyApp.controller('approvalController', function($scope,surveyFactory) {
+
+     var user=localStorage.user
+     var datum;
+        $.ajax({
+            url: "/apiVerifySurveys",
+            type: "post",
+            async: false,
+            data: {user_id:user},
+            dataType: "html",
+            success: function (data) {
+               $scope.surveys=JSON.parse(data)
+               console.log(data)
+               console.log($scope.surveys)
+              },
+        });
+        $scope.requestType='approval'
+ });
+
+
+
 
 surveyApp.controller('mainController', function($scope,surveyFactory) {
 });

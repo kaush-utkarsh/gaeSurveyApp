@@ -178,7 +178,7 @@ class GetData():
 			join de_surveyor ds on ds.survey_id=sda.survey_id
 			join survey_details sde on sde.survey_id=sda.survey_id
 			join user u on u.user_id=SUBSTRING( sda.part_id ,length(sda.survey_id)+1 ,length(sda.part_id)-locate('EN',sda.part_id)+1)
-			where ds.de_id= %s 
+			where ds.de_id= %s and part_id not in (select part_id from correction where flag=1)
 			group by sda.part_id"""
 
 		# print sqlcmd
@@ -277,7 +277,89 @@ class GetData():
 			user.append(info)
 		conn.close()
 		return user
+
+	def getVerifySurveys(self,user_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
+			join survey_data sda on sda.survey_data_id=corr.survey_data_id 
+			join de_surveyor ds on ds.survey_id=corr.survey_id
+			join survey_details sde on sde.survey_id=corr.survey_id
+			join user u on u.user_id=SUBSTRING( corr.part_id,length(corr.survey_id)+1 ,length(corr.part_id)-locate('EN',corr.part_id)+1)
+			where ds.de_id= %s
+			and sda.correction_flag=1 and corr.flag!=0
+			group by sda.part_id;
+			"""
+
+		# print sqlcmd
+		cursor.execute(sqlcmd,(user_id))
+		info = []
+		user=[]
+		for row in cursor.fetchall():
+			info={
+					'ID': row[0],
+					'name': row[1],
+					'surveyorName': row[2],
+					'pID': row[3],
+					'company': row[4],
+					'location': row[5],
+					'date': row[6],
+					'deID': row[7]
+				}
+			user.append(info)
+		conn.close()
+		return user
+	
+
+	def getFlaggedSections(self,user_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = """ SELECT sda.sect_id,sec.sect_name FROM survey_data sda
+				join section_details sec on sec.sect_id=sda.sect_id
+				join correction corr on corr.survey_data_id=sda.survey_data_id
+				 where sda.part_id = %s 
+				 and corr.flag=1 group by sda.sect_id;
+				"""
+
+		# print sqlcmd
+		cursor.execute(sqlcmd,(user_id))
+		info = []
+		user=[]
+		for row in cursor.fetchall():
+			info={
+					'sect_id': row[0],
+					'sect_text': row[1]
+				}
+			user.append(info)
+		conn.close()
+		return user
 	
 	
-   
+ 	def getFlaggedQuest(self,user_id,sect_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.survey_data_id FROM survey_data sda
+			left join ques_details qde on qde.q_no=sda.ques_no
+			left join correction corr on corr.survey_data_id = sda.survey_data_id
+			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1
+			"""
+
+		# print sqlcmd
+		cursor.execute(sqlcmd,(user_id, sect_id))
+		info = []
+		user=[]
+		for row in cursor.fetchall():
+			print row
+			info={
+					'ques_no': row[2],
+					'ques_text': row[3],
+					'op_id': row[4],
+					'ans_text': row[5],
+					'flag': row[6],
+					'sda_id':row[7]
+				}
+			user.append(info)
+		conn.close()
+		return user
+  
 		

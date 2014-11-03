@@ -1,7 +1,10 @@
 <div class="container" ng-controller="surveysController">
     <div class="col-xs-10">
-        <h3 class="page-header">
+        <h3 ng-if="requestType != 'approval'" class="page-header">
             View Surveys
+        </h3>
+        <h3 ng-if="requestType == 'approval'" class="page-header">
+            Approve Surveys
         </h3>
         <div style="display:none" class="pull-right">
             <button class="btn btn-success" data-toggle="modal" data-target="#addSurvey">Add New Survey</button>
@@ -18,7 +21,7 @@
                 <th>Location</th>
                 <th>Date Completed</th>
                 <th></th>
- 
+                
                 <tr ng-repeat="survey in surveys">
                     <input type="hidden" name="surveyID" id="surveyID" value="{{survey.ID}}">
                     <input type="hidden" name="pID" id="pID" value="{{survey.pID}}">
@@ -31,9 +34,11 @@
                     <td>{{survey.company}}</td>
                     <td>{{survey.location}}</td>
                     <td>{{survey.date}}</td>
-                    <td>
+                    <td ng-if="requestType != 'approval'">
                         <button onClick="returnSurveyData(this)" class="btn btn-info"> View </button>
-                        
+                    </td>
+                    <td ng-if="requestType == 'approval'">
+                        <button onClick="returnCorrectedSurvey(this)" class="btn btn-info"> Verify </button>
                     </td>
                 </tr>
             </tr>

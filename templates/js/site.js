@@ -129,18 +129,7 @@ function deleteUserRow(item)
 
         function submitFlag()
         { 
-            // console.log($('#partId').val())
-        //   var arr_checked=[]
-        //   var arr_unchecked=[]
-        //   $('input[type="checkbox"]').each(function(i,item){
-        //   if($(item).attr('checked')=="checked")
-        //     arr_checked.push(item.value)
-        //   else
-        //     arr_unchecked.push(item.value)
-        //   })
-        //   console.log(arr_checked)
-        //   // console.log(arr_unchecked)
-
+ 
            $.ajax({
             url: "/submitFlags",
             type: "post",
@@ -148,7 +137,22 @@ function deleteUserRow(item)
             data: {part_id: $('#partId').val()},
             dataType: "html",
             success: function (data) {
-
+                window.location.assign('/view_survey')
             },
         });
        }
+
+       function returnCorrectedSurvey(item)
+        {
+        console.log($(item).parents('tr').find('#pID').val())
+        localStorage.pID=$(item).parents('tr').find('#pID').val()
+        window.location.assign('/flag_survey')
+        }
+
+        function checkBoxToggle(item)
+        {
+          if($(item).attr('checked')=='checked')
+            $(item).removeAttr('checked')
+          else
+            $(item).attr('checked','checked')
+        }
