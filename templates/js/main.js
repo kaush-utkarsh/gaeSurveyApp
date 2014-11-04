@@ -66,6 +66,16 @@ surveyApp.config(function($routeProvider,$locationProvider) {
             controller  : 'surveyVerifyController'
         })
 
+        .when('/view_survey_data', {
+             templateUrl : 'pages/view_survey_data.html',
+             controller  : 'surveyDataController'
+        })
+
+        .when('/de_mapping', {    
+             templateUrl : 'pages/de_mapping.html',
+             controller  : 'mappingController'
+         })
+
 		.when('/data', {
 			templateUrl : 'pages/data.html',
 			controller  : 'dataController'
@@ -92,6 +102,25 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 		})
 	$locationProvider.html5Mode(true);
 });
+
+
+surveyApp.controller('surveyDataController', function($scope, surveyFactory, $http) {
+     $.ajax({
+             url: "/survey_data",
+             type: "get",
+             async: false,
+             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'3'},
+             dataType: "html",
+             success: function (data) {
+                 console.log(data);
+                 $scope.datas = JSON.parse(data);
+             },
+         });
+});
+
+surveyApp.controller('mappingController', function($scope,surveyFactory) {
+});
+
 
 surveyApp.controller('appController', function($scope,surveyFactory) {
 	$scope.user = surveyFactory.user;

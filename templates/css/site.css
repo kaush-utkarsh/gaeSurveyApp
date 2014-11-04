@@ -126,3 +126,27 @@
 .lft {
 	margin-left: 50px;
 }
+
+.noStyle, .noStyle:hover, .noStyle:active, .noStyle:focus {
+	 display: block;
+	  background-color: #428bca;
+	  border-color: #357ebd;
+	  text-align: center;
+	  padding:10px;
+	  border-radius: 5px;
+	  color: white;
+}
+
+.scrlbl {
+	max-height: 200px;
+	overflow-y: scroll;
+}
+
+.scrolbl {
+	max-height: 200px;
+	overflow-y: scroll;
+}
+
+.down {
+	margin-bottom: 10px;
+}

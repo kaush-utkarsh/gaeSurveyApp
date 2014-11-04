@@ -20,6 +20,31 @@ pss='root'
 
 class PostData():
 	
+	def addUser(self, username, first_name, last_name, email, role, DOB):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+		cursor = conn.cursor()
+		user_id = role + str(int(GetData().getUserCountWithRole(role)) + 10000 + 1)
+		login_id = username
+		login_password = first_name + "_" + DOB.replace("/","") 
+		status = 1
+		password_flag = 0
+		sqlcmd = "insert into user(user_id, f_name, l_name,email,login_id,login_password,role, DOB, status, password_flag) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (user_id, first_name,last_name,email,login_id,login_password,role,DOB,status, password_flag)
+		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()
+
+	def addSurveyData(self, bulk_data):
+		try:
+			conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+			cursor = conn.cursor()
+			sqlcmd = 'insert into survey_data(survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, lang_id) values (%s,%s,%s,%s,%s,%s,%s,%s)'
+			cursor.executemany(sqlcmd, bulk_data)
+			conn.commit()
+			conn.close()
+			return "200"
+		except BaseException,er:
+			return er
+
 
 	# Function for updation of profile data through the profile page
 
@@ -104,7 +129,86 @@ class PostData():
 		conn.close()  
 		   
 class GetData():
+
+	def getUserCountWithRole(self,role):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "select count(*) from user where user_id like '%"+role+"%'"
+		cursor.execute(sqlcmd)
+		count = cursor.fetchall()[0][0]
+		conn.close()
+		return count
+
+	def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "call `innovaccer_jpal`.`survey_data_all_proc`('"+survey_id+"','"+project_id+"',"+starting_count+","+ending_count+")"
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		survey_data = []
+		for row in rows:
+			survey_data.append(row)
+		return survey_data
+
+	def getSurveyDetails(self):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database = dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT * FROM survey_details;"
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		survey_details = []
+		for row in rows:
+			survey_details.append({"id":row[0],"name":row[1]})
+		return survey_details
 	
+	def getProjectDetails(self):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd = pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT * FROM project_table;"
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		project_details = []
+		for row in rows:
+			project_details.append({"id":row[0],"name":row[1]})
+		return project_details
+
+
+	def getUsername(self,first_name,last_name):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "select count(*) from user where f_name='%s' and l_name = '%s'" % (first_name, last_name)
+		cursor.execute(sqlcmd)
+		count = cursor.fetchall()[0][0]
+		conn.close()
+		if count == 0:
+			return first_name + "_" + last_name
+		else: 
+			return first_name + "_" + last_name + "_" + str(int(count))
+	
+	def getUserDetails(self, username):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)
+		cursor = conn.cursor()
+		sqlcmd = "select login_id,login_password,f_name,l_name,email,user_id,status from user where login_id = '%s'" % (username,)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		return [{'login_id':row[0],"login_password":row[1],"f_name":row[2],"l_name":row[3],"email":row[4],"user_id":row[5],"status":row[6]} for row in rows]
+ 
+	def getCorrections(self, survey_id):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)
+		cursor = conn.cursor()
+		sqlcmd = "select * from correction where survey_id='%s'" % (survey_id,)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		return [{'survey_data_id':row[0],'survey_id':row[1],'part_id':row[2],'sect_id':row[3],'ques_id':row[4],"ans":row[5],"flag":row[6],"corr_status":row[7]} for row in rows]
+
+
+
+
 	# Authorize user login and password
 	def checkUserAuth(self,user_id,password):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
@@ -324,7 +428,7 @@ class GetData():
 		return user
 	
 	# Query for extracting flagged questions of a particular section during approval	
- 	def getFlaggedQuest(self,user_id,sect_id):
+	def getFlaggedQuest(self,user_id,sect_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.survey_data_id FROM survey_data sda

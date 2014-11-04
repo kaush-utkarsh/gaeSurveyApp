@@ -5,6 +5,8 @@ from gaesessions import get_current_session
 import webapp2
 import cloudDbHandler as dbHandler
 import json
+from MailHandler import Mail
+
 jinja_environment = jinja2.Environment(autoescape = True,
 	loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
 
@@ -327,6 +329,110 @@ class apiVerifySection(webapp2.RequestHandler):
 			pass
 		self.response.write('true')	
 
+class SurveyData(webapp2.RequestHandler):
+	def get(self):
+		project_id = self.request.get("project_id")
+		survey_id = self.request.get("survey_id")
+		starting_value = self.request.get("starting_value")
+		ending_value = self.request.get("ending_value")
+		result = dbHandler.GetData().getSurveyData(survey_id, project_id, starting_value, ending_value)
+		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5]} for item in result]
+		all_participants=list(set([item['participant_ID'] for item in result_dict]))
+		all_questions = list(set([item['question'] for item in result_dict]))
+		final_list = []
+		for participant in all_participants:
+			participant_dict = {'participant_ID':participant,'questions':[]}
+			temp_questions = [item for item in all_questions]
+			for item in result_dict:
+				if item['participant_ID'] == participant:
+					participant_dict['questions'].append({'question':item['question'],'answer':item['answer'],'option':item['option']})
+					temp_questions.pop(temp_questions.index(item['question']))
+			if len(temp_questions) > 0:
+				for item in temp_questions:
+					participant_dict['questions'].append({"question":item,"answer":'','option':''})
+			final_list.append(participant_dict)
+		self.response.write(final_list)
+
+class AddUser(webapp2.RequestHandler):
+	def get(self):
+		first_name = self.request.get("first_name")
+		last_name = self.request.get("last_name")
+		email = self.request.get("email")
+		role = self.request.get("role")
+		DOB = self.request.get("DOB")
+		username = dbHandler.GetData().getUsername(first_name,last_name)
+		dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		sender = "priyank@innovaccer.com"
+		to = email
+		subject = "User credentials for ENTRE INFO"
+		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"_"+DOB.replace("/","")+"</i></body></html>"
+		Mail().dispatch(sender, to, subject, body, '', '')
+
+
+class LoginSync(webapp2.RequestHandler):
+	def post(self):
+		request = json.loads(self.request.body)
+		login_id =  request['login_id']
+		self.response.write(json.dumps(dbHandler.GetData().getUserDetails(login_id)))
+
+class SurveyCorrectionSync(webapp2.RequestHandler):
+	def post(self):
+		request = json.loads(self.request.body)
+		survey_id = request['survey_id']
+		self.response.write(json.dumps(dbHandler.GetData().getCorrections(survey_id)))
+
+class SurveyDataSync(webapp2.RequestHandler):
+	def post(self):
+		request = json.loads(self.request.body)
+		data = request["data"]
+		super_final_list = []
+		for item in data:
+			participant_ID = item['part_id']
+			for _data_item in item['data']:
+				final_list = []
+				final_list.append(_data_item['survey_id'])
+				final_list.append(participant_ID)
+				final_list.append(_data_item['sect_id'])
+				final_list.append(_data_item['ques_no'])
+				final_list.append(_data_item['op_value'])
+				final_list.append(_data_item['ans'])
+				final_list.append(_data_item['view_type'])
+				final_list.append(_data_item['language'])
+				#final_list.append(_data_item['timestamp'])
+				#final_list.append(_data_item['correction_flag'])
+				super_final_list.append(tuple(final_list))
+		response = dbHandler.PostData().addSurveyData(super_final_list)
+		#self.response.write(super_final_list)
+		self.response.write(response)
+
+
+class SurveyDataMiscellaneous(webapp2.RequestHandler):
+	def get(self):
+		survey_details = dbHandler.GetData().getSurveyDetails()
+		project_details = dbHandler.GetData().getProjectDetails()
+		self.response.write(json.dumps({'survey_details':survey_details,'project_details':project_details}))
+
+
+class AssignSurveyers(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+	
+class ViewSurveyData(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
+
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
@@ -351,6 +457,15 @@ app = webapp2.WSGIApplication([
 	('/apiViewFlaggedSection',apiViewFlaggedSection),
 	('/apiViewFlaggedQuestion',apiViewFlaggedQuestion),
 	('/verify_survey',VerifySurvey),
-	('/verifySection',apiVerifySection)
+	('/verifySection',apiVerifySection),
+	('/addUser',AddUser),
+	('/login_details',LoginSync),
+	('/survey_data',SurveyData),
+	('/survey_data_sync',SurveyDataSync),
+	('/survey-misc',SurveyDataMiscellaneous),
+	('/survey-data',SurveyData),
+	('/getCorrectionsSync',SurveyCorrectionSync),
+	('/view_survey_data',ViewSurveyData),
+	('/de_mapping',AssignSurveyers)
 
 ], debug = True)

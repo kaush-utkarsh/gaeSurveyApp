@@ -1,0 +1,25 @@
+<div class="container">
+	<h3 class="page-header">View Survey Data</h3>
+	<div>
+	    <table class="table table-striped table-bordered">
+	        <thead>
+	            <tr>
+	            	<th class="back"></th>
+	                <th ng-repeat="data in datas[1].questions" class="back">
+	                    <div>{{data.question}}</div>
+	                </th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	        	<tr ng-repeat="data in datas">
+			        <td>
+			        	{{data.participant_ID}}
+			        </td>
+		        	<td ng-repeat="temp in data.questions">
+		        		{{temp.answer}}
+		        	</td>
+		        </tr>
+	        </tbody>
+	    </table>
+	</div>
+</div>

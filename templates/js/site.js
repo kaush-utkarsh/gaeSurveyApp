@@ -88,9 +88,10 @@ function deleteUserRow(item)
 
         function returnSurveyData(item)
         {
-        console.log($(item).parents('tr').find('#pID').val())
         localStorage.pID=$(item).parents('tr').find('#pID').val()
-        window.location.assign('/flag_survey')
+        console.log($(item).parents('tr').find('#pID').val())
+        
+        //window.location.assign('/flag_survey')
         }
 
         function checkBoxToggle(item)
