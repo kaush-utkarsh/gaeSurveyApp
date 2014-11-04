@@ -11,14 +11,14 @@
 	            <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#addEditor"><i class="fa fa-plus"></i> Create Data Editor Profile</button> 
 	        </div>
 		    <div class="bootcards-list scrolbl" id="list">
-		        <div class="panel panel-default">
-		            <div class="list-group" ng-repeat="editor in editors">
-		                <a class="list-group-item pjax">
+		        <ul class="panel panel-default" style='list-style-type:none;margin-left: -40px;'>
+		            <li ng-repeat="editor in editors" style="border-bottom: solid 1px #eee;
+padding-left: 10px;
+padding: 5px 0px 5px 10px;" ng-click="updateLi($index)" value="{{$index}}" ng-class="{'active': activeSection == $index}">
 		                	<input type="hidden" value='{{editor.ID}}'/>
-		                    <h4 class="list-group-item-heading">{{editor.name}} ({{editor.surveyers.length}})</h4>
-		                </a>
-		            </div>
-		        </div>
+		                    <h4 style="font-size:14px;" class="list-group-item-heading">{{editor.name}} ({{editor.surveyers.length}})</h4>
+		          </li>
+		        </ul>
 		    </div>
 	    </div>
     </div>
@@ -27,13 +27,16 @@
 	        <div id="contactCard">
 	            <div class="panel panel-default">
 	                <div class="panel-heading clearfix">
-	                    <h3 class="panel-title pull-left">Assigned Surveyers</h3>
-	                    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#addSurveyer"><i class="fa fa-plus"></i> Create Surveyer Profile</button>
+	                    <h3 class="panel-title pull-left">Assigned Surveyors</h3>
+	                    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#addSurveyer"><i class="fa fa-plus"></i> Create Surveyor Profile</button>
 	                </div>
 	                <div class="list-group scrlbl">
 	                    <div class="list-group-item" ng-repeat="surveyer in surveyers">
 	                        <div class="">
-	                            <h5 class="list-group-item-heading">{{surveyer.name}}<button class="btn btn-danger btn-xs pull-right">Remove</button></h5>
+                                <input type="hidden" value="{{surveyer.ID}}">
+                                <input type="hidden" value="{{currentDe}}">
+
+	                            <h5 class="list-group-item-heading">{{surveyer.name}}<button class="btn btn-danger btn-xs pull-right" onclick="removeDEMap(this)">Remove</button></h5>
 
 	                        </div>
 	                    </div>
@@ -49,9 +52,10 @@
                     <h3 class="panel-title pull-left">Unsassigned Surveyers</h3>
                 </div>
                 <div class="list-group scrlbl">
-                    <div class="list-group-item" ng-repeat="surveyer in surveyers">
+                    <div class="list-group-item" ng-repeat="surveyer in usurveyers">
                         <div class="">
-                            <h5 class="list-group-item-heading">{{surveyer.name}}<button class="btn btn-success btn-xs pull-right">Add</button></h5>
+                            <input type="hidden" value="{{surveyer.ID}}">
+                            <h5 class="list-group-item-heading">{{surveyer.name}}<button class="btn btn-success btn-xs pull-right" onclick="addDEMap(this)">Add</button></h5>
 
                         </div>
                     </div>
@@ -64,7 +68,7 @@
 <div class="modal fade" id="addEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+            <form id="addUser" class="form-horizontal" method="POST" action="#" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Add Data Editor
@@ -74,21 +78,21 @@
                     <input type="hidden" name="companyId" value="">
                     <input type="hidden" name="_method" value="put">
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">Editor Name</label>
+                        <label class="col-xs-4 control-label">Editor First Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="editorName" class="form-control" placeholder="Editor Name" value="">
+                            <input type="text" name="editorFName" class="form-control" placeholder="Editor Name" value="">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-4 control-label">Location</label>
+                     <div class="form-group">
+                        <label class="col-xs-4 control-label">Editor Last Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="Location" class="form-control" placeholder="Location" value="">
+                            <input type="text" name="editorLName" class="form-control" placeholder="Editor Name" value="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-4 control-label">Age</label>
                         <div class="col-xs-8">
-                            <input type="number" name="Location" class="form-control" placeholder="Age" value="">
+                            <input type="number" name="DOB" class="form-control" placeholder="Age" value="">
                         </div>
                     </div>
                     <div class="form-group">
@@ -105,7 +109,7 @@
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" data-dismiss="modal">
+                        <button onclick="submitPMuser('DE',this)" class="btn btn-success" data-dismiss="modal">
                         Add
                         </button>
                     </div>
@@ -118,7 +122,7 @@
 <div class="modal fade" id="addSurveyer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+            <form id="addUser" class="form-horizontal" method="POST" action="#" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Add Surveyer
@@ -128,21 +132,21 @@
                     <input type="hidden" name="companyId" value="">
                     <input type="hidden" name="_method" value="put">
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">Surveyer Name</label>
+                        <label class="col-xs-4 control-label">Surveyer First Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="surveyerName" class="form-control" placeholder="Surveyer Name" value="">
+                            <input type="text" name="editorFName" class="form-control" placeholder="Surveyer Name" value="">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">Location</label>
+                        <label class="col-xs-4 control-label">Surveyer Last Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="Location" class="form-control" placeholder="Location" value="">
+                            <input type="text" name="editorLName" class="form-control" placeholder="Surveyer Name" value="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-4 control-label">Age</label>
                         <div class="col-xs-8">
-                            <input type="number" name="Location" class="form-control" placeholder="Age" value="">
+                            <input type="number" name="DOB" class="form-control" placeholder="Age" value="">
                         </div>
                     </div>
                     <div class="form-group">
@@ -159,7 +163,7 @@
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" data-dismiss="modal">
+                        <button onclick="submitPMuser('SU',this)" class="btn btn-success" data-dismiss="modal">
                         Add
                         </button>
                     </div>

@@ -1,42 +1,46 @@
 <div class="container">
 	<h3 class="page-header">View Survey Data</h3>
 	<div>
-		<div class="btn-group btn-group-primary down pull-right lft bkg">
-			<button class="btn btn-primary" type="button"> Filter by Survey ID </button>
-				<button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li ng-repeat="data in datas"><a href>{{data.participant_ID}}</a></li>
-			</ul>
-		</div>
-		<div class="btn-group btn-group-primary down pull-right bkg">
-			<button class="btn btn-primary  lft" type="button"> Filter by Project Id </button>
-				<button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li ng-repeat="data in datas"><a href>{{data.survey_ID}}</a></li>
-			</ul>
-		</div>
-	    <table class="table table-striped table-bordered">
+	<div max-width="800px" style="overflow-x:scroll">
+	    <table>
+	        <tr>
+	            <th class="right">Select columns </th>
+	            <th ng-repeat="column in columns">
+	                <label class="checkbox">
+	                <input type="checkbox" id="2" class="checkbox" checked ng-model="column.field" ng-init="column.field=true" /> {{column.question}}
+	                </label>
+	            </th>
+	        </tr>
+	    </table>
+	</div>
+	<div max-width="800px" style="overflow-x:scroll">
+		<table ng-table="tableParams" show-filter="true" class="table table-striped table-bordered">
 	        <thead>
 	            <tr>
-	            	<th class="back"></th>
-	                <th ng-repeat="data in datas[1].questions" class="back">
-	                    <div>{{data.question}}</div>
+	            <th class="back valign"></th>
+	            <th class="back valign">Participant ID</th>
+	            <th class="back valign">Language ID</th>
+	                <th class="back valign" ng-repeat="column in columns" ng-show="column.field"
+	                    class="text-center sortable"  style="min-width: 250px">
+	                    <div>{{column.question}}</div>
+	                    <span class="pull-right"><span class="caret"></span><span class="caret-up"></span></span>
 	                </th>
 	            </tr>
 	        </thead>
 	        <tbody>
-	        	<tr ng-repeat="data in datas">
-			        <td>
-			        	{{data.participant_ID}}
-			        </td>
-		        	<td ng-repeat="temp in data.questions">
-		        		{{temp.answer}}
-		        	</td>
-		        </tr>
+	        	<tr ng-repeat="data in questions">
+	        		<td><a class="btn btn-danger"> Delete </a></td>
+	        		<td>{{data.participant_ID}}</td>
+	        		<td>{{data.lang_id}}</td>
+	                <td ng-repeat="column in data.questions" sortable="column.field" ng-show="columns[$index].field" style="min-width:100px">
+	                    {{column.answer}}
+	                </td>
+	        	</tr>
 	        </tbody>
 	    </table>
 	</div>
-	<pagination total-items='totalIdeas' ng-model="currentPage" ng-change="setPage(currentPage)"></pagination>
+	</div>
+	<div class="col-xs-4 col-xs-offset-4 bottom">
+	    <a class="btn btn-success btn-block top pull-right" ng-mousedown="csv.generate()" ng-href="{{ csv.link() }}" download="test.csv">Export to CSV</a>
+	</div>
 </div>

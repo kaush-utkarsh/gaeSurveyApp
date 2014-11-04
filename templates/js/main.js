@@ -1,5 +1,5 @@
 'use strict';
-var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable','ui.bootstrap']);
+var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 
@@ -71,7 +71,7 @@ surveyApp.config(function($routeProvider,$locationProvider) {
              controller  : 'surveyDataController'
         })
 
-        .when('/de_mapping', {    
+        .when('/de_map', {    
              templateUrl : 'pages/de_mapping.html',
              controller  : 'mappingController'
          })
@@ -104,37 +104,77 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 });
 
 
-surveyApp.controller('surveyDataController', function($scope, surveyFactory, $http) {
+surveyApp.controller('surveyDataController', function($scope, $filter, surveyFactory, $http, ngTableParams) {
      $.ajax({
              url: "/survey_data",
              type: "get",
              async: false,
-             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'3'},
+             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'10'},
              dataType: "html",
              success: function (data) {
                  console.log(data);
-                 $scope.datas = JSON.parse(data);
+                 $scope.questions = eval(data);
              },
         });
-    $scope.surveyData = [];
-    $scope.totalDatas = $scope.datas.length;
-    $scope.currentPage = 1;
-    $scope.numPerPage = 10;
-    $scope.filteredDatas = [];
+    /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
+              {title : 'Language ID', field : 'lang_id', visible : true}];*/
 
-    $scope.setPage = function (pageNo) {
-        console.log('setpage');
-        $scope.currentPage = pageNo;
-        var begin = (($scope.currentPage - 1) * $scope.numPerPage),
-            end = begin + $scope.numPerPage;
-        console.log("filter");
-        $scope.filteredDatas = $scope.surveyData.slice(begin, end);
-    };
+    $scope.columns = $scope.questions[0].questions;
+    
+            $scope.tableParams = new ngTableParams({
+                page: 1,            // show first page
+                count: 10,          // count per page
+                filter: {
+                    name: ''       // initial filter
+                }
+            }, {
+                total: $scope.questions.length, // length of data
+                getData: function($defer, params) {
+                    // use build-in angular filter
+                    var orderedData = params.sorting() ?
+                            $filter('orderBy')($scope.questions, params.orderBy()) :
+                            data;
 
-        $scope.setPage($scope.currentPage);
+                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+            });
 });
 
 surveyApp.controller('mappingController', function($scope,surveyFactory) {
+
+  $.ajax({
+             url: "/de_mapping",
+             type: "get",
+             async: false,
+             data: {pm_id:localStorage.user},
+             dataType: "html",
+             success: function (data) {
+                console.log(data);
+                 // console.log(JSON.parse(data).editor_surveyors[0].ID);
+                 $scope.editors=JSON.parse(data).editor_surveyors
+                 $scope.surveyers=JSON.parse(data).editor_surveyors[0].surveyers
+                 $scope.currentDe=JSON.parse(data).editor_surveyors[0].ID
+                 $scope.usurveyers=JSON.parse(data).surveyers
+                  $scope.activeSection=0
+                  console.log($scope.editors);
+                 // $scope.editor.surveyers=JSON.parse(data).surveyors
+             },
+        });
+
+
+        $scope.updateLi = function(index) {
+
+            $scope.activeSection = index;
+            $scope.surveyers=$scope.editors[index].surveyers
+            console.log($scope.surveyers);
+            $scope.currentDe=$scope.editors[index].ID
+            
+        } 
+
+
+
+
+
 });
 
 
@@ -170,6 +210,7 @@ surveyApp.controller('surveyFlagController', function($scope,surveyFactory) {
               $scope.questions=JSON.parse(data).sect.ques
               $scope.sect_ID=JSON.parse(data).sect.sect_id
               $scope.sect_Name=JSON.parse(data).sect.sect_name
+              console.log(JSON.parse(data).sect.sect_name);
             $scope.activeSection=0
             }
        		 }); 

@@ -168,3 +168,7 @@
 .bkg {
 	background-color: #428bca;
 }
+
+.valign {
+	vertical-align: top !important;
+}

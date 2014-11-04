@@ -23,7 +23,7 @@ class PostData():
 	def addUser(self, username, first_name, last_name, email, role, DOB):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 		cursor = conn.cursor()
-		user_id = role + str(int(GetData().getUserCountWithRole(role)) + 10000 + 1)
+		user_id = role + str(int(GetData().getUserCountWithRole(role))+ 1)
 		login_id = username
 		login_password = first_name + "_" + DOB.replace("/","") 
 		status = 1
@@ -32,6 +32,15 @@ class PostData():
 		cursor.execute(sqlcmd)
 		conn.commit()
 		conn.close()
+
+	def delDeSuMap(self, de_id, su_id):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "delete from de_surveyor where de_id = %s and surveyor_id = %s"
+		cursor.execute(sqlcmd,(de_id,su_id))
+		conn.commit()
+		conn.close()
+
 
 	def addSurveyData(self, bulk_data):
 		try:
@@ -128,12 +137,25 @@ class PostData():
 		conn.commit()
 		conn.close()  
 		   
+	
+
+	def addDESurveyor(self,pmid, deId, suId):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+
+		p_id = GetData().getProjectId(pmid)
+		print pmid, p_id
+		sqlcmd = 'Insert into de_surveyor(p_id, de_id, surveyor_id) values("%s", "%s", "%s")' %(p_id, deId, suId)
+		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()
+
 class GetData():
 
 	def getUserCountWithRole(self,role):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select count(*) from user where user_id like '%"+role+"%'"
+		sqlcmd = "select MAX(substr(user_id,3,7)) from user where role = '"+role+"'"
 		cursor.execute(sqlcmd)
 		count = cursor.fetchall()[0][0]
 		conn.close()
@@ -248,20 +270,25 @@ class GetData():
 		sqlcmd = """select pu.user_id, CONCAT(u.f_name, ' ', u.l_name) from project_user pu, user u 
 					where pu.user_id = u.user_id
 						and pu.project_id = (select pu1.project_id from project_user pu1 where pu1.user_id = '%s')
-						and pu.user_id like 'SU%' 
+						and pu.user_id like 'SU%%'
     					and pu.user_id not in (select ds.surveyor_id 
 												from de_surveyor ds 
 												where ds.p_id = (select pu1.project_id 
 																	from project_user pu1 
-																		where pu1.user_id = '%s'))
-				"""
+																		where pu1.user_id = '%s'))""" %(pm_id,pm_id)
 		# print sqlcmd
-		cursor.execute(sqlcmd, (pm_id,pm_id))
+		cursor.execute(sqlcmd)
+		unass_surveyors_list = []
 		unass_surveyors_dict = {}	#  Dictionary to hold User Id and Name Mapping
 		for row in cursor.fetchall():
-			unass_surveyors_dict[row[0]] = row[1]
+			unass_surveyors_dict['name'] = row[1]
+			unass_surveyors_dict['ID'] = row[0]
+			unass_surveyors_dict_temp = {}
+			for k in unass_surveyors_dict.keys():
+				unass_surveyors_dict_temp[k] = unass_surveyors_dict[k]
 
-		return unass_surveyors_dict
+			unass_surveyors_list.append(unass_surveyors_dict_temp)
+		return unass_surveyors_list
 
 
 	# Authorize user login and password
@@ -290,17 +317,17 @@ class GetData():
 		for row in cursor.fetchall():
 			user={
 					'ID': row[0],
-					'fName': row[1].encode('utf-8'),
-					'lName': row[2].encode('utf-8'),
-					'Email': row[3].encode('utf-8'),
+					'fName': row[1],
+					'lName': row[2],
+					'Email': row[3],
 					'Phone': row[4],
 					'altphone': row[5],
 					'accountType': row[6],
-					'HouseNumber': row[7].encode('utf-8'),
-					'Street': row[8].encode('utf-8'),
-					'City': row[9].encode('utf-8'),
-					'State': row[10].encode('utf-8'),
-					'Country': row[11].encode('utf-8'),
+					'HouseNumber': row[7],
+					'Street': row[8],
+					'City': row[9],
+					'State': row[10],
+					'Country': row[11],
 					'DOB': row[12]
 				}
 		conn.close()
@@ -348,7 +375,15 @@ class GetData():
 		return_data = {'researchers' : data}
 		conn.close()
 		return return_data
-
+	def getAllQuestions(self, survey_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "select ques_text from ques_details where survey_id='%s'" % (survey_id)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.commit()
+		conn.close()
+		return rows
 	# Query for survey table for a particular DE
 	def getDeSurveys(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
@@ -376,6 +411,7 @@ class GetData():
 					'deID': row[7]
 				}
 			user.append(info)
+			print user
 		conn.close()
 		return user
 	
@@ -509,5 +545,11 @@ class GetData():
 			user.append(info)
 		conn.close()
 		return user
-  
-		
+
+	def getProjectId(self, user_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT project_id FROM project_user where user_id = %s"
+		# print sqlcmd
+		cursor.execute(sqlcmd,user_id)
+		return cursor.fetchall()[0][0]

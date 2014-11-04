@@ -91,7 +91,7 @@ function deleteUserRow(item)
         localStorage.pID=$(item).parents('tr').find('#pID').val()
         console.log($(item).parents('tr').find('#pID').val())
         
-        //window.location.assign('/flag_survey')
+        window.location.assign('/returnSurvey?part_id='+localStorage.pID)
         }
 
         function checkBoxToggle(item)
@@ -187,3 +187,55 @@ function deleteUserRow(item)
         });
 
         }
+
+function submitPMuser(role,item)
+{
+  datum={first_name: $(item).parents('form').find('input[name="editorFName"]').val(),
+         last_name: $(item).parents('form').find('input[name="editorLName"]').val(),
+         email: $(item).parents('form').find('input[name="email"]').val(),
+         DOB: $(item).parents('form').find('input[name="DOB"]').val(),
+        role:role}
+          $.ajax({
+             url: "/addUser",
+             type: "get",
+             async: false,
+             data: datum,
+             success: function () {
+                
+             },
+        });
+
+}
+
+function removeDEMap(item)
+{
+
+          $.ajax({
+             url: "/del_map",
+             type: "get",
+             async: false,
+             data: {de_id:$(item).parent().parent().find('input[type="hidden"]:eq(1)').val(), su_id:$(item).parent().parent().find('input[type="hidden"]:eq(0)').val()},
+             success: function () {
+                window.location.assign('/de_map')
+             },
+        });
+
+  }
+
+  function addDEMap(item)
+{         
+          var datum= {su_id:$(item).parent().parent().find('input[type="hidden"]').val(),
+                      de_id:$('#list').find('li[class="ng-scope active"]').find('input').val(),
+                     pm_id:localStorage.user}
+          console.log(datum)
+          $.ajax({
+             url: "/add_map",
+             type: "get",
+             async: false,
+             data: datum,
+             success: function () {
+                window.location.assign('/de_map')
+             },
+        });
+
+  }

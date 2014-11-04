@@ -18,6 +18,16 @@ class MainHandler(webapp2.RequestHandler):
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
+# pageMapDESurveyor
+
+class pageMapDESurveyor(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
 
 class Profile(webapp2.RequestHandler):
 	def get(self):
@@ -149,6 +159,7 @@ class apiViewSurveys(webapp2.RequestHandler):
 
 	def post(self):
 		user_id = self.request.get('user_id')
+		print user_id
 		data=dbHandler.GetData().getDeSurveys(user_id)
 		functionality=data #{'surveys' : data}
 		func = json.dumps(functionality)
@@ -167,7 +178,13 @@ class apiReturnSurvey(webapp2.RequestHandler):
 
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
 		func = json.dumps(functionality)
-		self.response.write(func)
+		
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render(func))
 	
 	def post(self):
 		user_id = self.request.get('part_id')
@@ -335,21 +352,28 @@ class SurveyData(webapp2.RequestHandler):
 		survey_id = self.request.get("survey_id")
 		starting_value = self.request.get("starting_value")
 		ending_value = self.request.get("ending_value")
+		all_question = dbHandler.GetData().getAllQuestions(survey_id)
+		all_questions = [_tuple[0] for _tuple in all_question]
 		result = dbHandler.GetData().getSurveyData(survey_id, project_id, starting_value, ending_value)
-		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5]} for item in result]
+		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in result]
 		all_participants=list(set([item['participant_ID'] for item in result_dict]))
-		all_questions = list(set([item['question'] for item in result_dict]))
+		#all_questions = list(set([item['question'] for item in result_dict]))
 		final_list = []
+		language = ''
 		for participant in all_participants:
-			participant_dict = {'participant_ID':participant,'questions':[]}
+			participant_dict = {"participant_ID":participant,"questions":[]}
 			temp_questions = [item for item in all_questions]
 			for item in result_dict:
 				if item['participant_ID'] == participant:
-					participant_dict['questions'].append({'question':item['question'],'answer':item['answer'],'option':item['option']})
+					language = item['lang_id']
+					participant_dict['questions'].append({"question":item['question'],"answer":item['answer'],"option":item['option']})
 					temp_questions.pop(temp_questions.index(item['question']))
 			if len(temp_questions) > 0:
 				for item in temp_questions:
-					participant_dict['questions'].append({"question":item,"answer":'','option':''})
+					participant_dict['questions'].append({"question":item,"answer":"None","option":"None"})
+			if language == None:
+				language = ""
+			participant_dict.update({"lang_id":language})
 			final_list.append(participant_dict)
 		self.response.write(final_list)
 
@@ -440,26 +464,31 @@ class displayMapDESurveyor(webapp2.RequestHandler):
 			de_su_dict = {}
 			de_su_map = []
 			for de in deSu.keys():
-				# print de
+				print de
 				de_su_dict['ID'] = de
 				de_su_dict['name'] = nameUserDict[de]
-				de_su_dict['surveyors'] = []
+				de_su_dict['surveyers'] = []
 				suDict = {}
 				for su in deSu[de]:
-					# print su
+					print su
 					suDict['ID'] = su
 					suDict['name'] = nameUserDict[su]
-					de_su_dict['surveyors'].append(suDict)
-					# print de_su_dict
+					de_su_dict['surveyers'].append(suDict)
+					print de_su_dict
 					suDict = {}
-				de_su_map.append(de_su_dict)
+				de_su_dict_bk = {}
+				for k in de_su_dict.keys():
+					de_su_dict_bk[k] = de_su_dict[k]
+				de_su_map.append(de_su_dict_bk)
 				# de_su_dict.clear()
 			print de_su_dict
 		else:
 			# No Mapping present. Return Error Message
 			de_su_dict = {}
-		print de_su_map
-		func = json.dumps(de_su_map, ensure_ascii=False)
+
+		surveyer_list = dbHandler.GetData().getUnassSurveyor(pm_id)
+		# print de_su_map
+		func = json.dumps({'editor_surveyors':de_su_map, 'surveyers': surveyer_list}, ensure_ascii=False)
 		self.response.write(func)
 	
 class ViewSurveyData(webapp2.RequestHandler):
@@ -470,6 +499,29 @@ class ViewSurveyData(webapp2.RequestHandler):
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
+
+
+class DeleteMapping(webapp2.RequestHandler):
+	def get(self):
+		de_id = self.request.get("de_id")
+		su_id = self.request.get("su_id")
+		dbHandler.PostData().delDeSuMap(de_id,su_id)
+		self.response.write("true")
+
+class AddMapping(webapp2.RequestHandler):
+	def get(self):
+		de_id = self.request.get("de_id")
+		print "de_id"
+		print de_id
+		su_id = self.request.get("su_id")
+		print "su_id"
+		print su_id
+		pm_id = self.request.get("pm_id")
+		print "pm_id"
+		print pm_id
+		print pm_id, de_id, su_id
+		dbHandler.PostData().addDESurveyor(pm_id, de_id, su_id)	
+		self.response.write({su_id,pm_id})
 
 
 
@@ -503,9 +555,12 @@ app = webapp2.WSGIApplication([
 
 	('/survey_data_sync',SurveyDataSync),
 	('/survey-misc',SurveyDataMiscellaneous),
-	('/survey-data',SurveyData),
+	('/survey_data',SurveyData),
 	('/getCorrectionsSync',SurveyCorrectionSync),
 	('/view_survey_data',ViewSurveyData),
-	('/de_mapping',displayMapDESurveyor)
+	('/de_mapping',displayMapDESurveyor),
+	('/de_map',pageMapDESurveyor),
+	('/del_map',DeleteMapping),
+	('/add_map',AddMapping)
 
 ], debug = True)
