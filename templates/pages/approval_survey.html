@@ -7,8 +7,8 @@
         <!-- ************************************************************************************ -->
         <div class="col-sm-5 bootcards-list" id="list">
             <div name="sectbox" id="sectbox" class="panel panel-default">
-                <ul class="list-group">
-                    <li class="list-group-item pjax" ng-click="getQuestions($index, section.sect_id, section.sect_text)" ng-class="{'active': activeSection == $index}" ng-repeat="section in sections track by $index">
+                <ul class="list-group" id="sectionsNav">
+                    <li class="list-group-item pjax" ng-click="getQuestions($index, section.sect_id, section.sect_text)" ng-class="{'active': activeSection == $index}" ng-repeat="section in sections track by $index" value=" {{section.sect_id}}">
                         {{section.sect_text}}
                     </li>
                 </ul>

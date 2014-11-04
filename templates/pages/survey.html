@@ -7,12 +7,11 @@
         <!-- ************************************************************************************ -->
         <div class="col-sm-5 bootcards-list" id="list">
             <div name="sectbox" id="sectbox" class="panel panel-default">
-                <div class="list-group" ng-repeat="section in sections">
-                    <a class="list-group-item pjax" ng-click="getQuestions(section.sect_id,section.sect_text)">
-                        <input type="hidden" value='{{section.sect_id}}'/>
-                        <h5 class="list-group-item-heading">{{section.sect_text}}</h5>
-                    </a>
-                </div>
+                <ul class="list-group" id="sectionsNav">
+                    <li class="list-group-item pjax" ng-click="getQuestions($index, section.sect_id, section.sect_text)" ng-class="{'active': activeSection == $index}" ng-repeat="section in sections track by $index" value=" {{section.sect_id}}">
+                        {{section.sect_text}}
+                    </li>
+                </ul>
             </div>
                 <button class="btn btn-danger btn-block pull-right" onClick="submitFlag()">
         Submit Flags</button>

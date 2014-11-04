@@ -36,31 +36,6 @@ class Profile(webapp2.RequestHandler):
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
 
-
-
-class Edit_Form(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('profile.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-class UserManage(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template=jinja_environment.get_template('manager.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-
 class Survey(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
@@ -69,41 +44,6 @@ class Survey(webapp2.RequestHandler):
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
-
-class DataViewer(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('sms.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
-class Scheduler(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		count = session.get('count',0)
-		session['count'] = count+1
-		# jinja_environment=jinja2.Environment(autoescape=True, loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
-		template = jinja_environment.get_template('index.html')
-		tpl_vars = {'counter':session['count']}
-		self.response.write(template.render(tpl_vars))
-
-
-class ManageProject(webapp2.RequestHandler):
-	def get(self):
-		session = get_current_session()
-		session = get_current_session()
-		login = session.get('login')
-		if login == "admin":
-			template = jinja_environment.get_template('data.html')
-		else:
-			session['error'] = "Login first"
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
-
 
 class VerifySurvey(webapp2.RequestHandler):
 	def get(self):
@@ -117,11 +57,11 @@ class VerifySurvey(webapp2.RequestHandler):
 class APIResearcher(webapp2.RequestHandler):
 	def get(self):
 		functionality=dbHandler.GetData().getResearchers()
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 	def post(self):
 		functionality=dbHandler.GetData().getResearchers()
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 class Logout(webapp2.RequestHandler):
@@ -138,7 +78,7 @@ class UserProfile(webapp2.RequestHandler):
 		data=dbHandler.GetData().getRoleFunctionality(user_id)
 		user=dbHandler.GetData().getProfile(user_id)
 		functionality={'navs' : data, 'user': user}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 	
 	def post(self):
@@ -146,7 +86,7 @@ class UserProfile(webapp2.RequestHandler):
 		data=dbHandler.GetData().getRoleFunctionality(user_id)
 		user=dbHandler.GetData().getProfile(user_id)
 		functionality={'navs' : data, 'user': user}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 		
@@ -209,7 +149,7 @@ class apiViewSurveys(webapp2.RequestHandler):
 		user_id = self.request.get('user_id')
 		data=dbHandler.GetData().getDeSurveys(user_id)
 		functionality=data #{'surveys' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 class apiReturnSurvey(webapp2.RequestHandler):
@@ -224,7 +164,7 @@ class apiReturnSurvey(webapp2.RequestHandler):
 		sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
 
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 	
 	def post(self):
@@ -237,7 +177,7 @@ class apiReturnSurvey(webapp2.RequestHandler):
 		sectfunc={'sect_id': sect_id,'sect_name': sect_name, 'ques' : sectdat}
 
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 class apiReturnSection(webapp2.RequestHandler):
@@ -248,7 +188,7 @@ class apiReturnSection(webapp2.RequestHandler):
 		sect_name = self.request.get('sect_name')
 		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
 		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 	def post(self):
@@ -257,7 +197,7 @@ class apiReturnSection(webapp2.RequestHandler):
 		sect_name = self.request.get('sect_name')
 		data=dbHandler.GetData().getSectionQuest(user_id,sect_id)
 		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 		
 class FlagSurvey(webapp2.RequestHandler):
@@ -298,9 +238,7 @@ class apiSubmitFlag(webapp2.RequestHandler):
 
 	def post(self):
 		part_id = self.request.get('part_id')
-		# self.response.write(checked)
 		dbHandler.PostData().submitFlag(part_id)
-
 		self.response.write('true')
 
 
@@ -310,14 +248,14 @@ class apiVerifySurveys(webapp2.RequestHandler):
 		user_id = self.request.get('user_id')
 		data=dbHandler.GetData().getVerifySurveys(user_id)
 		functionality=data #{'surveys' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 	def post(self):
 		user_id = self.request.get('user_id')
 		data=dbHandler.GetData().getVerifySurveys(user_id)
 		functionality=data #{'surveys' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 
@@ -335,7 +273,7 @@ class apiViewFlaggedSection(webapp2.RequestHandler):
 		else:
 			sectfunc={'sect_id': 'null','sect_name': 'null', 'ques' : 'null'}
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 	
 	def post(self):
@@ -350,7 +288,7 @@ class apiViewFlaggedSection(webapp2.RequestHandler):
 		else:
 			sectfunc={'sect_id': 'null','sect_name': 'null', 'ques' : 'null'}
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 class apiViewFlaggedQuestion(webapp2.RequestHandler):
@@ -361,7 +299,7 @@ class apiViewFlaggedQuestion(webapp2.RequestHandler):
 		sect_name = self.request.get('sect_name')
 		data=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
 		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
 
 	def post(self):
@@ -370,9 +308,24 @@ class apiViewFlaggedQuestion(webapp2.RequestHandler):
 		sect_name = self.request.get('sect_name')
 		data=dbHandler.GetData().getFlaggedQuest(user_id,sect_id)
 		functionality={'sect_id': sect_id,'sect_name': sect_name, 'ques' : data}
-		func = json.dumps(functionality, ensure_ascii=False)
+		func = json.dumps(functionality)
 		self.response.write(func)
-		
+	
+class apiVerifySection(webapp2.RequestHandler):
+
+	def post(self):
+		checked = self.request.get('checked')
+		# self.response.write(checked)
+		unchecked = self.request.get('unchecked')
+		try:
+			dbHandler.PostData().approveSection(checked)
+		except Exception,e:
+			pass
+		try:
+			dbHandler.PostData().disapproveSection(unchecked)
+		except Exception,e:
+			pass
+		self.response.write('true')	
 
 
 app = webapp2.WSGIApplication([
@@ -380,12 +333,7 @@ app = webapp2.WSGIApplication([
 	('/login', Login),
 	('/logout', Logout),
 	('/profile', Profile),
-	('/profile-edit',Edit_Form),
-	('/user', UserManage),
 	('/view_survey',Survey),
-	('/data-view',DataViewer),
-	('/sms',Scheduler),
-	('/manage-projects',ManageProject),
 	('/apiResearcher',APIResearcher),
 	('/apiUserProfile',UserProfile),
 	('/apiSaveProfile',SaveProfile),
@@ -402,9 +350,7 @@ app = webapp2.WSGIApplication([
 	('/apiVerifySurveys',apiVerifySurveys),
 	('/apiViewFlaggedSection',apiViewFlaggedSection),
 	('/apiViewFlaggedQuestion',apiViewFlaggedQuestion),
-	('/verify_survey',VerifySurvey)
-
-
-
+	('/verify_survey',VerifySurvey),
+	('/verifySection',apiVerifySection)
 
 ], debug = True)

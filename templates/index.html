@@ -1,6 +1,6 @@
 <html ng-app="surveyApp">
     <head>
-    <title>{{"{{title}}"}}</title>
+    <title>ENTRE-Info</title>
         <link rel="stylesheet" type="text/css" href="css/bootcards.css"> 
         <link rel="stylesheet" type="text/css" href="css/bootcards-desktop.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -20,12 +20,17 @@
             <div class="container">
                 <div class="navbar-header">
                     <a class="navbar-brand" title="ENTREinfo" href="profile">ENTREinfo</a>
+                </div>
+                <div>
                     <ul class="nav navbar-nav">
                         <li ng-repeat="nav in navs">
                             <a href="{{"{{nav.url}}"}}" data-title="{{"{{nav.url}}"}}"><i class="fa fa-{{"{{nav.icon}}"}}"></i> {{"{{nav.name}}"}}</a>
                         </li>
-                        <li class="dropdown left">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> Hi {{"{{user.fName}}"}} !<span class="caret"></span></a>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> Hi {{"{{user.fName}}"}} !<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="settings">My Account</a></li>
                                 <li class="divider"></li>

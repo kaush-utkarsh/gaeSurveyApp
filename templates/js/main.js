@@ -125,13 +125,16 @@ surveyApp.controller('surveyFlagController', function($scope,surveyFactory) {
               $scope.questions=JSON.parse(data).sect.ques
               $scope.sect_ID=JSON.parse(data).sect.sect_id
               $scope.sect_Name=JSON.parse(data).sect.sect_name
+            $scope.activeSection=0
             }
        		 }); 
 
 
 
-	   	$scope.getQuestions = function(sec_ID,sec_Name) {
-	   	    $.ajax({
+        $scope.getQuestions = function(index, sec_ID, sec_Name) {
+            $scope.activeSection = index;
+            
+            $.ajax({
             url: "/returnSection",
             type: "post",
             async: false,
@@ -165,6 +168,7 @@ surveyApp.controller('surveyVerifyController', function($scope,surveyFactory) {
               $scope.questions=JSON.parse(data).sect.ques
               $scope.sect_ID=JSON.parse(data).sect.sect_id
               $scope.sect_Name=JSON.parse(data).sect.sect_name
+             $scope.activeSection=0
             }
              }); 
 

@@ -167,22 +167,22 @@ function deleteUserRow(item)
           else
             arr_unchecked.push(item.value)
           })
-          // console.log(arr_checked)
-          // console.log(arr_unchecked)
-          if($('#sectbox').find('div[class="list-group ng-scope"]').length==1)
-            window.location.assign('/survey_approval')
-          else
-            $('input[value='+$('input[name="sectId"]').val()+']:eq(0)').parents('div[class="list-group ng-scope"]').remove()
+            
 
-        //    $.ajax({
-        //     url: "/checkSection",
-        //     type: "post",
-        //     async: false,
-        //     data: {checked: JSON.stringify(arr_checked), unchecked: JSON.stringify(arr_unchecked)},
-        //     dataType: "html",
-        //     success: function (data) {
-
-        //     },
-        // });
+           $.ajax({
+            url: "/verifySection",
+            type: "post",
+            async: false,
+            data: {checked: JSON.stringify(arr_checked), unchecked: JSON.stringify(arr_unchecked)},
+            dataType: "html",
+            success: function (data) {
+                if($('#sectionsNav').find('li').length>1)
+                {       $('li[value='+$('input[name="sectId"]').val()+']:eq(0)').remove()
+                  $('#sectionsNav').find('li:eq(0)').trigger('click')
+                }
+                else
+                  window.location.assign('/survey_approval')
+            },
+        });
 
         }
