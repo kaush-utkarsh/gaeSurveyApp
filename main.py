@@ -413,14 +413,54 @@ class SurveyDataMiscellaneous(webapp2.RequestHandler):
 		self.response.write(json.dumps({'survey_details':survey_details,'project_details':project_details}))
 
 
-class AssignSurveyers(webapp2.RequestHandler):
+class displayMapDESurveyor(webapp2.RequestHandler):
+	# To get mapping between Data Editor and Surveyor for display on screen.
 	def get(self):
-		session = get_current_session()
-		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+		pm_id = self.request.get('pm_id')	#Get PMID from front end
+
+		deSu = dbHandler.GetData().getDESuMap(pm_id)
+		print deSu
+		list_user_id = deSu.keys()
+
+		list_user = []
+		for lu in list_user_id:
+			list_user.append(lu)
+
+		#Create a unique list of Data Editor and Surveyors
+		if list_user_id:
+			for de in list_user_id:
+				print de
+				list_user.extend(deSu[de])
+
+			# Get Names of all users in the mapping.
+			nameUserDict = dbHandler.GetData().getNameUser(list_user)
+			print nameUserDict
+			# Create JSON in desired structure 
+			# {de_id: , de_name: , surveyors [{ID: '', name: '']}, {ID: '', name: '']}}
+			de_su_dict = {}
+			de_su_map = []
+			for de in deSu.keys():
+				# print de
+				de_su_dict['ID'] = de
+				de_su_dict['name'] = nameUserDict[de]
+				de_su_dict['surveyors'] = []
+				suDict = {}
+				for su in deSu[de]:
+					# print su
+					suDict['ID'] = su
+					suDict['name'] = nameUserDict[su]
+					de_su_dict['surveyors'].append(suDict)
+					# print de_su_dict
+					suDict = {}
+				de_su_map.append(de_su_dict)
+				# de_su_dict.clear()
+			print de_su_dict
 		else:
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render())
+			# No Mapping present. Return Error Message
+			de_su_dict = {}
+		print de_su_map
+		func = json.dumps(de_su_map, ensure_ascii=False)
+		self.response.write(func)
 	
 class ViewSurveyData(webapp2.RequestHandler):
 	def get(self):
@@ -460,12 +500,12 @@ app = webapp2.WSGIApplication([
 	('/verifySection',apiVerifySection),
 	('/addUser',AddUser),
 	('/login_details',LoginSync),
-	('/survey_data',SurveyData),
+
 	('/survey_data_sync',SurveyDataSync),
 	('/survey-misc',SurveyDataMiscellaneous),
 	('/survey-data',SurveyData),
 	('/getCorrectionsSync',SurveyCorrectionSync),
 	('/view_survey_data',ViewSurveyData),
-	('/de_mapping',AssignSurveyers)
+	('/de_mapping',displayMapDESurveyor)
 
 ], debug = True)

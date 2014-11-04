@@ -1,5 +1,5 @@
 <div class="container" ng-controller="surveysController">
-    <div class="col-xs-10">
+    <div class="col-xs-12">
         <h3 ng-if="requestType != 'approval'" class="page-header">
             View Surveys
         </h3>
@@ -10,7 +10,23 @@
             <button class="btn btn-success" data-toggle="modal" data-target="#addSurvey">Add New Survey</button>
         </div>
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-12">
+        <div class="btn-group btn-group-primary down pull-right lft bkg">
+            <button class="btn btn-primary" type="button"> Filter by Surveyer Name </button>
+                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="survey in surveys"><a href>{{survey.surveyorName}}</a></li>
+            </ul>
+        </div>
+        <div class="btn-group btn-group-primary down pull-right bkg">
+            <button class="btn btn-primary  lft" type="button"> Filter by Project Id </button>
+                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="survey in surveys"><a href>{{survey.name}}</a></li>
+            </ul>
+        </div>
         <table class="table table-striped table-bordered table-hover table-condensed">
             <tr>
                 <th width='5%'>S.No.</th>

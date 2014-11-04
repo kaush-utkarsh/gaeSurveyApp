@@ -17,6 +17,7 @@
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus{
 	border-bottom: 2px solid #58D3F7;
 	color: #fff;
+	max-height: 50px;
 }
 .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus  {
 	color: #ffffff;
@@ -149,4 +150,21 @@
 
 .down {
 	margin-bottom: 10px;
+}
+
+.btn-group-primary .dropdown-menu {
+  background-color: #fff !important;
+}
+.btn-group-primary .dropdown-menu li > a:hover,
+.btn-group-primary .dropdown-menu li > a:focus {
+  background-color: #428bca !important;
+  color: #fff;
+}
+
+.lft {
+	margin-left: 20px;
+}
+
+.bkg {
+	background-color: #428bca;
 }

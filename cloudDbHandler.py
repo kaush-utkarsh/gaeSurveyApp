@@ -206,7 +206,62 @@ class GetData():
 		conn.close()
 		return [{'survey_data_id':row[0],'survey_id':row[1],'part_id':row[2],'sect_id':row[3],'ques_id':row[4],"ans":row[5],"flag":row[6],"corr_status":row[7]} for row in rows]
 
+	def getDESuMap(self, pm_id):
+		# Select query to return the mapping between Data Editor and Surveyor based on the Project Manager ID.
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT ds.de_id, ds.surveyor_id FROM de_surveyor ds, project_user pu, user u where ds.p_id = pu.project_id and u.user_id = ds.surveyor_id and pu.user_id = %s"
+		# print sqlcmd
+		cursor.execute(sqlcmd,(pm_id,))
+		de_su_map = {}	#To store Data editor Surveyor Mapping under the concerned Project Manager
+		# user_list = []	# To store list of DE and Surveyors under the PM
+		for row in cursor.fetchall():
+			de = row[0].strip()
+			su = row[1].strip()
+			if de in de_su_map.keys():
+				# If Data Editor already exists in the dictionary
+				de_su_map[de].append(su)
+			else:
+				# If Data Editor doesn't exist in the dictionary
+				de_su_map[de] = [su]
 
+		return de_su_map
+
+	def getNameUser(self, listUserId):
+		# To return a directory of userId : userName(First Name + Last Name) for a given list of User Ids.
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT user_id, CONCAT(f_name, ' ', l_name) FROM user where user_id in " + str(tuple(set(listUserId)))
+		# cursor.execute(sqlcmd,(userStr,))
+		cursor.execute(sqlcmd)
+		# user_dict = []
+		user_dict = {}	#  Dictionary to hold User Id and Name Mapping
+		for row in cursor.fetchall():
+			user_dict[row[0]] = row[1]
+
+		return user_dict
+		   
+	def getUnassSurveyor(self, pm_id):
+		# To return a directory of userId : userName(First Name + Last Name) of all Unassigned Surveyors for a given Project Manager's Id.
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = """select pu.user_id, CONCAT(u.f_name, ' ', u.l_name) from project_user pu, user u 
+					where pu.user_id = u.user_id
+						and pu.project_id = (select pu1.project_id from project_user pu1 where pu1.user_id = '%s')
+						and pu.user_id like 'SU%' 
+    					and pu.user_id not in (select ds.surveyor_id 
+												from de_surveyor ds 
+												where ds.p_id = (select pu1.project_id 
+																	from project_user pu1 
+																		where pu1.user_id = '%s'))
+				"""
+		# print sqlcmd
+		cursor.execute(sqlcmd, (pm_id,pm_id))
+		unass_surveyors_dict = {}	#  Dictionary to hold User Id and Name Mapping
+		for row in cursor.fetchall():
+			unass_surveyors_dict[row[0]] = row[1]
+
+		return unass_surveyors_dict
 
 
 	# Authorize user login and password

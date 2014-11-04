@@ -1,5 +1,5 @@
 'use strict';
-var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
+var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable','ui.bootstrap']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 
@@ -115,7 +115,23 @@ surveyApp.controller('surveyDataController', function($scope, surveyFactory, $ht
                  console.log(data);
                  $scope.datas = JSON.parse(data);
              },
-         });
+        });
+    $scope.surveyData = [];
+    $scope.totalDatas = $scope.datas.length;
+    $scope.currentPage = 1;
+    $scope.numPerPage = 10;
+    $scope.filteredDatas = [];
+
+    $scope.setPage = function (pageNo) {
+        console.log('setpage');
+        $scope.currentPage = pageNo;
+        var begin = (($scope.currentPage - 1) * $scope.numPerPage),
+            end = begin + $scope.numPerPage;
+        console.log("filter");
+        $scope.filteredDatas = $scope.surveyData.slice(begin, end);
+    };
+
+        $scope.setPage($scope.currentPage);
 });
 
 surveyApp.controller('mappingController', function($scope,surveyFactory) {
@@ -269,25 +285,22 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
 
 surveyApp.controller('approvalController', function($scope,surveyFactory) {
 
-     var user=localStorage.user
-     var datum;
-        $.ajax({
-            url: "/apiVerifySurveys",
-            type: "post",
-            async: false,
-            data: {user_id:user},
-            dataType: "html",
-            success: function (data) {
-               $scope.approval_surveys=JSON.parse(data)
-               console.log(data)
-               console.log($scope.surveys)
-              },
-        });
-        $scope.requestType='approval'
+    var user=localStorage.user
+    var datum;
+       $.ajax({
+           url: "/apiVerifySurveys",
+           type: "post",
+           async: false,
+           data: {user_id:user},
+           dataType: "html",
+               success: function (data) {
+                    $scope.approval_surveys=JSON.parse(data)
+                    console.log(data)
+                    console.log($scope.surveys)
+                },
+            });
+    $scope.requestType='approval'
  });
-
-
-
 
 surveyApp.controller('mainController', function($scope,surveyFactory) {
 });
@@ -305,7 +318,7 @@ surveyApp.controller('managerController', function($scope,surveyFactory) {
 	$scope.projects = surveyFactory.projects;
 });
 
-surveyApp.controller('dataController', function($scope, $filter, ngTableParams, surveyFactory) {
+/*surveyApp.controller('dataController', function($scope, $filter, ngTableParams, surveyFactory) {
 	 	var data = surveyFactory.data2;
             $scope.columns = [
                 { title: 'ID', field: 'ID', visible: true },
@@ -334,4 +347,4 @@ surveyApp.controller('dataController', function($scope, $filter, ngTableParams, 
                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
             });
-});
+});*/
