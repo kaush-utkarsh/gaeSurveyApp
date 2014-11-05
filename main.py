@@ -358,27 +358,22 @@ class SurveyData(webapp2.RequestHandler):
 		result = dbHandler.GetData().getSurveyData(survey_id, project_id, starting_value, ending_value)
 		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in result]
 		all_participants=list(set([item['participant_ID'] for item in result_dict]))
-		#all_questions = list(set([item['question'] for item in result_dict]))
 		final_list = []
 		language = ''
 		for participant in all_participants:
-			participant_dict = {"participant_ID":participant,"questions":[]}
-			temp_questions = [item for item in all_questions]
+		 	participant_dict = {'participant_ID':participant,'questions':[]}
+			temp_questions = []
 			for item in result_dict:
 				if item['participant_ID'] == participant:
 					language = item['lang_id']
-					participant_dict['questions'].append({"question":item['question'],"answer":item['answer'],"option":item['option']})
-					temp_questions.pop(temp_questions.index(item['question']))
-			if len(temp_questions) > 0:
-				for item in temp_questions:
-					participant_dict['questions'].append({"question":item,"answer":"None","option":"None"})
-			if language == None:
-				language = ""
-			participant_dict.update({"lang_id":language})
+					participant_dict['questions'].append({'question':item['question'],'answer':item['answer'],'option':item['option']})
+					temp_questions.append(item['question'])
+			diff = set(all_questions).difference(set(temp_questions))
+			if len(diff) > 0:
+				for item in diff:
+					participant_dict['questions'].append({"question":item,"answer":'','option':''})
+			participant_dict.update({'lang_id':language})
 			final_list.append(participant_dict)
-		print final_list
-		print len(final_list)
-
 		# print "Type ", type(final_list)
 		# print json.dumps({'data':final_list},encoding='utf-8')
 		self.response.write(json.dumps({'data':final_list},encoding='latin1'))
