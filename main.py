@@ -6,6 +6,7 @@ import webapp2
 import cloudDbHandler as dbHandler
 import json
 from MailHandler import Mail
+from csv_writer import getCsv
 
 jinja_environment = jinja2.Environment(autoescape = True,
 	loader = jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))
@@ -375,7 +376,12 @@ class SurveyData(webapp2.RequestHandler):
 				language = ""
 			participant_dict.update({"lang_id":language})
 			final_list.append(participant_dict)
-		self.response.write(final_list)
+		print final_list
+		print len(final_list)
+
+		# print "Type ", type(final_list)
+		# print json.dumps({'data':final_list},encoding='utf-8')
+		self.response.write(json.dumps({'data':final_list},encoding='latin1'))
 
 class AddUser(webapp2.RequestHandler):
 	def get(self):
@@ -449,47 +455,66 @@ class displayMapDESurveyor(webapp2.RequestHandler):
 	# To get mapping between Data Editor and Surveyor for display on screen.
 	def get(self):
 		pm_id = self.request.get('pm_id')	#Get PMID from front end
-
-		deSu = dbHandler.GetData().getDESuMap(pm_id)
-		print deSu
-		list_user_id = deSu.keys()
+		# self.response.write(pm_id)
+		#Get Project Id
+		p_id = dbHandler.GetData().getProjectId(pm_id)
+		# self.response.write(p_id)
+		#Get Data Editor List
+		deList = dbHandler.GetData().getAllDE(p_id)
+		print deList
+		# self.response.write(deList)
+		#Get Surveyors mapping
+		deSuMap = dbHandler.GetData().getDESuMap(deList)
+		# self.response.write(deSuMap) 
+		# deSu = dbHandler.GetData().getDESuMap(pm_id)
 
 		list_user = []
-		for lu in list_user_id:
+		for lu in deList:
 			list_user.append(lu)
 
+		de_su_map = []
 		#Create a unique list of Data Editor and Surveyors
-		if list_user_id:
-			for de in list_user_id:
-				print de
-				list_user.extend(deSu[de])
-
+		if list_user:
+			for de in deSuMap.keys():
+				list_user.extend(deSuMap[de])
+			
+			# self.response.write(list_user)
 			# Get Names of all users in the mapping.
 			nameUserDict = dbHandler.GetData().getNameUser(list_user)
-			print nameUserDict
+			# self.response.write(nameUserDict)
 			# Create JSON in desired structure 
 			# {de_id: , de_name: , surveyors [{ID: '', name: '']}, {ID: '', name: '']}}
 			de_su_dict = {}
 			de_su_map = []
-			for de in deSu.keys():
-				print de
-				de_su_dict['ID'] = de
-				de_su_dict['name'] = nameUserDict[de]
-				de_su_dict['surveyers'] = []
-				suDict = {}
-				for su in deSu[de]:
-					print su
-					suDict['ID'] = su
-					suDict['name'] = nameUserDict[su]
-					de_su_dict['surveyers'].append(suDict)
-					print de_su_dict
+			for de in deList:
+				if de in deSuMap.keys():
+					# print de
+					de_su_dict['ID'] = de
+					de_su_dict['name'] = nameUserDict[de]
+					de_su_dict['surveyers'] = []
 					suDict = {}
-				de_su_dict_bk = {}
-				for k in de_su_dict.keys():
-					de_su_dict_bk[k] = de_su_dict[k]
-				de_su_map.append(de_su_dict_bk)
+					for su in deSuMap[de]:
+						print su
+						suDict['ID'] = su
+						suDict['name'] = nameUserDict[su]
+						de_su_dict['surveyers'].append(suDict)
+						# print de_su_dict
+						suDict = {}
+					de_su_dict_bk = {}
+					for k in de_su_dict.keys():
+						de_su_dict_bk[k] = de_su_dict[k]
+					de_su_map.append(de_su_dict_bk)
+				else:
+					# print de
+					de_su_dict['ID'] = de
+					de_su_dict['name'] = nameUserDict[de]
+					de_su_dict['surveyers'] = []
+					de_su_dict_bk = {}
+					for k in de_su_dict.keys():
+						de_su_dict_bk[k] = de_su_dict[k]
+					de_su_map.append(de_su_dict_bk)
 				# de_su_dict.clear()
-			print de_su_dict
+			# self.response.write(de_su_map)
 		else:
 			# No Mapping present. Return Error Message
 			de_su_dict = {}
@@ -498,6 +523,7 @@ class displayMapDESurveyor(webapp2.RequestHandler):
 		# print de_su_map
 		func = json.dumps({'editor_surveyors':de_su_map, 'surveyers': surveyer_list}, ensure_ascii=False)
 		self.response.write(func)
+
 	
 class ViewSurveyData(webapp2.RequestHandler):
 	def get(self):
@@ -510,6 +536,16 @@ class ViewSurveyData(webapp2.RequestHandler):
 
 
 class ManagePM(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
+class Settings(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
@@ -578,6 +614,97 @@ class apiDeletePM(webapp2.RequestHandler):
 		dbHandler.PostData().deleteUser(pm_id)
 		dbHandler.PostData().deletePMmap(pm_id)
 		self.response.write('true')
+
+class UserPwd(webapp2.RequestHandler):
+	def post(self):
+		user_id = self.request.get("user_id")
+		pwd = self.request.get("pwd")
+		upwd=dbHandler.GetData().getPwd(user_id)
+		if upwd==pwd:
+			self.response.write('true')
+		if upwd!=pwd:
+			self.response.write('false')
+
+class ChangePwd(webapp2.RequestHandler):
+	def post(self):
+		user_id = self.request.get("user_id")
+		pwd = self.request.get("pwd")
+		dbHandler.PostData().changePwd(user_id,pwd)
+		self.response.write('true')
+
+class ExportData(webapp2.RequestHandler):
+	def get(self):
+		survey_id= self.request.get("survey_id")
+		project_id = self.request.get("project_id")
+		questions = list(self.request.get("questions"))
+		
+		data = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		question_id_collection = [{'question_id':question[0], 'question_text': question[1]} for question in list(data)]
+		all_questions = [question['question_text'] for question in question_id_collection]
+		left_questions = set(all_questions)-set(questions)
+		final_question_collection = []
+		for question in left_questions:
+			for item in question_id_collection:
+				if item['question_text'] == question:
+					final_question_collection.append(item['question_id'])
+		query = ''
+		for row in final_question_collection:
+			if 'sect' not in row:
+				query += ' final.q_no = "'+ row + '" or'
+		query = query[:-2]
+		all_records_based_on_selected_questions  = dbHandler.GetData().getAllRecords(survey_id, project_id, query)
+		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in all_records_based_on_selected_questions]
+		result_dict_questions = [item['question'] for item in result_dict]
+		all_question = dbHandler.GetData().getAllQuestions(survey_id)
+		all_questions = [_tuple[0] for _tuple in all_question]
+		final_questions=[]
+		final_questions.append('Participant ID')
+		final_questions.append('Language')
+		for item in left_questions: #change
+			final_questions.append(item)
+		headers = final_questions
+		participantIDs = [row['participant_ID'] for row in result_dict]
+		participantIDs = set(participantIDs)
+		participantData_list = []
+		for participant in participantIDs:
+			language =''
+			participantData = {'participant':participant,'answers_questions':[]}
+			for item in result_dict:
+				if  item['participant_ID'] == participant:
+					participantData['answers_questions'].append({"answer":item['answer'],"question":item['question']})
+					language = item['lang_id']
+			participantData.update({'language':language})
+			_final_list = []
+			__questions_answer_list = [row for row in participantData['answers_questions']]
+			question_lis = []
+			answer_lis =[]
+			for item in __questions_answer_list:
+				question_lis.append(item['question'])
+				answer_lis.append(item['answer'])
+			for _que in left_questions:
+				if _que in question_lis:
+					_final_list.append(answer_lis[question_lis.index(_que)])
+				else :
+					_final_list.append('')
+			participantData['answers_questions'] = []
+			participantData['answers_questions'].append(_final_list)
+			participantData_list.append(participantData)
+		final_rows = []
+		for item in participantData_list:
+			sample = []
+			sample.append(item['participant'])
+			if item['language'] == None:
+				sample.append("None")
+			else: sample.append(item['language'])
+			for answer in item['answers_questions'][0]:
+				sample.append(answer)
+			final_rows.append(sample)
+		self.response.headers.add_header("Content-Type","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+		self.response.headers.add_header("Content-Disposition","attachment; filename=SurveyData.CSV")
+		#self.response.write(final_rows)
+		self.response.write(getCsv(headers,final_rows))
+
+
 		
 
 
@@ -620,6 +747,10 @@ app = webapp2.WSGIApplication([
 	('/apiManagePM',apiManagePM),
 	('/addPM',apiAddPM),
 	('/addProject',apiAddProject),
-	('/deletePM',apiDeletePM)
+	('/settings',Settings),
+	('/userPwd',UserPwd),
+	('/changePwd',ChangePwd),
+	('/deletePM',apiDeletePM),
+	('/export_csv',ExportData)
 
 ], debug = True)

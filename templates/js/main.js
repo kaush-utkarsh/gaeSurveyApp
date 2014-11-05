@@ -3,7 +3,8 @@ var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 
-	 var user=localStorage.user
+	 var user = localStorage.user;
+
 	 var datum;
         $.ajax({
             url: "/apiUserProfile",
@@ -12,12 +13,8 @@ surveyApp.factory('surveyFactory',['$http', function($http) {
             data: {user_id:user},
             dataType: "html",
             success: function (data) {
-                // console.log(data)
                 datum=JSON.parse(data)
-                // localStorage.user = data;
-                // console.log(nv)
-                // window.location.assign("/")
-            },
+                },
         });
 
      return datum;
@@ -104,7 +101,22 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 });
 
 
-surveyApp.controller('surveyDataController', function($scope, $filter, surveyFactory, $http, ngTableParams) {
+surveyApp.controller('surveyDataController', function($scope, $filter, $window,surveyFactory, $http, ngTableParams) {
+    $.ajax({
+             url: "/survey-misc",
+             type: "get",
+             async: false,
+             dataType: "html",
+             success: function (data) {
+             $scope.tmp = JSON.parse(data);
+             },
+        });   
+    $scope.misc = $scope.tmp;
+    $scope.new_data  = "hello";
+    console.log($scope.misc);
+    //console.log($scope.misc.project_details[0]['id']);
+
+
      $.ajax({
              url: "/survey_data",
              type: "get",
@@ -113,14 +125,17 @@ surveyApp.controller('surveyDataController', function($scope, $filter, surveyFac
              dataType: "html",
              success: function (data) {
                  console.log(data);
-                 $scope.questions = eval(data);
+                 $scope.questions = JSON.parse(data).data;
              },
         });
     /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
               {title : 'Language ID', field : 'lang_id', visible : true}];*/
 
+    $scope.selectedValue = null;
+    //$scope.misc = [];
+        
+
     $scope.columns = $scope.questions[0].questions;
-    
             $scope.tableParams = new ngTableParams({
                 page: 1,            // show first page
                 count: 10,          // count per page
@@ -130,14 +145,70 @@ surveyApp.controller('surveyDataController', function($scope, $filter, surveyFac
             }, {
                 total: $scope.questions.length, // length of data
                 getData: function($defer, params) {
-                    // use build-in angular filter
-                    var orderedData = params.sorting() ?
-                            $filter('orderBy')($scope.questions, params.orderBy()) :
-                            data;
+                    var ordered_data = params.sorting() ?
+                      $filter('orderBy')($scope.questions, params.orderBy()) : data ;
 
-                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                $defer.resolve(ordered_data.slice((params.page() + 1) * params.count(), params.page() * params.count()));
                 }
             });
+
+            $scope.unselected = [];
+
+        $scope.trackQuestions = function(question,index) {
+            $scope.addQuestion = question;
+            if ($scope.unselected.indexOf(question) == -1) {
+                $scope.unselected.push(question);
+            }
+            else {
+                $scope.unselected.splice(index,1);
+            }
+        }
+
+        $scope.surveyFilterID = null;
+        $scope.projectFilterID = null;
+
+        $scope.updateProjectID = function(item) {
+            $scope.projectFilterID = item;
+        }
+
+        $scope.updateSurveyID = function(item) {
+            $scope.surveyFilterID = item;
+        }
+
+        $scope.getDataByFilter = function (){
+          console.log($scope.selectedProject);
+          console.log($scope.selectedSurvey);
+            $http({
+                    method: 'GET',
+                    url: '/survey_data',
+                    params : {project_id : $scope.selectedProject,survey_id : $scope.selectedSurvey, starting_value : 1, ending_value : 100000}
+                }).success(function (result) {
+                $scope.questions = result;
+            });
+        }
+
+        $scope.generateCsv = function(unselected) {
+            //generate csv code send request
+            var project_id = $scope.projectFilterID;
+            var survey_id = $scope.surveyFilterID;
+            var questions  =  $scope.unselected;
+
+            console.log("chines adlandk")
+            console.log(project_id)
+            console.log(survey_id)
+            console.log(questions)
+        //     $.ajax({
+        //      url: "/export_csv",
+        //      type: "get",
+        //      async: false,
+        //      data: {"survey_id":survey_id,"project_id":project_id,"questions":questions},
+        //      dataType: "html",
+        //      success: function (data) {
+        //          console.log(data);
+        //      },
+        // });
+     $window.location.href= "/export_csv?survey_id=" + survey_id + "&project_id="+project_id+"&questions="+questions;
+        }
 });
 
 surveyApp.controller('mappingController', function($scope,surveyFactory) {
@@ -183,9 +254,26 @@ surveyApp.controller('appController', function($scope,surveyFactory) {
 	$scope.navs = surveyFactory.navs;
 });
 
-surveyApp.controller('profileController', function($scope,surveyFactory) {
+surveyApp.controller('profileController', function($scope,$window,surveyFactory) {
 	$scope.user = surveyFactory.user;
 	$scope.navs = surveyFactory.navs;
+    $scope.reset = function(){
+        $window.location.assign("/")
+    }
+    $scope.saveProfile = function(){
+        console.log("Saving profile")
+        $.ajax({
+            url: "/apiSaveProfile",
+            type: "post",
+            async: false,
+            data: $('form[id="profileForm"]').serializeArray(),
+            dataType: "html",
+            success: function (data) {
+                // console.log(data)
+                $window.location.assign("/")
+            },
+        });
+    };
 });
 
 // surveyApp.controller('surveysController', function($scope,surveyFactory) {
@@ -306,10 +394,14 @@ surveyApp.controller('settingsController', function($scope,surveyFactory) {
 	$scope.User = surveyFactory.user;
 });
 
+surveyApp.filter('unique', function() { return function (arr, field) { var o = {}, i, l = arr.length, r = []; for(i=0; i<l;i+=1) { o[arr[i][field]] = arr[i]; } for(i in o) { r.push(o[i]); } return r; }; })
+
+
 surveyApp.controller('surveysController', function($scope,surveyFactory) {
 
-	 var user=localStorage.user
-	 var datum;
+   var user=localStorage.user
+     var datjson;
+   var datum;
         $.ajax({
             url: "/apiViewSurveys",
             type: "post",
@@ -317,10 +409,18 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
             data: {user_id:user},
             dataType: "html",
             success: function (data) {
-               $scope.surveys=JSON.parse(data)
+               datjson=JSON.parse(data)
               },
         });
-
+        var surveyList=[]
+        $.each(datjson,function(i,item){
+            if ($.inArray(item, surveyList) === -1) {
+        surveyList.push(item)
+            }
+        })
+        console.log(surveyList)
+            $scope.surveysList=angular.copy(surveyList)
+        $scope.surveys=datjson
  });
 
 
@@ -336,12 +436,13 @@ surveyApp.controller('approvalController', function($scope,surveyFactory) {
            dataType: "html",
                success: function (data) {
                     $scope.approval_surveys=JSON.parse(data)
-                    console.log(data)
-                    console.log($scope.surveys)
+
                 },
             });
     $scope.requestType='approval'
  });
+
+
 
 surveyApp.controller('mainController', function($scope,surveyFactory) {
 });

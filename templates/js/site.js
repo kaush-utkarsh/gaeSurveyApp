@@ -5,7 +5,7 @@ $(window).on('resize load', function() {
 
 function saveProfile()
         {
-       $('form[id="profileForm"]').validate()
+        alert('hi')
         $.ajax({
             url: "/apiSaveProfile",
             type: "post",
@@ -292,3 +292,50 @@ function deletePM(item)
                },
         });
          }
+
+
+
+         function changePwd()
+        {
+          if($('#pwd').val()=="" || $('#npwd').val()=="" || $('#cnpwd').val()=="")
+            {  $('input[value=""]:eq(0)').focus()
+                return false;
+            }
+            if( $('#npwd').val() != $('#cnpwd').val())
+             {
+              alert('New password and confirm password should be same')
+              $('#cnpwd').focus()
+              return false;
+            }
+            var res;
+            $.ajax({
+            url: "/userPwd",
+            type: "post",
+            async: false,
+            data: {user_id: localStorage.user, pwd: $('#pwd').val()},
+            dataType: "html",
+            success: function (data) {
+              console.log(data)
+               res=data
+               },
+           });
+
+            if(res=='false')
+              {
+                  alert('Wrong password entered')
+                  $('#pwd').focus()
+              } 
+            else
+            {
+              $.ajax({
+            url: "/changePwd",
+            type: "post",
+            async: false,
+            data: {user_id: localStorage.user, pwd: $('#cnpwd').val()},
+            dataType: "html",
+            success: function (data) {
+
+               },
+              });
+            }
+          }

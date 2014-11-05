@@ -82,6 +82,16 @@ class PostData():
 			return er
 
 
+
+	def changePwd(self,u_id,pwd):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = "update user set login_password = %s where user_id = %s"
+		cursor.execute(sqlcmd,(pwd,u_id,))
+		conn.commit()
+		conn.close() 
+
+
 	# Function for updation of profile data through the profile page
 
 	def saveProfileData(self,post_data):
@@ -179,6 +189,32 @@ class PostData():
 
 class GetData():
 
+	def getAllRecords(self, survey_id, project_id, query):
+
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "call `innovaccer_jpal`.`all_records`('"+survey_id+"','"+project_id+"','"+query+"')"
+		print sqlcmd
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		survey_data = []
+		for row in rows:
+			survey_data.append(row)
+		return survey_data
+
+
+	def getAllQuestionsAndIds(self,survey_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "select q_no,ques_short_text from ques_details where survey_id='%s'" % (survey_id)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.commit()
+		conn.close()
+		return rows
+
+
 	def getUserCountWithRole(self,role):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
@@ -199,7 +235,7 @@ class GetData():
 
 
 	def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
-		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss,charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = "call `innovaccer_jpal`.`survey_data_all_proc`('"+survey_id+"','"+project_id+"',"+starting_count+","+ending_count+")"
 		cursor.execute(sqlcmd)
@@ -256,6 +292,17 @@ class GetData():
 		conn.close()
 		return [{'login_id':row[0],"login_password":row[1],"f_name":row[2],"l_name":row[3],"email":row[4],"user_id":row[5],"status":row[6]} for row in rows]
  
+	def getPwd(self, u_id):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)
+		cursor = conn.cursor()
+		sqlcmd = "select login_password from user where user_id = '%s'" % (u_id,)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		for r in rows:
+			p=r[0]
+		return p
+
 	def getCorrections(self, survey_id):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)
 		cursor = conn.cursor()
@@ -265,26 +312,17 @@ class GetData():
 		conn.close()
 		return [{'survey_data_id':row[0],'survey_id':row[1],'part_id':row[2],'sect_id':row[3],'ques_id':row[4],"ans":row[5],"flag":row[6],"corr_status":row[7]} for row in rows]
 
-	def getDESuMap(self, pm_id):
-		# Select query to return the mapping between Data Editor and Surveyor based on the Project Manager ID.
+	def getAllDE(self,p_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "SELECT ds.de_id, ds.surveyor_id FROM de_surveyor ds, project_user pu, user u where ds.p_id = pu.project_id and u.user_id = ds.surveyor_id and pu.user_id = %s"
+		sqlcmd = "SELECT user_id FROM project_user where project_id = %s and user_id like 'DE%%'"
 		# print sqlcmd
-		cursor.execute(sqlcmd,(pm_id,))
-		de_su_map = {}	#To store Data editor Surveyor Mapping under the concerned Project Manager
-		# user_list = []	# To store list of DE and Surveyors under the PM
+		deList = []
+		cursor.execute(sqlcmd,(p_id,))
 		for row in cursor.fetchall():
-			de = row[0].strip()
-			su = row[1].strip()
-			if de in de_su_map.keys():
-				# If Data Editor already exists in the dictionary
-				de_su_map[de].append(su)
-			else:
-				# If Data Editor doesn't exist in the dictionary
-				de_su_map[de] = [su]
+			deList.append(row[0])
+		return deList
 
-		return de_su_map
 
 	def getNameUser(self, listUserId):
 		# To return a directory of userId : userName(First Name + Last Name) for a given list of User Ids.
@@ -299,6 +337,27 @@ class GetData():
 			user_dict[row[0]] = row[1]
 
 		return user_dict
+
+	def getDESuMap(self, deList):
+		# Select query to return the mapping between Data Editor and Surveyor based on the Project Manager ID.
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "SELECT ds.de_id, ds.surveyor_id FROM de_surveyor ds where ds.de_id in ('" + "','".join(deList) + "')"
+		print sqlcmd
+		cursor.execute(sqlcmd)
+		de_su_map = {}	#To store Data editor Surveyor Mapping under the concerned Project Manager
+		# user_list = []	# To store list of DE and Surveyors under the PM
+		for row in cursor.fetchall():
+			de = row[0].strip()
+			su = row[1].strip()
+			if de in de_su_map.keys():
+				# If Data Editor already exists in the dictionary
+				de_su_map[de].append(su)
+			else:
+				# If Data Editor doesn't exist in the dictionary
+				de_su_map[de] = [su]
+
+		return de_su_map
 		   
 	def getUnassSurveyor(self, pm_id):
 		# To return a directory of userId : userName(First Name + Last Name) of all Unassigned Surveyors for a given Project Manager's Id.
@@ -412,10 +471,11 @@ class GetData():
 		return_data = {'researchers' : data}
 		conn.close()
 		return return_data
+
 	def getAllQuestions(self, survey_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select ques_text from ques_details where survey_id='%s'" % (survey_id)
+		sqlcmd = "select ques_short_text from ques_details where survey_id='%s'" % (survey_id)
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.commit()
@@ -588,7 +648,7 @@ class GetData():
 		cursor = conn.cursor()
 		sqlcmd = "SELECT project_id FROM project_user where user_id = %s"
 		# print sqlcmd
-		cursor.execute(sqlcmd,user_id)
+		cursor.execute(sqlcmd,(user_id,))
 		return cursor.fetchall()[0][0]
 
 	def getManagerProjects(self):

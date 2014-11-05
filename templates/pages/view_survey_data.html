@@ -1,13 +1,21 @@
 <div class="container">
 	<h3 class="page-header">View Survey Data</h3>
 	<div>
+		<div class="row" >
+			<button class="btn btn-warning pull-right lft" ng-click="getDataByFilter()"> Get Data </button>
+			<select ng-model="selectedSurvey" ng-options="item.id as item.name for item in misc.survey_details" class="pull-right lft" x-ng-change="updateSurveyID(selectedSurvey)">
+			</select>
+			<select ng-model="selectedProject" ng-options="item.id as item.name for item in misc.project_details" class="pull-right" x-ng-change="updateProjectID(selectedProject)">
+			</select>
+		</div>
+	<div>
 	<div max-width="800px" style="overflow-x:scroll">
 	    <table>
 	        <tr>
 	            <th class="right">Select columns </th>
 	            <th ng-repeat="column in columns">
 	                <label class="checkbox">
-	                <input type="checkbox" id="2" class="checkbox" checked ng-model="column.field" ng-init="column.field=true" /> {{column.question}}
+	                <input type="checkbox" id="check" ng-click="trackQuestions(column.question, $index)" class="checkbox" checked ng-model="column.field" ng-init="column.field=true" /> {{column.question}}
 	                </label>
 	            </th>
 	        </tr>
@@ -41,6 +49,6 @@
 	</div>
 	</div>
 	<div class="col-xs-4 col-xs-offset-4 bottom">
-	    <a class="btn btn-success btn-block top pull-right" ng-mousedown="csv.generate()" ng-href="{{ csv.link() }}" download="test.csv">Export to CSV</a>
+	    <a class="btn btn-success btn-block top pull-right" ng-click="generateCsv()" download="test.csv">Export to CSV</a>
 	</div>
 </div>

@@ -172,3 +172,7 @@
 .valign {
 	vertical-align: top !important;
 }
+input.ng-invalid{
+	border: 1px solid #7B2121;
+	background: #FFEEEE;
+}

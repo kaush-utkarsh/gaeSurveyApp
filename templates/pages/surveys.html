@@ -11,21 +11,10 @@
         </div>
     </div>
     <div class="col-xs-12">
-        <div class="btn-group btn-group-primary down pull-right lft bkg">
-            <button class="btn btn-primary" type="button"> Filter by Surveyer Name </button>
-                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li ng-repeat="survey in surveys"><a href>{{survey.surveyorName}}</a></li>
-            </ul>
-        </div>
         <div class="btn-group btn-group-primary down pull-right bkg">
-            <button class="btn btn-primary  lft" type="button"> Filter by Project Id </button>
-                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"><span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li ng-repeat="survey in surveys"><a href>{{survey.name}}</a></li>
-            </ul>
+            <select ng-model="activeSurvey" ng-init="activeSurvey=surveysList[0].ID">
+                <option ng-repeat="survey in surveysList | unique:'ID'" ng-value="survey.ID" ng-selected="activeSurvey==survey.ID">{{survey.name}}</option>
+            </select>
         </div>
         <table class="table table-striped table-bordered table-hover table-condensed">
             <tr>
@@ -38,7 +27,7 @@
                 <th>Date Completed</th>
                 <th></th>
                 
-                <tr ng-repeat="survey in surveys">
+                <tr ng-repeat="survey in surveys | filter: activeSurvey" >
                     <input type="hidden" name="surveyID" id="surveyID" value="{{survey.ID}}">
                     <input type="hidden" name="pID" id="pID" value="{{survey.pID}}">
                     <input type="hidden" name="surveyorID" id="surveyorID" value="{{survey.surveyorID}}">
