@@ -334,7 +334,7 @@ function deletePM(item)
             data: {user_id: localStorage.user, pwd: $('#cnpwd').val()},
             dataType: "html",
             success: function (data) {
-
+                  window.location.assign('/')
                },
               });
             }
