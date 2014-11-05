@@ -91,7 +91,7 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 			controller  : 'smsController'
 		})
 
-		.when('/manager', {	
+		.when('/manage_pm', {	
 			templateUrl : 'pages/manager.html',
 			controller  : 'managerController'
 		})
@@ -355,8 +355,20 @@ surveyApp.controller('smsController', function($scope,surveyFactory) {
 });
 
 surveyApp.controller('managerController', function($scope,surveyFactory) {
-	$scope.managers = surveyFactory.managers;
-	$scope.projects = surveyFactory.projects;
+    $.ajax({
+           url: "/apiManagePM",
+           type: "post",
+           async: false,
+           dataType: "html",
+               success: function (data) {
+                    $scope.managers=JSON.parse(data).managers
+                    $scope.projects=JSON.parse(data).projects
+                   
+                },
+            });
+
+	// $scope.managers = surveyFactory.managers;
+	// $scope.projects = surveyFactory.projects;
 });
 
 /*surveyApp.controller('dataController', function($scope, $filter, ngTableParams, surveyFactory) {

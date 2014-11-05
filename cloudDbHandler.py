@@ -32,6 +32,33 @@ class PostData():
 		cursor.execute(sqlcmd)
 		conn.commit()
 		conn.close()
+		return user_id
+
+	def addProject(self, project):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+		cursor = conn.cursor()
+		p_id = "P" + str(int(GetData().getProjectCount())+ 1)
+		sqlcmd = "insert into project_table (id, title) values('%s','%s')" % (p_id, project)
+		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()
+
+	def deletePMmap(self, pm_id):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "delete from project_user where user_id = %s"
+		cursor.execute(sqlcmd,(pm_id,))
+		conn.commit()
+		conn.close()
+
+	def addProjectUser(self, project_id, user_id, role):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "insert into project_user values (%s,%s,%s)"
+		cursor.execute(sqlcmd,(project_id, user_id, role))
+		conn.commit()
+		conn.close()
+		
 
 	def delDeSuMap(self, de_id, su_id):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
@@ -160,6 +187,16 @@ class GetData():
 		count = cursor.fetchall()[0][0]
 		conn.close()
 		return count
+
+	def getProjectCount(self):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "select MAX(substr(id,2,5)) from project_table"
+		cursor.execute(sqlcmd)
+		count = cursor.fetchall()[0][0]
+		conn.close()
+		return count
+
 
 	def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
 		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
@@ -553,3 +590,44 @@ class GetData():
 		# print sqlcmd
 		cursor.execute(sqlcmd,user_id)
 		return cursor.fetchall()[0][0]
+
+	def getManagerProjects(self):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = """SELECT pu.user_id, CONCAT(u.f_name,' ',u.l_name) as manager_name, pu.project_id, pt.title from project_user pu
+					left join user u on pu.user_id=u.user_id
+					left join project_table pt on pt.id=pu.project_id
+					where pu.role_id='PM'
+					group by pu.project_id
+				"""
+		cursor.execute(sqlcmd)
+		info = []
+		user=[]
+		for row in cursor.fetchall():
+			print row
+			info={
+					'ID': row[0],
+					'Name': row[1],
+					'project_id': row[2],
+					'Project': row[3]
+				}
+			user.append(info)
+		conn.close()
+		return user
+
+	def getUnassProjects(self):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = "Select id, title from project_table where id not in (select project_id from project_user where 1)"
+		cursor.execute(sqlcmd)
+		info = []
+		user=[]
+		for row in cursor.fetchall():
+			print row
+			info={
+					'ID': row[0],
+					'Name': row[1],
+					}
+			user.append(info)
+		conn.close()
+		return user

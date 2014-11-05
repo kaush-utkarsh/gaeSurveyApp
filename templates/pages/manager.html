@@ -4,9 +4,6 @@
             Project Manager
         </h3>
         <div class="pull-right marg">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addproject">Create New Project</button>
-        </div>
-        <div class="pull-right marg">
             <button class="btn btn-primary" data-toggle="modal" data-target="#addmanager">Create New Project Manager Profile</button>
         </div>
     </div>
@@ -18,10 +15,12 @@
                 <th>Project</th>
                 <th></th>
                 <tr ng-repeat="manager in managers">
+                    <input type="hidden" value="{{manager.ID}}">
                     <td>{{manager.ID}}</td>
                     <td>{{manager.Name}}</td>
+                    <input type="hidden" value="{{manager.project_id}}">
                     <td>{{manager.Project}}</td>
-                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm"> Delete </button></td>
+                    <td><button class="btn btn-danger" onclick="deletePM(this)" > Delete </button></td>
                 </tr>
             </tr>
         </table>
@@ -52,7 +51,7 @@
 <div class="modal fade" id="addmanager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+            <form id="pmProjectForm" class="form-horizontal" method="POST" action="#" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Add Project Manager
@@ -81,16 +80,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">Phone Number</label>
+                        <label class="col-xs-4 control-label">DOB</label>
                         <div class="col-xs-8">
-                            <input type="tel" name="Phone Number" class="form-control" placeholder="Location" value="">
+                            <input type="tel" name="DOB" class="form-control" placeholder="DOB" value="">
                         </div>
                     </div>
                     <h5 class="page-header">
                         Assigned Project
                     </h5>
-                    <select data-ng-model="projects"
-                            data-ng-options="project for project in projects">                
+                    <select>
+                            <option ng-repeat="project in projects" value="{{project.ID}}">{{project.Name}}</option>                
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -100,7 +99,7 @@
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" data-dismiss="modal">
+                        <button class="btn btn-success" onclick="submitPMForm(this)" data-dismiss="modal">
                         Add
                         </button>
                     </div>
@@ -123,12 +122,6 @@
                         Basic Info
                     </h5>
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">Project ID</label>
-                        <div class="col-xs-8">
-                            <input type="number" name="projectID" class="form-control" placeholder="Project ID" value="">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-xs-4 control-label">Project Name</label>
                         <div class="col-xs-8">
                             <input type="text" name="projectName" class="form-control" placeholder="Project Name" value="">
@@ -142,7 +135,7 @@
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" data-dismiss="modal"> Add </button>
+                        <button class="btn btn-success" onclick="createProject(this)" data-dismiss="modal"> Add </button>
                     </div>
                 </div>
             </form>

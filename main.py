@@ -179,12 +179,12 @@ class apiReturnSurvey(webapp2.RequestHandler):
 		functionality={'part_id': user_id, 'sections' : data, 'sect':sectfunc}
 		func = json.dumps(functionality)
 		
-		session = get_current_session()
-		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
-		else:
-			template = jinja_environment.get_template('login.html')
-		self.response.write(template.render(func))
+		# session = get_current_session()
+		# if session.has_key('login'):
+		# 	template = jinja_environment.get_template('index.html')
+		# else:
+		# 	template = jinja_environment.get_template('login.html')
+		self.response.write(func)
 	
 	def post(self):
 		user_id = self.request.get('part_id')
@@ -385,7 +385,15 @@ class AddUser(webapp2.RequestHandler):
 		role = self.request.get("role")
 		DOB = self.request.get("DOB")
 		username = dbHandler.GetData().getUsername(first_name,last_name)
-		dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		try:
+			pm_id=self.request.get("pm_id")
+			p_id=dbHandler.GetData().getProjectId(pm_id)
+			dbHandler.PostData().addProjectUser(p_id,user_id,role)
+		except Exception,e:
+			pass
+
+
 		sender = "priyank@innovaccer.com"
 		to = email
 		subject = "User credentials for ENTRE INFO"
@@ -501,6 +509,16 @@ class ViewSurveyData(webapp2.RequestHandler):
 		self.response.write(template.render())
 
 
+class ManagePM(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			template = jinja_environment.get_template('index.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
 class DeleteMapping(webapp2.RequestHandler):
 	def get(self):
 		de_id = self.request.get("de_id")
@@ -523,7 +541,44 @@ class AddMapping(webapp2.RequestHandler):
 		dbHandler.PostData().addDESurveyor(pm_id, de_id, su_id)	
 		self.response.write({su_id,pm_id})
 
+class apiManagePM(webapp2.RequestHandler):
+	def post(self):
+		manager_project=dbHandler.GetData().getManagerProjects()
+		unass_project=dbHandler.GetData().getUnassProjects()	
+		functionality={'managers': manager_project,'projects': unass_project}
+		func = json.dumps(functionality)
+		self.response.write(func)
 
+
+class apiAddPM(webapp2.RequestHandler):
+	def post(self):
+		first_name = self.request.get("first_name")
+		last_name = self.request.get("last_name")
+		email = self.request.get("email")
+		role = self.request.get("role")
+		DOB = self.request.get("DOB")
+		project= self.request.get("project")
+		username = dbHandler.GetData().getUsername(first_name,last_name)
+		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		sender = "priyank@innovaccer.com"
+		to = email
+		subject = "User credentials for ENTRE INFO"
+		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"_"+DOB.replace("/","")+"</i></body></html>"
+		Mail().dispatch(sender, to, subject, body, '', '')
+		dbHandler.PostData().addProjectUser(project,user_id,'PM')
+
+class apiAddProject(webapp2.RequestHandler):
+	def post(self):
+		project_name = self.request.get("project_name")
+		dbHandler.PostData().addProject(project_name)
+		
+class apiDeletePM(webapp2.RequestHandler):
+	def post(self):
+		pm_id = self.request.get("pm_id")
+		dbHandler.PostData().deleteUser(pm_id)
+		dbHandler.PostData().deletePMmap(pm_id)
+		self.response.write('true')
+		
 
 
 app = webapp2.WSGIApplication([
@@ -552,7 +607,7 @@ app = webapp2.WSGIApplication([
 	('/verifySection',apiVerifySection),
 	('/addUser',AddUser),
 	('/login_details',LoginSync),
-
+	('/manage_pm',ManagePM),
 	('/survey_data_sync',SurveyDataSync),
 	('/survey-misc',SurveyDataMiscellaneous),
 	('/survey_data',SurveyData),
@@ -561,6 +616,10 @@ app = webapp2.WSGIApplication([
 	('/de_mapping',displayMapDESurveyor),
 	('/de_map',pageMapDESurveyor),
 	('/del_map',DeleteMapping),
-	('/add_map',AddMapping)
+	('/add_map',AddMapping),
+	('/apiManagePM',apiManagePM),
+	('/addPM',apiAddPM),
+	('/addProject',apiAddProject),
+	('/deletePM',apiDeletePM)
 
 ], debug = True)

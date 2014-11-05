@@ -3,14 +3,14 @@ $(window).on('resize load', function() {
 		    $('body').css({"padding-top": $(".navbar").height() + 20 + "px"});
 		});
 
-function saveProfile(item)
+function saveProfile()
         {
-       
+       $('form[id="profileForm"]').validate()
         $.ajax({
             url: "/apiSaveProfile",
             type: "post",
             async: false,
-            data: $('form').serializeArray(),
+            data: $('form[id="profileForm"]').serializeArray(),
             dataType: "html",
             success: function (data) {
                 // console.log(data)
@@ -91,7 +91,7 @@ function deleteUserRow(item)
         localStorage.pID=$(item).parents('tr').find('#pID').val()
         console.log($(item).parents('tr').find('#pID').val())
         
-        window.location.assign('/returnSurvey?part_id='+localStorage.pID)
+        window.location.assign('/flag_survey')
         }
 
         function checkBoxToggle(item)
@@ -194,7 +194,9 @@ function submitPMuser(role,item)
          last_name: $(item).parents('form').find('input[name="editorLName"]').val(),
          email: $(item).parents('form').find('input[name="email"]').val(),
          DOB: $(item).parents('form').find('input[name="DOB"]').val(),
-        role:role}
+        role:role,
+        pm_id:localStorage.user
+        }
           $.ajax({
              url: "/addUser",
              type: "get",
@@ -239,3 +241,54 @@ function removeDEMap(item)
         });
 
   }
+
+  function submitPMForm(item)
+{
+  datum={first_name: $(item).parents('form').find('input[name="managerFirstName"]').val(),
+         last_name: $(item).parents('form').find('input[name="managerLastName"]').val(),
+         email: $(item).parents('form').find('input[name="email"]').val(),
+         DOB: $(item).parents('form').find('input[name="DOB"]').val(),
+         role: 'PM',
+        project:$(item).parents('form').find('select').val()}
+          $.ajax({
+             url: "/addPM",
+             type: "post",
+             async: false,
+             data: datum,
+             success: function () {
+                 window.location.assign('/manage_pm')
+             },
+        });
+
+}
+
+function createProject(item)
+{
+  datum={project_name: $(item).parents('form').find('input').val()}
+          $.ajax({
+             url: "/addProject",
+             type: "post",
+             async: false,
+             data: datum,
+             success: function () {
+                 window.location.assign('/manage_pm')                
+             },
+        });
+
+}
+
+
+function deletePM(item)
+        {
+            // console.log($(item).parents('tr').find('input[type="hidden"]:eq(0)').val())
+            $.ajax({
+            url: "/deletePM",
+            type: "post",
+            async: false,
+            data: {pm_id: $(item).parents('tr').find('input[type="hidden"]:eq(0)').val()},
+            dataType: "html",
+            success: function (data) {
+               $(item).attr('disabled','disabled')
+               },
+        });
+         }

@@ -7,7 +7,7 @@ console.log($('form').serialize())
 </script>
 <div class="container">
     <div class="col-sm-12">
-        <form class="form-horizontal col-sm-7" method="POST" action="" data-pjax="#main">
+        <form id="profileForm" class="form-horizontal col-sm-7" method="POST" action="" data-pjax="#main">
                 <h3 class="page-header">
                     Edit User Profile
                 </h3>
@@ -17,13 +17,13 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">First Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="f_name" class="form-control" placeholder="First Name" value="{{user.fName}}">
+                    <input type="text" name="f_name" class="form-control" placeholder="First Name" value="{{user.fName}}" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Last Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="l_name" class="form-control" placeholder="Last Name" value="{{user.lName}}">
+                    <input type="text" name="l_name" class="form-control" placeholder="Last Name" value="{{user.lName}}" required>
                 </div>
             </div>
             <input type="hidden" name="user_id" class="form-control" value="{{user.ID}}">
@@ -53,7 +53,7 @@ console.log($('form').serialize())
             <div class="form-group">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
-                    <input type="text" name="primary_phone" class="form-control" placeholder="Phone Number" value="{{user.Phone}}">
+                    <input type="text" name="primary_phone" class="form-control" placeholder="Phone Number" value="{{user.Phone}}" required>
                 </div>
             </div>
             <div class="form-group">
@@ -70,7 +70,7 @@ console.log($('form').serialize())
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">City</label>
-                <div class="col-xs-8">
+                <div class="col-xs-8" required>
                     <input type="text" name="city" class="form-control" placeholder="City" value="{{user.City}}">
                 </div>
             </div>
@@ -82,7 +82,7 @@ console.log($('form').serialize())
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Country</label>
-                <div class="col-xs-8">
+                <div class="col-xs-8" required>
                     <input type="text" name="country" class="form-control" placeholder="Country" value="{{user.Country}}">
                 </div>
             </div>
