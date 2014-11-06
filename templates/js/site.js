@@ -193,7 +193,7 @@ function deleteUserRow(item)
           var arr_checked=[]
           var arr_unchecked=[]
           $('input[type="checkbox"]').each(function(i,item){
-          if($(item).attr('checked')=="checked")
+          if($(item).attr('checked')=="checked"||item.checked==true)
             arr_checked.push(item.value)
           else
             arr_unchecked.push(item.value)
