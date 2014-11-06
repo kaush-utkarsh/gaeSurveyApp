@@ -25,6 +25,34 @@ function saveProfile()
 
         un=$(item).parent().parent().find('input[type="text"]').val()
         pd=$(item).parent().parent().find('input[type="password"]').val()
+        if(un==""||pd=="")
+        {
+          toastr.error("Fields can not be empty")
+        return false;
+        }
+
+          $.ajax({
+            url: "/checkPwd",
+            type: "post",
+            async: false,
+            data: {username:un,password:pd},
+            dataType: "html",
+            success: function (data) {
+                res=data
+            },
+        });
+               if(res=='false')
+               {
+
+                 toastr.error("Wrong Username and Password")
+               return false
+                
+
+                } 
+
+
+
+        
         $.ajax({
             url: "/login",
             type: "post",
@@ -344,7 +372,7 @@ function deletePM(item)
               $('#pwd').val("")
               $('#npwd').val("")
               $('#cnpwd').val("")
-              
+
               toastr.success('Password changed succesfully')
                    },
               });
@@ -364,6 +392,31 @@ function deletePM(item)
 
               un=$('input[id="username"]').val()
              pd=$('input[id="password"]').val()
+             if(un==""||pd=="")
+              {
+                toastr.error("Fields can not be empty")
+                return false;
+              }
+
+               $.ajax({
+            url: "/checkPwd",
+            type: "post",
+            async: false,
+            data: {username:un,password:pd},
+            dataType: "html",
+            success: function (data) {
+                res=data
+            },
+        });
+               if(res=='false')
+               {
+
+                 toastr.error("Wrong Username and Password")
+               return false
+                
+
+                } 
+
              // console.log(un)
              $.ajax({
             url: "/login",

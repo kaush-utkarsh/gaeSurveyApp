@@ -176,3 +176,11 @@ input.ng-invalid{
 	border: 1px solid #7B2121;
 	background: #FFEEEE;
 }
+
+.form-group.required .control-label:after { 
+    color: #d00;
+    content: "*";
+    position: absolute;
+    margin-left: 8px;
+    top:7px;
+}

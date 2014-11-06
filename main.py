@@ -624,14 +624,15 @@ class UserPwd(webapp2.RequestHandler):
 
 class apiCheckPwd(webapp2.RequestHandler):
 	def post(self):
-		login_id = self.request.get("login_id")
-		pwd = self.request.get("pwd")
+		login_id = self.request.get("username")
+		pwd = self.request.get("password")
 		upwd=dbHandler.GetData().getloginPwd(login_id)
-		if upwd==pwd:
-			self.response.write('true')
-		if upwd!=pwd:
-			self.response.write('false')
+		print upwd
+		resp = 'false'
+		if len(upwd)!=0 and upwd==pwd:
+			resp='true'
 
+		self.response.write(resp)
 
 class ChangePwd(webapp2.RequestHandler):
 	def post(self):

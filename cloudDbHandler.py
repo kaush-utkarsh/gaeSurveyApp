@@ -310,6 +310,7 @@ class GetData():
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.close()
+		p=''
 		for r in rows:
 			p=r[0]
 		return p

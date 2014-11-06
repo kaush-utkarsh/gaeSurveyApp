@@ -134,6 +134,8 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
     $scope.selectedValue = null;
     //$scope.misc = [];
         
+      // if($scope.questions.length<1||$scope.questions.length===undefined)
+      //     toastr.warning("No data to display in the table")
 
     $scope.columns = $scope.questions[0].questions;
             $scope.tableParams = new ngTableParams({
@@ -276,7 +278,7 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              async: false,
              data: $scope.datum,
              success: function () {
-              alert('New User Added')
+              // alert('New User Added')
                 angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
                 window.location.assign('/de_map')
              },
@@ -301,7 +303,7 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              async: false,
              data: $scope.datum,
              success: function () {
-              alert('New User Added')
+              // alert('New User Added')
                 angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
                 window.location.assign('/de_map')
 
