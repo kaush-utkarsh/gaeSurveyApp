@@ -170,7 +170,10 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
                     url: '/survey_data',
                     params : {project_id : $scope.selectedProject,survey_id : $scope.selectedSurvey, starting_value : 1, ending_value : 100000}
                 }).success(function (result) {
-                $scope.questions = result;
+                    questions = result.questions.splice(1);
+                    participants = result.participants;
+                    $scope.questions = questions;
+                    $scope.participants = participants;
             });
         }
 
