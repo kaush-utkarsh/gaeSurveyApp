@@ -46,7 +46,7 @@
 	        		<td><a class="btn btn-danger"> Delete </a></td>
 	        		<td>{{data.participant_ID}}</td>
 	        		<td>{{data.lang_id}}</td>
-	                <td ng-repeat="column in data.questions" sortable="column.field" ng-show="columns[$index].field" style="min-width:100px">
+	                <td ng-repeat="column in columns" sortable="column.field" ng-show="columns[$index].field" style="min-width:100px">
 	                    {{column.answer}}
 	                </td>
 	        	</tr>
