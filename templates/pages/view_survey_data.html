@@ -28,7 +28,7 @@
 	    </table>
 	</div> -->
 	<div max-width="800px" style="overflow-x:scroll">
-		<table ng-table="tableParams" show-filter="true" class="table table-striped table-bordered">
+		<table class="table table-striped table-bordered">
 	        <thead>
 	            <tr>
 	            <th class="back valign"></th>
@@ -50,7 +50,7 @@
 	        	</tr>
 	        </tbody>
 	    </table>
-	    <h3>{{nodata}}</h3>
+	    <h3 ng-hide="participants.length == 0">NO DATA TO BE DISPLAYED</h3>
 	</div>
 	</div>
 	<div class="col-xs-4 col-xs-offset-4 bottom">

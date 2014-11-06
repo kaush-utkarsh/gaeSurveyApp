@@ -114,53 +114,31 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
 
     console.log($scope.misc);
     var participantData;
+    var questions;
     $scope.nodata = null;
 
     $.ajax({
              url: "/survey_data",
              type: "get",
              async: false,
-             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'1000'},
+             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'0',ending_value:'1000'},
              dataType: "html",
              success: function (data) {
                  console.log(data);
                  participantData = JSON.parse(data);
-                 $scope.questions = participantData.questions.slice(1); // Getting rid of the extra first column
+                 questions = participantData.questions.slice(1);
+                 $scope.questions =  questions; // Getting rid of the extra first column
                  $scope.participants = participantData.participants;
-
-                 if(participantData.participants.length  == 0) {
-                        $scope.nodata = 'NO DATA TO BE DISPLAYED';
-                 }
              },
         });
     /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
               {title : 'Language ID', field : 'lang_id', visible : true}];*/
-    $scope.selectedValue = null;
+        $scope.selectedValue = null;
     //$scope.misc = [];
         
       // if($scope.questions.length<1||$scope.questions.length===undefined)
       //     toastr.warning("No data to display in the table")
-
-
-    
-            $scope.tableParams = new ngTableParams({
-                page: 1,            // show first page
-                count: 10,          // count per page
-                filter: {
-                    name: ''       // initial filter
-                }
-            }, 
-            {
-                total: $scope.participants.length, // length of data
-                getData: function($defer, params) {
-                    var ordered_data = params.sorting() ?
-                      $filter('orderBy')($scope.questions, params.orderBy()) : data ;
-
-                $defer.resolve(ordered_data.slice((params.page() + 1) * params.count(), params.page() * params.count()));
-                }
-            });
-
-            $scope.unselected = [];
+        $scope.unselected = [];
 
         $scope.trackQuestions = function(question,index) {
             $scope.addQuestion = question;
