@@ -341,7 +341,7 @@ class GetData():
 		# To return a directory of userId : userName(First Name + Last Name) for a given list of User Ids.
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "SELECT user_id, CONCAT(f_name, ' ', l_name) FROM user where user_id in " + str(tuple(set(listUserId)))
+		sqlcmd = "SELECT user_id, CONCAT(f_name, ' ', l_name) FROM user where user_id in ('" + "','".join(listUserId) + "')"
 		# cursor.execute(sqlcmd,(userStr,))
 		cursor.execute(sqlcmd)
 		# user_dict = []
