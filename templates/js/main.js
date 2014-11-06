@@ -133,7 +133,6 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
         });
     /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
               {title : 'Language ID', field : 'lang_id', visible : true}];*/
-
     $scope.selectedValue = null;
     //$scope.misc = [];
         
@@ -478,7 +477,7 @@ surveyApp.controller('researchersController', function($scope,surveyFactory) {
             $scope.dt = new Date();
           };
           $scope.today();
-        
+
 	var rs=JSON.parse(localStorage.Researchers)
 	$scope.researchers = rs.researchers
 });
