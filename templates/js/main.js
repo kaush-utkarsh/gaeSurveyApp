@@ -499,8 +499,14 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
             dataType: "html",
             success: function (data) {
                datjson=JSON.parse(data)
+
               },
         });
+        if(datjson.length < 1) {
+                        toastr.error("No Data to be Displayed");
+                        $scope.errorMsg='No Data to be Displayed'
+                    }
+
         var surveyList=[]
         $.each(datjson,function(i,item){
             if ($.inArray(item, surveyList) === -1) {
@@ -528,6 +534,14 @@ surveyApp.controller('approvalController', function($scope,surveyFactory) {
 
                 },
             });
+
+
+       
+        if($scope.approval_surveys.length < 1) {
+                        toastr.error("No Data to be Displayed");
+                        $scope.errorMsg='No Data to be Displayed'
+                    }
+                    
     $scope.requestType='approval'
  });
 

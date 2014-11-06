@@ -80,9 +80,13 @@ class APIResearcher(webapp2.RequestHandler):
 class Logout(webapp2.RequestHandler):
 	def get(self):
 		get_current_session().terminate(clear_data=True)
+		self.response.headers["Pragma"]="no-cache"
+		self.response.headers["Cache-Control"]="no-cache, no-store, must-revalidate, pre-check=0, post-check=0"
 		self.response.write("session ended")
 	def post(self):
 		get_current_session().terminate(clear_data=True)
+		self.response.headers["Pragma"]="no-cache"
+		self.response.headers["Cache-Control"]="no-cache, no-store, must-revalidate, pre-check=0, post-check=0"
 		self.response.write("session ended")
 
 class UserProfile(webapp2.RequestHandler):
@@ -106,6 +110,10 @@ class UserProfile(webapp2.RequestHandler):
 class Login(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
+
+
+		self.response.headers["Pragma"]="no-cache"
+		self.response.headers["Cache-Control"]="no-cache, no-store, must-revalidate, pre-check=0, post-check=0"
 		if session.has_key('login'):
 			template = jinja_environment.get_template('index.html')
 		else:
