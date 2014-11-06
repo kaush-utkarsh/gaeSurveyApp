@@ -46,7 +46,7 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
-                  <input type='tel' pattern='[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}' title='Phone Number (Format: +99(99)9999-9999)' name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}"  required/>
+                  <input type='tel' pattern='^(\s*\d{10}\s*)(,\s*\d{10}\s*)*,?\s*$' title='Phone Number (Format: Only 10 digit phone numbers)' name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}"  required/>
                  
                 </div>
             </div>

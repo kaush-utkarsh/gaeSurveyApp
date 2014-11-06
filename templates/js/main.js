@@ -121,7 +121,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              url: "/survey_data",
              type: "get",
              async: false,
-             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'10'},
+             data: {project_id:'P0001', survey_id:'GRO01',starting_value:'1',ending_value:'1000'},
              dataType: "html",
              success: function (data) {
                  console.log(data);
@@ -303,7 +303,7 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              success: function () {
               alert('New User Added')
                 angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
-                                window.location.assign('/de_map')
+                window.location.assign('/de_map')
 
              },
         });
@@ -336,8 +336,12 @@ surveyApp.controller('profileController', function($scope,$window,surveyFactory)
             dataType: "html",
             success: function (data) {
                 // console.log(data)
-                $window.location.assign("/")
+                toastr.success("Profile Successfully Updated")
+                // $window.location.assign("/")
             },
+            error: function(data){
+              toastr.error("Profile Could not be updated")
+            }
         });
     };
 

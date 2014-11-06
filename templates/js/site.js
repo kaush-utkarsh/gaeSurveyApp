@@ -122,7 +122,7 @@ function deleteUserRow(item)
             data: {checked: JSON.stringify(arr_checked), unchecked: JSON.stringify(arr_unchecked)},
             dataType: "html",
             success: function (data) {
-
+                toastr.success("Questions flagged for this section")
             },
         });
 
@@ -138,6 +138,8 @@ function deleteUserRow(item)
             data: {part_id: $('#partId').val()},
             dataType: "html",
             success: function (data) {
+                toastr.success("All sections flagged for this survey.")
+
                 window.location.assign('/view_survey')
             },
         });
@@ -180,6 +182,7 @@ function deleteUserRow(item)
                 if($('#sectionsNav').find('li').length>1)
                 {       $('li[value='+$('input[name="sectId"]').val()+']:eq(0)').remove()
                   $('#sectionsNav').find('li:eq(0)').trigger('click')
+                  toastr.success("The Verified Section Submitted Successfully")
                 }
                 else
                   window.location.assign('/survey_approval')
@@ -288,6 +291,7 @@ function deletePM(item)
             data: {pm_id: $(item).parents('tr').find('input[type="hidden"]:eq(0)').val()},
             dataType: "html",
             success: function (data) {
+              toastr.warning("Project Manager deleted Successfully.")
                $(item).attr('disabled','disabled')
                },
         });
@@ -299,11 +303,12 @@ function deletePM(item)
         {
           if($('#pwd').val()=="" || $('#npwd').val()=="" || $('#cnpwd').val()=="")
             {  $('input[value=""]:eq(0)').focus()
+                 toastr.warning('Dont leave empty fields')
                 return false;
             }
             if( $('#npwd').val() != $('#cnpwd').val())
              {
-              alert('New password and confirm password should be same')
+              toastr.warning('New password and confirm password should be same')
               $('#cnpwd').focus()
               return false;
             }
@@ -322,7 +327,7 @@ function deletePM(item)
 
             if(res=='false')
               {
-                  alert('Wrong password entered')
+                  toastr.error('Wrong password entered')
                   $('#pwd').focus()
               } 
             else
@@ -334,8 +339,14 @@ function deletePM(item)
             data: {user_id: localStorage.user, pwd: $('#cnpwd').val()},
             dataType: "html",
             success: function (data) {
-                  window.location.assign('/')
-               },
+              
+
+              $('#pwd').val("")
+              $('#npwd').val("")
+              $('#cnpwd').val("")
+              
+              toastr.success('Password changed succesfully')
+                   },
               });
             }
           }
@@ -345,6 +356,7 @@ function deletePM(item)
           if($(item).attr('disabled')!='disabled')
           $(item).val("")
           })          
+        toastr.success("All entries in the form cleared")
         }
         function checkEnter() {
         if (window.event.keyCode == 13) {
