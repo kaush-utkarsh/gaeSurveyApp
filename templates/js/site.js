@@ -242,25 +242,25 @@ function removeDEMap(item)
 
   }
 
-  function submitPMForm(item)
-{
-  datum={first_name: $(item).parents('form').find('input[name="managerFirstName"]').val(),
-         last_name: $(item).parents('form').find('input[name="managerLastName"]').val(),
-         email: $(item).parents('form').find('input[name="email"]').val(),
-         DOB: $(item).parents('form').find('input[name="DOB"]').val(),
-         role: 'PM',
-        project:$(item).parents('form').find('select').val()}
-          $.ajax({
-             url: "/addPM",
-             type: "post",
-             async: false,
-             data: datum,
-             success: function () {
-                 window.location.assign('/manage_pm')
-             },
-        });
+//   function submitPMForm(item)
+// {
+//   datum={first_name: $(item).parents('form').find('input[name="managerFirstName"]').val(),
+//          last_name: $(item).parents('form').find('input[name="managerLastName"]').val(),
+//          email: $(item).parents('form').find('input[name="email"]').val(),
+//          DOB: $(item).parents('form').find('input[name="DOB"]').val(),
+//          role: 'PM',
+//         project:$(item).parents('form').find('select').val()}
+//           $.ajax({
+//              url: "/addPM",
+//              type: "post",
+//              async: false,
+//              data: datum,
+//              success: function () {
+//                  window.location.assign('/manage_pm')
+//              },
+//         });
 
-}
+// }
 
 function createProject(item)
 {
@@ -341,7 +341,7 @@ function deletePM(item)
           }
         function resetForm(item)
         {
-          $(item).parents('form').find('input[type="text"]').each(function(i,item){
+          $(item).parents('form').find('input').each(function(i,item){
           if($(item).attr('disabled')!='disabled')
           $(item).val("")
           })          

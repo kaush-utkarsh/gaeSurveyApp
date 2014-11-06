@@ -276,11 +276,14 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              async: false,
              data: $scope.datum,
              success: function () {
-                
+              alert('New User Added')
+                angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
+                window.location.assign('/de_map')
              },
         });
+        }
            $scope.submitPMEditor=function(role,item)
-        {
+            {
            $scope.datum=null
       
           // alert(angular.element('input[name="suFName"]').val())
@@ -298,11 +301,14 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              async: false,
              data: $scope.datum,
              success: function () {
-                
+              alert('New User Added')
+                angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
+                                window.location.assign('/de_map')
+
              },
         });
 
-}
+        }
 
 
 
@@ -544,6 +550,37 @@ surveyApp.controller('managerController', function($scope,surveyFactory) {
                    
                 },
             });
+
+
+$scope.maxDate  = new Date();
+$scope.today = function() {
+        $scope.dt = new Date();
+      };
+      $scope.today();
+
+ $scope.submitPMForm=function(item)
+{
+
+  $scope.datum=null
+      
+          // alert(angular.element('input[name="suFName"]').val())
+          $scope.datum={first_name: angular.element('input[name="managerFirstName"]').val(),
+         last_name: angular.element('input[name="managerLastName"]').val(),
+         email: angular.element('input[name="email"]').val(),
+         DOB: angular.element('input[name="DOB"]').val(),
+         role: 'PM',
+        project:angular.element('form[id="pmProjectForm"]').find('select').val()}
+          $.ajax({
+             url: "/addPM",
+             type: "post",
+             async: false,
+             data:  $scope.datum,
+             success: function () {
+                 window.location.assign('/manage_pm')
+             },
+        });
+
+}
 
 	// $scope.managers = surveyFactory.managers;
 	// $scope.projects = surveyFactory.projects;
