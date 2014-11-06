@@ -168,12 +168,10 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
             $http({
                     method: 'GET',
                     url: '/survey_data',
-                    params : {project_id : $scope.selectedProject,survey_id : $scope.selectedSurvey, starting_value : 1, ending_value : 100000}
-                }).success(function (result) {
-                    questions = result.questions.splice(1);
-                    participants = result.participants;
-                    $scope.questions = questions;
-                    $scope.participants = participants;
+                    params : {project_id : $scope.selectedProject,survey_id : $scope.selectedSurvey, starting_value : 0, ending_value : 100000}
+            }).success(function (result) {
+                    $scope.questions = angular.copy(result.questions.splice(1));
+                    $scope.participants = angular.copy(result.participants);
             });
         }
 
