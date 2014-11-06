@@ -1,5 +1,5 @@
 'use strict';
-var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable']);
+var surveyApp = angular.module('surveyApp',['ngRoute', 'ngTable','ui.bootstrap']);
 
 surveyApp.factory('surveyFactory',['$http', function($http) {
 	 
@@ -232,6 +232,21 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              },
         });
 
+        $scope.maxDate  = new Date();
+        $scope.today = function() {
+        $scope.dt = new Date();
+      };
+      $scope.today();
+
+      $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.opened = true;
+    };
+
+
+
 
         $scope.updateLi = function(index) {
 
@@ -241,8 +256,53 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
             $scope.currentDe=$scope.editors[index].ID
             
         } 
+        $scope.datum=null
+      $scope.submitPMSurveyor=function(role,item)
+        {
+          $scope.datum=null
+      
+          // alert(angular.element('input[name="suFName"]').val())
+          $scope.datum={first_name: angular.element('input[name="suFName"]').val(),
+                 last_name: angular.element('input[name="suLName"]').val(),
+                 email: angular.element('input[name="semail"]').val(),
+                 DOB: angular.element('input[name="sDOB"]').val(),
+                role:role,
+                pm_id:localStorage.user
+                }
+                // console.log(datum)
+          $.ajax({
+             url: "/addUser",
+             type: "get",
+             async: false,
+             data: $scope.datum,
+             success: function () {
+                
+             },
+        });
+           $scope.submitPMEditor=function(role,item)
+        {
+           $scope.datum=null
+      
+          // alert(angular.element('input[name="suFName"]').val())
+          $scope.datum={first_name: angular.element('input[name="edFName"]').val(),
+                 last_name: angular.element('input[name="edLName"]').val(),
+                 email: angular.element('input[name="edemail"]').val(),
+                 DOB: angular.element('input[name="edDOB"]').val(),
+                role:role,
+                pm_id:localStorage.user
+                }
+                // console.log(datum)
+          $.ajax({
+             url: "/addUser",
+             type: "get",
+             async: false,
+             data: $scope.datum,
+             success: function () {
+                
+             },
+        });
 
-
+}
 
 
 
@@ -274,6 +334,23 @@ surveyApp.controller('profileController', function($scope,$window,surveyFactory)
             },
         });
     };
+
+
+
+$scope.maxDate  = new Date();
+$scope.today = function() {
+        $scope.dt = new Date();
+      };
+      $scope.today();
+
+      $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.opened = true;
+    };
+
+
 });
 
 // surveyApp.controller('surveysController', function($scope,surveyFactory) {

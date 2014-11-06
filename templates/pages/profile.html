@@ -11,20 +11,20 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label">First Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="f_name" class="form-control" placeholder="First Name" ng-model="user.fName" value="{{user.fName}}" required>
+                    <input type="text" name="f_name" class="form-control" placeholder="First Name" value="{{user.fName}}" ng-model="user.fName" required  maxlength="50">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Last Name</label>
                 <div class="col-xs-8">
-                    <input type="text" name="l_name" class="form-control" placeholder="Last Name" ng-model="user.lName" value="{{user.lName}}" required>
+                    <input type="text" name="l_name" class="form-control" placeholder="Last Name"  value="{{user.lName}}" ng-model="user.lName" required maxlength="50">
                 </div>
             </div>
             <input type="hidden" name="user_id" class="form-control" value="{{user.ID}}">
             <div class="form-group">
                 <label class="col-xs-4 control-label">Email Address</label>
                 <div class="col-xs-8">
-                    <input type="text" name="email" class="form-control" placeholder="Email" ng-model="user.Email" value="{{user.Email}}" disabled>
+                    <input type="text" name="email" class="form-control" placeholder="Email"  value="{{user.Email}}" disabled>
                 </div>
             </div>
             <div class="">
@@ -34,44 +34,50 @@
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Date Of Birth</label>
-                <div class="col-xs-8">
-                    <input type="text" id="DOB" name="DOB" class="datepicker form-control" placeholder="Date Of Birth" ng-model="user.DOB" value="{{user.DOB}}" required>
+                <div class="col-xs-8  required">
+                    <p class="input-group">
+                      <input name="DOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" disabled/>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
+                      </span>
+                    </p>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
-                    <input type="tel" name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}" required>
+                    <input type="tel" pattern='^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$' title='Phone Number (Format: 9999999999)' name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}"  required/>
+                 
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Address Line 1</label>
                 <div class="col-xs-8">
-                    <input type="text" name="address" class="form-control" placeholder="House Number" ng-model="user.HouseNumber" value="{{user.HouseNumber}}">
+                    <input type="text" name="address" class="form-control" placeholder="House Number"  value="{{user.HouseNumber}}" ng-model="user.HouseNumber" maxlength="50">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Street</label>
                 <div class="col-xs-8">
-                    <input type="text" name="line_1" class="form-control" placeholder="Street" ng-model="user.Street" value="{{user.Street}}">
+                    <input type="text" name="line_1" class="form-control" placeholder="Street"  value="{{user.Street}}" ng-model="user.Street" maxlength="50">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">City</label>
                 <div class="col-xs-8" >
-                    <input required type="text" name="city" class="form-control" placeholder="City" ng-model="user.City" value="{{user.City}}">
+                    <input required type="text" name="city" class="form-control" placeholder="City"  value="{{user.City}}" ng-model="user.City" maxlength="50">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">State</label>
                 <div class="col-xs-8">
-                    <input type="text" name="state" class="form-control" placeholder="State" ng-model="user.State" value="{{user.State}}">
+                    <input type="text" name="state" class="form-control" placeholder="State"  value="{{user.State}}" ng-model="user.State" maxlength="50">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">Country</label>
                 <div class="col-xs-8">
-                    <input type="text" name="country" class="form-control" placeholder="Country" ng-model="user.Country" value="{{user.Country}}" required>
+                    <input type="text" name="country" class="form-control" placeholder="Country"  value="{{user.Country}}" ng-model="user.Country" required maxlength="50">
                 </div>
             </div>
             <div class="">
@@ -82,7 +88,7 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label">Account Type</label>
                 <div class="col-xs-8">
-                    <input type="text" name="role" class="form-control" placeholder="accountType" ng-model="user.accountType" value="{{user.accountType}}" disabled>
+                    <input type="text" name="role" class="form-control" placeholder="accountType"  value="{{user.accountType}}" disabled>
                 </div>
             </div>
             <div class="footer">

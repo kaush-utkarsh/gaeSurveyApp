@@ -188,26 +188,26 @@ function deleteUserRow(item)
 
         }
 
-function submitPMuser(role,item)
-{
-  datum={first_name: $(item).parents('form').find('input[name="editorFName"]').val(),
-         last_name: $(item).parents('form').find('input[name="editorLName"]').val(),
-         email: $(item).parents('form').find('input[name="email"]').val(),
-         DOB: $(item).parents('form').find('input[name="DOB"]').val(),
-        role:role,
-        pm_id:localStorage.user
-        }
-          $.ajax({
-             url: "/addUser",
-             type: "get",
-             async: false,
-             data: datum,
-             success: function () {
+// function submitPMuser(role,item)
+// {
+//   datum={first_name: $(item).parents('form').find('input[name="editorFName"]').val(),
+//          last_name: $(item).parents('form').find('input[name="editorLName"]').val(),
+//          email: $(item).parents('form').find('input[name="email"]').val(),
+//          DOB: $(item).parents('form').find('input[name="DOB"]').val(),
+//         role:role,
+//         pm_id:localStorage.user
+//         }
+//           $.ajax({
+//              url: "/addUser",
+//              type: "get",
+//              async: false,
+//              data: datum,
+//              success: function () {
                 
-             },
-        });
+//              },
+//         });
 
-}
+// }
 
 function removeDEMap(item)
 {
@@ -339,3 +339,32 @@ function deletePM(item)
               });
             }
           }
+        function resetForm(item)
+        {
+          $(item).parents('form').find('input[type="text"]').each(function(i,item){
+          if($(item).attr('disabled')!='disabled')
+          $(item).val("")
+          })          
+        }
+        function checkEnter() {
+        if (window.event.keyCode == 13) {
+            {
+
+              un=$('input[id="username"]').val()
+             pd=$('input[id="password"]').val()
+             // console.log(un)
+             $.ajax({
+            url: "/login",
+            type: "post",
+            async: false,
+            data: {username:un,password:pd},
+            dataType: "html",
+            success: function (data) {
+                localStorage.user = data;
+                window.location.assign("/")
+            },
+        });
+
+            }
+        }
+    }

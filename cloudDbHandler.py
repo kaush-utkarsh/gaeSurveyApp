@@ -10,7 +10,7 @@ from google.appengine.api import rdbms
 
 # Login Credentials
 
-_INSTANCE_NAME = 'jpal-survey-app:web-database' 
+_INSTANCE_NAME = 'localhost' 
 dbname = 'innovaccer_jpal'
 usr='root'
 pss='root'
@@ -302,6 +302,18 @@ class GetData():
 		for r in rows:
 			p=r[0]
 		return p
+
+	def getloginPwd(self, u_id):
+		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)
+		cursor = conn.cursor()
+		sqlcmd = "select login_password from user where login_id = '%s'" % (u_id,)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		for r in rows:
+			p=r[0]
+		return p
+
 
 	def getCorrections(self, survey_id):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)

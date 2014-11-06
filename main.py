@@ -620,6 +620,18 @@ class UserPwd(webapp2.RequestHandler):
 		if upwd!=pwd:
 			self.response.write('false')
 
+
+class apiCheckPwd(webapp2.RequestHandler):
+	def post(self):
+		login_id = self.request.get("login_id")
+		pwd = self.request.get("pwd")
+		upwd=dbHandler.GetData().getloginPwd(login_id)
+		if upwd==pwd:
+			self.response.write('true')
+		if upwd!=pwd:
+			self.response.write('false')
+
+
 class ChangePwd(webapp2.RequestHandler):
 	def post(self):
 		user_id = self.request.get("user_id")
@@ -746,6 +758,7 @@ app = webapp2.WSGIApplication([
 	('/userPwd',UserPwd),
 	('/changePwd',ChangePwd),
 	('/deletePM',apiDeletePM),
+	('/checkPwd',apiCheckPwd),
 	('/export_csv',ExportData)
 
 ], debug = True)
