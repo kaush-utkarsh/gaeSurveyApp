@@ -34,7 +34,7 @@
 	            <th class="back valign"></th>
 	            <th class="back valign">Participant ID</th>
 	            <th class="back valign">Language ID</th>
-	                <th class="back valign" ng-repeat="question in questions"
+	                <th class="back valign" ng-repeat="question in questions track by $index"
 	                    class="text-center sortable"  style="min-width: 250px">
 	                    <div>{{question}}</div>
 	                    <span class="pull-right"><span class="caret"></span><span class="caret-up"></span></span>
@@ -43,7 +43,7 @@
 	        </thead>
 	        <tbody>
 	        	<tr ng-repeat="participant in participants">
-	        		<td><a class="btn btn-danger"> Delete </a></td>
+	        		<!--<td><a class="btn btn-danger"> Delete </a></td>-->
 	                <td ng-repeat="answer in participant" style="min-width:100px">
 	                    {{answer}}
 	                </td>
