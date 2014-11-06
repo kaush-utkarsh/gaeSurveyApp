@@ -396,7 +396,8 @@ class SurveyData(webapp2.RequestHandler):
 		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
 		all_options = dbHandler.GetData().getOptions(survey_id)
 		all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
-		self.response.write(json.dumps({'questions':all_questions, 'participants':all_participants}))
+		self.response.write(all_options)
+		#self.response.write(json.dumps({'questions':all_questions, 'participants':all_participants}))
 
 
 class AddUser(webapp2.RequestHandler):
