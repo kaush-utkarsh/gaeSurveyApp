@@ -356,36 +356,48 @@ class apiVerifySection(webapp2.RequestHandler):
 			pass
 		self.response.write('true')	
 
+# class SurveyData(webapp2.RequestHandler):
+# 	def get(self):
+# 		project_id = self.request.get("project_id")
+# 		survey_id = self.request.get("survey_id")
+# 		starting_value = self.request.get("starting_value")
+# 		ending_value = self.request.get("ending_value")
+# 		all_question = dbHandler.GetData().getAllQuestions(survey_id)
+# 		all_questions = [_tuple[0] for _tuple in all_question]
+# 		result = dbHandler.GetData().getSurveyData(survey_id, project_id, starting_value, ending_value)
+# 		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in result]
+# 		all_participants=list(set([item['participant_ID'] for item in result_dict]))
+# 		final_list = []
+# 		language = ''
+# 		for participant in all_participants:
+# 		 	participant_dict = {'participant_ID':participant,'questions':[]}
+# 			temp_questions = []
+# 			for item in result_dict:
+# 				if item['participant_ID'] == participant:
+# 					language = item['lang_id']
+# 					participant_dict['questions'].append({'question':item['question'],'answer':item['answer'],'option':item['option']})
+# 					temp_questions.append(item['question'])
+# 			diff = set(all_questions).difference(set(temp_questions))
+# 			if len(diff) > 0:
+# 				for item in diff:
+# 					participant_dict['questions'].append({"question":item,"answer":'','option':''})
+# 			participant_dict.update({'lang_id':language})
+# 			final_list.append(participant_dict)
+# 		# print "Type ", type(final_list)
+# 		# print json.dumps({'data':final_list},encoding='utf-8')
+# 		self.response.write(json.dumps({'data':final_list},encoding='latin1'))
+
 class SurveyData(webapp2.RequestHandler):
 	def get(self):
 		project_id = self.request.get("project_id")
 		survey_id = self.request.get("survey_id")
 		starting_value = self.request.get("starting_value")
 		ending_value = self.request.get("ending_value")
-		all_question = dbHandler.GetData().getAllQuestions(survey_id)
-		all_questions = [_tuple[0] for _tuple in all_question]
-		result = dbHandler.GetData().getSurveyData(survey_id, project_id, starting_value, ending_value)
-		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in result]
-		all_participants=list(set([item['participant_ID'] for item in result_dict]))
-		final_list = []
-		language = ''
-		for participant in all_participants:
-		 	participant_dict = {'participant_ID':participant,'questions':[]}
-			temp_questions = []
-			for item in result_dict:
-				if item['participant_ID'] == participant:
-					language = item['lang_id']
-					participant_dict['questions'].append({'question':item['question'],'answer':item['answer'],'option':item['option']})
-					temp_questions.append(item['question'])
-			diff = set(all_questions).difference(set(temp_questions))
-			if len(diff) > 0:
-				for item in diff:
-					participant_dict['questions'].append({"question":item,"answer":'','option':''})
-			participant_dict.update({'lang_id':language})
-			final_list.append(participant_dict)
-		# print "Type ", type(final_list)
-		# print json.dumps({'data':final_list},encoding='utf-8')
-		self.response.write(json.dumps({'data':final_list},encoding='latin1'))
+		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		all_options = dbHandler.GetData().getOptions(survey_id)
+		all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
+		self.response.write({'questions':all_questions, 'participants':all_participants})
+
 
 class AddUser(webapp2.RequestHandler):
 	def get(self):

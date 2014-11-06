@@ -20,6 +20,15 @@ pss='root'
 
 class PostData():
 	
+	# A good testiminy of how to keep variable/function names - Courtesy Dhruv
+	def view_data(self,query,values):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = query
+		cursor.execute(sqlcmd,values)
+		conn.commit()
+		conn.close() 
+
 	def addUser(self, username, first_name, last_name, email, role, DOB):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 		cursor = conn.cursor()
@@ -207,13 +216,25 @@ class GetData():
 	def getAllQuestionsAndIds(self,survey_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select q_no,ques_short_text from ques_details where survey_id='%s'" % (survey_id)
+		sqlcmd = "select ques_short_text from ques_details where survey_id='%s' order by prim_key" % (survey_id)
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.commit()
+		conn.close()
+		final_list=[]
+		for row in rows:
+			final_list.append(row[0])
+		return final_list
+
+	def getOptions(self,survey_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+		cursor = conn.cursor()
+		sqlcmd = "select ques_no,op_id,op_text from options where survey_id=" + survey_id
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.commit()
 		conn.close()
 		return rows
-
 
 	def getUserCountWithRole(self,role):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
@@ -234,17 +255,29 @@ class GetData():
 		return count
 
 
-	def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
-		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss,charset='utf8')
+	# def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
+	# 	conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss,charset='utf8')
+	# 	cursor = conn.cursor()
+	# 	sqlcmd = "call `innovaccer_jpal`.`survey_data_all_proc`('"+survey_id+"','"+project_id+"',"+starting_count+","+ending_count+")"
+	# 	cursor.execute(sqlcmd)
+	# 	rows = cursor.fetchall()
+	# 	conn.close()
+	# 	survey_data = []
+	# 	for row in rows:
+	# 		survey_data.append(row)
+	# 	return survey_data
+
+	def getSurveyData(self,starting_count,ending_count):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
 		cursor = conn.cursor()
-		sqlcmd = "call `innovaccer_jpal`.`survey_data_all_proc`('"+survey_id+"','"+project_id+"',"+starting_count+","+ending_count+")"
+		sqlcmd = "select * from view_data_table limit "+starting_count+","+ending_count
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.close()
-		survey_data = []
+		final_rows = []
 		for row in rows:
-			survey_data.append(row)
-		return survey_data
+			final_rows.append(list(row))
+		return final_rows
 
 	def getSurveyDetails(self):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database = dbname, user=usr, passwd=pss)
