@@ -128,7 +128,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              success: function (data) {
                  console.log(data);
                  participantData = JSON.parse(data);
-                 questions = participantData.questions.slice(1).slice().slice(1,a.length-1);
+                 questions = participantData.questions.slice(1,a.length-1);
                  $scope.questions =  angular.copy(questions); // Getting rid of the extra first column
                  $scope.participants = angular.copy(participantData.participants);
              },
@@ -172,7 +172,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
                     url: '/survey_data',
                     params : {project_id : $scope.selectedProject,survey_id : $scope.selectedSurvey, starting_value : 0, ending_value : 100000}
             }).success(function (result) {
-                    $scope.questions = angular.copy(result.questions.splice(1));
+                    $scope.questions = angular.copy(result.questions.slice(1,a.length-1));
                     $scope.participants = angular.copy(result.participants);
             });
         }
