@@ -103,21 +103,20 @@ surveyApp.config(function($routeProvider,$locationProvider) {
 
 surveyApp.controller('surveyDataController', function($scope, $filter, $window,surveyFactory, $http, ngTableParams) {
     $.ajax({
-             url: "/survey-misc",
-             type: "get",
-             async: false,
-             dataType: "html",
-             success: function (data) {
-             $scope.tmp = JSON.parse(data);
-             },
-        });   
-    $scope.misc = $scope.tmp;
-    $scope.new_data  = "hello";
-    console.log($scope.misc);
-    //console.log($scope.misc.project_details[0]['id']);
+         url: "/survey-misc",
+         type: "get",
+         async: false,
+         dataType: "html",
+         success: function (data) {
+            $scope.misc = JSON.parse(data);
+         },
+    });
 
+    console.log($scope.misc);
+    var participantData;
     $scope.nodata = null;
-     $.ajax({
+
+    $.ajax({
              url: "/survey_data",
              type: "get",
              async: false,
@@ -125,8 +124,11 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              dataType: "html",
              success: function (data) {
                  console.log(data);
-                 $scope.questions = JSON.parse(data).data;
-                 if($scope.questions.length < 1) {
+                 participantData = JSON.parse(data);
+                 $scope.questions = participantData.questions.slice(1); // Getting rid of the extra first column
+                 $scope.participants = participantData.participants;
+
+                 if(participantData.participants.length  == 0) {
                         $scope.nodata = 'NO DATA TO BE DISPLAYED';
                  }
              },
@@ -139,15 +141,17 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
       // if($scope.questions.length<1||$scope.questions.length===undefined)
       //     toastr.warning("No data to display in the table")
 
-    $scope.columns = $scope.questions[0].questions;
+
+    
             $scope.tableParams = new ngTableParams({
                 page: 1,            // show first page
                 count: 10,          // count per page
                 filter: {
                     name: ''       // initial filter
                 }
-            }, {
-                total: $scope.questions.length, // length of data
+            }, 
+            {
+                total: $scope.participants.length, // length of data
                 getData: function($defer, params) {
                     var ordered_data = params.sorting() ?
                       $filter('orderBy')($scope.questions, params.orderBy()) : data ;

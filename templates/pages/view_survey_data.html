@@ -34,20 +34,18 @@
 	            <th class="back valign"></th>
 	            <th class="back valign">Participant ID</th>
 	            <th class="back valign">Language ID</th>
-	                <th class="back valign" ng-repeat="column in columns" ng-show="column.question"
+	                <th class="back valign" ng-repeat="question in questions"
 	                    class="text-center sortable"  style="min-width: 250px">
-	                    <div>{{column.question}}</div>
+	                    <div>{{question}}</div>
 	                    <span class="pull-right"><span class="caret"></span><span class="caret-up"></span></span>
 	                </th>
 	            </tr>
 	        </thead>
 	        <tbody>
-	        	<tr ng-repeat="data in questions">
+	        	<tr ng-repeat="participant in participants">
 	        		<td><a class="btn btn-danger"> Delete </a></td>
-	        		<td>{{data.participant_ID}}</td>
-	        		<td>{{data.lang_id}}</td>
-	                <td ng-repeat="column in data.questions" ng-show="column.question" style="min-width:100px">
-	                    {{column.answer}}
+	                <td ng-repeat="answer in participant" style="min-width:100px">
+	                    {{answer}}
 	                </td>
 	        	</tr>
 	        </tbody>
