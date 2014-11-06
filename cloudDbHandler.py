@@ -13,7 +13,7 @@ from google.appengine.api import rdbms
 _INSTANCE_NAME = 'jpal-survey-app:web-database' 
 dbname = 'innovaccer_jpal'
 usr='root'
-pss='root'
+pss=''
 
 #########################
 

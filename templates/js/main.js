@@ -116,7 +116,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
     console.log($scope.misc);
     //console.log($scope.misc.project_details[0]['id']);
 
-
+    $scope.nodata = null;
      $.ajax({
              url: "/survey_data",
              type: "get",
@@ -126,11 +126,13 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              success: function (data) {
                  console.log(data);
                  $scope.questions = JSON.parse(data).data;
+                 if($scope.questions.length < 1) {
+                        $scope.nodata = 'NO DATA TO BE DISPLAYED';
+                 }
              },
         });
     /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
               {title : 'Language ID', field : 'lang_id', visible : true}];*/
-
     $scope.selectedValue = null;
     //$scope.misc = [];
         
@@ -175,8 +177,9 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
 
         $scope.updateSurveyID = function(item) {
             $scope.surveyFilterID = item;
+            $scope.disabled = '';
         }
-
+        $scope.disabled = 'disabled';
         $scope.getDataByFilter = function (){
           console.log($scope.selectedProject);
           console.log($scope.selectedSurvey);
@@ -240,12 +243,13 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
       };
       $scope.today();
 
+    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+    $scope.format = $scope.formats[2];
       $scope.open = function($event) {
         $event.preventDefault();
         $event.stopPropagation();
-
         $scope.opened = true;
-    };
+     };
 
 
 
@@ -347,7 +351,8 @@ surveyApp.controller('profileController', function($scope,$window,surveyFactory)
         });
     };
 
-
+    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+    $scope.format = $scope.formats[2];
 
 $scope.maxDate  = new Date();
 $scope.today = function() {
@@ -456,12 +461,6 @@ surveyApp.controller('surveyVerifyController', function($scope,surveyFactory) {
 
 });
 
-
-
-
-
-
-
 surveyApp.controller('researchersController', function($scope,surveyFactory) {
 	$.ajax({
             url: "/apiResearcher",
@@ -469,11 +468,15 @@ surveyApp.controller('researchersController', function($scope,surveyFactory) {
             async: false,
             dataType: "html",
             success: function (data) {
-             
                 localStorage.Researchers = data;
             },
         });
 
+    $scope.maxDate  = new Date();
+    $scope.today = function() {
+            $scope.dt = new Date();
+          };
+          $scope.today();
 
 	var rs=JSON.parse(localStorage.Researchers)
 	$scope.researchers = rs.researchers
@@ -503,7 +506,6 @@ surveyApp.controller('surveysController', function($scope,surveyFactory) {
               },
         });
         if(datjson.length < 1) {
-                        toastr.error("No Data to be Displayed");
                         $scope.errorMsg='No Data to be Displayed'
                     }
 
