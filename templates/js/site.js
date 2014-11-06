@@ -262,20 +262,20 @@ function removeDEMap(item)
 
 // }
 
-function createProject(item)
-{
-  datum={project_name: $(item).parents('form').find('input').val()}
-          $.ajax({
-             url: "/addProject",
-             type: "post",
-             async: false,
-             data: datum,
-             success: function () {
-                 window.location.assign('/manage_pm')                
-             },
-        });
+// function createProject(item)
+// {
+//   datum={project_name: $(item).parents('form').find('input').val()}
+//           $.ajax({
+//              url: "/addProject",
+//              type: "post",
+//              async: false,
+//              data: datum,
+//              success: function () {
+//                  window.location.assign('/manage_pm')                
+//              },
+//         });
 
-}
+// }
 
 
 function deletePM(item)

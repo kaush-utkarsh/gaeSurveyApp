@@ -114,7 +114,7 @@
 <div class="modal fade" id="addproject" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+            <form id="projectForm" class="form-horizontal" ng-submit="createProject()" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Project
@@ -127,18 +127,18 @@
                     <div class="form-group">
                         <label class="col-xs-4 control-label">Project Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="projectName" class="form-control" placeholder="Project Name" value="">
+                            <input type="text" name="projectName" class="form-control" placeholder="Project Name" value="" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="btn-group pull-left">
-                        <button class="btn btn-danger" data-dismiss="modal">
+                        <button class="btn btn-danger" onclick="resetForm(this)" data-dismiss="modal">
                         Cancel
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" onclick="createProject(this)" data-dismiss="modal"> Add </button>
+                        <input type="submit" class="btn btn-success"  ng-disabled="projectForm.$invalid" value="Add Project" />
                     </div>
                 </div>
             </form>

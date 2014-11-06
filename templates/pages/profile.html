@@ -36,7 +36,7 @@
                 <label class="col-xs-4 control-label">Date Of Birth</label>
                 <div class="col-xs-8  required">
                     <p class="input-group">
-                      <input name="DOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" disabled/>
+                      <input name="DOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
                       </span>
@@ -46,7 +46,7 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
-                   <input type='tel' pattern='[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}' title='Phone Number (Format: +99(99)9999-9999)' name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}"  required/>
+                  <input type='tel' pattern='[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}' title='Phone Number (Format: +99(99)9999-9999)' name="primary_phone" class="form-control" placeholder="Phone Number" ng-model="user.Phone" value="{{user.Phone}}"  required/>
                  
                 </div>
             </div>

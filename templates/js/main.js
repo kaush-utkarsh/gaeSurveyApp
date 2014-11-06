@@ -582,6 +582,24 @@ $scope.today = function() {
 
 }
 
+
+$scope.createProject=function()
+{
+          $.ajax({
+             url: "/addProject",
+             type: "post",
+             async: false,
+             data: {project_name: angular.element('input[name="projectName"]').val()},
+             success: function () {
+                 window.location.assign('/manage_pm')                
+             },
+        });
+
+}
+
+
+
+
 	// $scope.managers = surveyFactory.managers;
 	// $scope.projects = surveyFactory.projects;
 });

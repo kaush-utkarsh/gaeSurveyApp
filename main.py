@@ -139,6 +139,7 @@ class SaveProfile(webapp2.RequestHandler):
 
 	def post(self):
 		post_data = self.request.POST
+		print post_data
 		dbHandler.PostData().saveProfileData(post_data)
 		self.response.write('true')
 
