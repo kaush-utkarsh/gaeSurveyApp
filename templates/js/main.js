@@ -126,7 +126,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              success: function (data) {
                  console.log(data);
                  $scope.questions = JSON.parse(data).data;
-                 if($scope.questions < 1) {
+                 if($scope.questions.length < 1) {
                         $scope.nodata = 'NO DATA TO BE DISPLAYED';
                  }
              },
@@ -462,12 +462,6 @@ surveyApp.controller('surveyVerifyController', function($scope,surveyFactory) {
 
 });
 
-
-
-
-
-
-
 surveyApp.controller('researchersController', function($scope,surveyFactory) {
 	$.ajax({
             url: "/apiResearcher",
@@ -475,12 +469,16 @@ surveyApp.controller('researchersController', function($scope,surveyFactory) {
             async: false,
             dataType: "html",
             success: function (data) {
-             
                 localStorage.Researchers = data;
             },
         });
 
-
+    $scope.maxDate  = new Date();
+    $scope.today = function() {
+            $scope.dt = new Date();
+          };
+          $scope.today();
+        
 	var rs=JSON.parse(localStorage.Researchers)
 	$scope.researchers = rs.researchers
 });

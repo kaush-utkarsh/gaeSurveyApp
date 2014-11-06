@@ -32,7 +32,7 @@
 <div class="modal fade" id="addResearcher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="#" data-pjax="#main">
+            <form id="researcherform" class="form-horizontal" ng-submit="" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Add Researcher
@@ -41,41 +41,40 @@
                 <div class="modal-body">
                     <input type="hidden" name="companyId" value="">
                     <input type="hidden" name="_method" value="put">
-                    <div class="form-group">
-                        <label class="col-xs-4 control-label">Researcher Name</label>
+                    <div class="form-group required">
+                        <label class="col-xs-4 control-label">Ressearcher First Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="researcherName" class="form-control" placeholder="Researcher Name" value="">
+                            <input type="text" name="edFName" class="form-control" placeholder="Researcher Name" value="" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-4 control-label">Location</label>
+                    <div class="form-group required">
+                        <label class="col-xs-4 control-label required">Researcher Last Name</label>
                         <div class="col-xs-8">
-                            <input type="text" name="Location" class="form-control" placeholder="Location" value="">
+                            <input type="text" name="edLName" class="form-control" placeholder="Researcher Last Name" value="" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-4 control-label">Age</label>
+                    <div class="form-group required">
+                        <label class="col-xs-4 control-label required">Researcher Age</label>
                         <div class="col-xs-8">
-                            <input type="number" name="Location" class="form-control" placeholder="Age" value="">
+                            <input type="number" name="age" class="form-control" placeholder="Age" value="" required>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group required">
                         <label class="col-xs-4 control-label">Email ID</label>
                         <div class="col-xs-8">
-                            <input type="email" name="email" class="form-control" placeholder="Email Address" value="">
+                               <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="edemail" class="form-control" placeholder="Email Address" value="">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="btn-group pull-left">
-                        <button class="btn btn-danger" data-dismiss="modal">
+                        <button class="btn btn-danger" onclick="resetForm(this)" data-dismiss="modal">
                         Cancel
                         </button>
                     </div>
                     <div class="btn-group pull-right">
-                        <button class="btn btn-success" data-dismiss="modal">
-                        Add
-                        </button>
+                        <button type="submit" class="btn btn-success" ng-disabled="editorform.$invalid" value="Add" 
+                        >Add</button>
                     </div>
                 </div>
             </form>
