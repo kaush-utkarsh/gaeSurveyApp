@@ -118,7 +118,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
     $scope.nodata = null;
     $scope.questions = [];
     $scope.participants = [];
-    
+
     $.ajax({
              url: "/survey_data",
              type: "get",
@@ -128,7 +128,7 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              success: function (data) {
                  console.log(data);
                  participantData = JSON.parse(data);
-                 questions = participantData.questions.slice(1);
+                 questions = participantData.questions.slice(1).slice().slice(1,a.length-1);
                  $scope.questions =  angular.copy(questions); // Getting rid of the extra first column
                  $scope.participants = angular.copy(participantData.participants);
              },
