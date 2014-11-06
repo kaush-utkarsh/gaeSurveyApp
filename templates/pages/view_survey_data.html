@@ -34,8 +34,7 @@
 	            <th class="back valign"></th>
 	            <th class="back valign">Participant ID</th>
 	            <th class="back valign">Language ID</th>
-	                <th class="back valign" ng-repeat="column in columns" ng-show="column.field"
-	                    class="text-center sortable"  style="min-width: 250px">
+	                <th class="back valign" ng-repeat="column in columns" class="text-center sortable"  style="min-width: 250px">
 	                    <div>{{column.question}}</div>
 	                    <span class="pull-right"><span class="caret"></span><span class="caret-up"></span></span>
 	                </th>
@@ -46,7 +45,7 @@
 	        		<td><a class="btn btn-danger"> Delete </a></td>
 	        		<td>{{data.participant_ID}}</td>
 	        		<td>{{data.lang_id}}</td>
-	                <td ng-repeat="column in columns" sortable="column.field" ng-show="columns[$index].field" style="min-width:100px">
+	                <td ng-repeat="column in columns" style="min-width:100px">
 	                    {{column.answer}}
 	                </td>
 	        	</tr>
