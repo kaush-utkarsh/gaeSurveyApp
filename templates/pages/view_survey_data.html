@@ -2,14 +2,20 @@
 	<h3 class="page-header">View Survey Data</h3>
 	<div>
 		<div class="row" >
-			<button class="btn btn-warning pull-right lft" ng-click="getDataByFilter()"> Get Data </button>
-			<select ng-model="selectedSurvey" ng-options="item.id as item.name for item in misc.survey_details" class="pull-right lft" x-ng-change="updateSurveyID(selectedSurvey)">
-			</select>
-			<select ng-model="selectedProject" ng-options="item.id as item.name for item in misc.project_details" class="pull-right" x-ng-change="updateProjectID(selectedProject)">
-			</select>
+			<button class="btn btn-warning lft pull-right {{disabled}}" ng-click="getDataByFilter()"> Get Data </button>
+			<div class="pull-right">
+					<select ng-model="selectedSurvey" ng-options="item.id as item.name for item in misc.survey_details" class="pull-right lft" x-ng-change="updateSurveyID(selectedSurvey)">
+				</select>
+				<b class="lft">Filter by Survey ID</b>
+			</div>
+			<div class="pull-right">
+			<b>Filter by Project ID</b>
+				<select ng-model="selectedProject" ng-options="item.id as item.name for item in misc.project_details" x-ng-change="updateProjectID(selectedProject)">
+				</select>
+			</div>
 		</div>
 	<div>
-	<div max-width="800px" style="overflow-x:scroll">
+	<!-- <div max-width="800px" style="overflow-x:scroll">
 	    <table>
 	        <tr>
 	            <th class="right">Select columns </th>
@@ -20,7 +26,7 @@
 	            </th>
 	        </tr>
 	    </table>
-	</div>
+	</div> -->
 	<div max-width="800px" style="overflow-x:scroll">
 		<table ng-table="tableParams" show-filter="true" class="table table-striped table-bordered">
 	        <thead>
@@ -46,6 +52,7 @@
 	        	</tr>
 	        </tbody>
 	    </table>
+	    <h3>{{nodata}}</h3>
 	</div>
 	</div>
 	<div class="col-xs-4 col-xs-offset-4 bottom">
