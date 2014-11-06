@@ -116,7 +116,9 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
     var participantData;
     var questions;
     $scope.nodata = null;
-
+    $scope.questions = [];
+    $scope.participants = [];
+    
     $.ajax({
              url: "/survey_data",
              type: "get",
@@ -127,8 +129,8 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
                  console.log(data);
                  participantData = JSON.parse(data);
                  questions = participantData.questions.slice(1);
-                 $scope.questions =  questions; // Getting rid of the extra first column
-                 $scope.participants = participantData.participants;
+                 $scope.questions =  angular.copy(questions); // Getting rid of the extra first column
+                 $scope.participants = angular.copy(participantData.participants);
              },
         });
     /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},

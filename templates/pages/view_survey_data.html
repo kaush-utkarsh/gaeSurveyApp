@@ -43,8 +43,8 @@
 	        </thead>
 	        <tbody>
 	        	<tr ng-repeat="participant in participants">
-	        		<!--<td><a class="btn btn-danger"> Delete </a></td>-->
-	                <td ng-repeat="answer in participant" style="min-width:100px">
+	        		<td><a class="btn btn-danger"> Delete </a></td>
+	                <td ng-repeat="answer in participant track by $index" style="min-width:100px">
 	                    {{answer}}
 	                </td>
 	        	</tr>
