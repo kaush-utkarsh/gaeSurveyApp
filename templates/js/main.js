@@ -199,6 +199,11 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
         // });
      $window.location.href= "/export_csv?survey_id=" + survey_id + "&project_id="+project_id+"&questions="+questions;
         }
+
+        if(($scope.participants).length<1)
+            $scope.errMsg="No Data To Be Displayed"
+
+
 });
 
 surveyApp.controller('mappingController', function($scope,surveyFactory) {
