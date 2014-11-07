@@ -661,7 +661,8 @@ class apiAddPM(webapp2.RequestHandler):
 class apiAddProject(webapp2.RequestHandler):
 	def post(self):
 		project_name = self.request.get("project_name")
-		dbHandler.PostData().addProject(project_name)
+		project_u_id = self.request.get("project_user_id")
+		dbHandler.PostData().addProject(project_u_id,project_name)
 		
 class apiDeletePM(webapp2.RequestHandler):
 	def post(self):
@@ -700,6 +701,15 @@ class ChangePwd(webapp2.RequestHandler):
 		dbHandler.PostData().changePwd(user_id,pwd)
 		self.response.write('true')
 
+class checkProjectID(webapp2.RequestHandler):
+	def post(self):
+		p_id = self.request.get("project_user_id")
+		count=dbHandler.GetData().checkPID(p_id)
+		if count==0:
+			self.response.write('true')
+		else:
+			self.response.write('false')
+			
 class ExportData(webapp2.RequestHandler):
 	def get(self):
 		survey_id= self.request.get("survey_id")
@@ -836,6 +846,7 @@ app = webapp2.WSGIApplication([
 	('/changePwd',ChangePwd),
 	('/deletePM',apiDeletePM),
 	('/checkPwd',apiCheckPwd),
-	('/export_csv',ExportData)
+	('/export_csv',ExportData),
+	('/checkProjectID',checkProjectID)
 
 ], debug = True)

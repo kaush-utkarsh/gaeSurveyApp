@@ -38,10 +38,12 @@
             <tr>
                 <th>ID</th>
                 <th>Project Name</th>
+                <th>User Generated Key</th>
                 <th></th>
                 <tr ng-repeat="project in projects">
                     <td>{{project.ID}}</td>
                     <td>{{project.Name}}</td>
+                     <td>{{project.UserKey}}</td>
                     <td><button class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirm"> Delete </button></td>
                 </tr>
             </tr>
@@ -107,13 +109,19 @@
             <form id="projectForm" class="form-horizontal" ng-submit="createProject()" data-pjax="#main">
                 <div class="modal-header">
                     <h4 class="modal-title">
-                        Project
+                        Add Project
                     </h4>
                 </div>
                 <div class="modal-body">
                     <h5 class="page-header" style="margin-top:10px">
                         Basic Info
                     </h5>
+                    <div class="form-group required">
+                        <label class="col-xs-4 control-label">Project ID</label>
+                        <div class="col-xs-8">
+                            <input type="text" name="UprojectID" class="form-control" placeholder="Unique Project ID" value="" required>
+                        </div>
+                    </div>
                     <div class="form-group required">
                         <label class="col-xs-4 control-label">Project Name</label>
                         <div class="col-xs-8">

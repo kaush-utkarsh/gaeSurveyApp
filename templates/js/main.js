@@ -267,7 +267,7 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              data: $scope.datum,
              success: function () {
               // alert('New User Added')
-                angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
+                // angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
                 window.location.assign('/de_map')
              },
         });
@@ -291,7 +291,7 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
              data: $scope.datum,
              success: function () {
               // alert('New User Added')
-                angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
+                // angular.element('.modal').find('button[class="btn btn-danger"]').trigger('click')
                 window.location.assign('/de_map')
 
              },
@@ -590,11 +590,32 @@ $scope.today = function() {
 
 $scope.createProject=function()
 {
+        var res
+         $.ajax({
+             url: "/checkProjectID",
+             type: "post",
+             async: false,
+             data: {project_user_id: angular.element('input[name="UprojectID"]').val()},
+             dataType: "html",
+             success: function (data) {
+                    res=data
+             },
+        });
+
+         if(res=='false')
+         {
+            toastr.error("ID Not Available")
+            return false
+         }
+
+
+
+
           $.ajax({
              url: "/addProject",
              type: "post",
              async: false,
-             data: {project_name: angular.element('input[name="projectName"]').val()},
+             data: {project_user_id: angular.element('input[name="UprojectID"]').val(),project_name: angular.element('input[name="projectName"]').val()},
              success: function () {
                  window.location.assign('/manage_pm')                
              },

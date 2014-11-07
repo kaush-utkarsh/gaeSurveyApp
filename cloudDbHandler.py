@@ -43,11 +43,11 @@ class PostData():
 		conn.close()
 		return user_id
 
-	def addProject(self, project):
+	def addProject(self,UpID, project):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 		cursor = conn.cursor()
 		p_id = "P" + str(int(GetData().getProjectCount())+ 1)
-		sqlcmd = "insert into project_table (id, title) values('%s','%s')" % (p_id, project)
+		sqlcmd = "insert into project_table (id, title, user_generated_id) values('%s','%s','%s')" % (p_id, project,UpID)
 		cursor.execute(sqlcmd)
 		conn.commit()
 		conn.close()
@@ -269,8 +269,15 @@ class GetData():
 		count = cursor.fetchall()[0][0]
 		conn.close()
 		return count
-
-
+	
+	def checkPID(self,p_id):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "select count(*) from project_table where user_generated_id='%s'" % (p_id)
+		cursor.execute(sqlcmd)
+		count = cursor.fetchall()[0][0]
+		conn.close()
+		return count
 	# def getSurveyData(self, survey_id, project_id, starting_count, ending_count):
 	# 	conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss,charset='utf8')
 	# 	cursor = conn.cursor()
@@ -762,7 +769,7 @@ class GetData():
 	def getUnassProjects(self):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Select id, title from project_table where id not in (select project_id from project_user where 1)"
+		sqlcmd = "Select id, title,user_generated_id from project_table where id not in (select project_id from project_user where 1)"
 		cursor.execute(sqlcmd)
 		info = []
 		user=[]
@@ -771,6 +778,7 @@ class GetData():
 			info={
 					'ID': row[0],
 					'Name': row[1],
+					'UserKey':row[2]
 					}
 			user.append(info)
 		conn.close()
