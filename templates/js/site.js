@@ -438,6 +438,8 @@ function deletePM(item)
 function checkAll(item)
 {
   $(item).parent().parent().find('input[type="checkbox"]').each(function(i,item){
+        $(item).attr('checked','checked')
+
     item.checked=true
   })
 }
@@ -445,7 +447,7 @@ function checkAll(item)
 function uncheckAll(item)
 {
   $(item).parent().parent().find('input[type="checkbox"]').each(function(i,item){
-
+    $(item).removeAttr('checked')
     item.checked=false
   })
 }

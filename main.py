@@ -25,7 +25,10 @@ class pageMapDESurveyor(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'de_map' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
@@ -53,7 +56,10 @@ class Survey(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'view_survey' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
@@ -128,6 +134,7 @@ class Login(webapp2.RequestHandler):
 		if len(user_id)>1:
 			session['login'] = login
 			session['user_id'] = user_id
+			session['functionalities']=dbHandler.GetData().getFunctionalities(user_id)
 			self.response.write(user_id)
 		else:
 			template = jinja_environment.get_template('login.html')
@@ -137,7 +144,10 @@ class ManageResearcher(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'manage_researcher' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
@@ -242,10 +252,28 @@ class SurveyApprovalView(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'survey_approval' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
+
+
+class SMSMod(webapp2.RequestHandler):
+	def get(self):
+		session = get_current_session()
+		if session.has_key('login'):
+			if 'sms' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
+		else:
+			template = jinja_environment.get_template('login.html')
+		self.response.write(template.render())
+
+
 
 class apiCheckSection(webapp2.RequestHandler):
 
@@ -547,7 +575,10 @@ class ViewSurveyData(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'view_survey_data' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
@@ -557,7 +588,10 @@ class ManagePM(webapp2.RequestHandler):
 	def get(self):
 		session = get_current_session()
 		if session.has_key('login'):
-			template = jinja_environment.get_template('index.html')
+			if 'manage_pm' in session['functionalities']:
+				template = jinja_environment.get_template('index.html')
+			else:
+				template = jinja_environment.get_template('404.html')
 		else:
 			template = jinja_environment.get_template('login.html')
 		self.response.write(template.render())
@@ -789,6 +823,7 @@ app = webapp2.WSGIApplication([
 	('/de_mapping',displayMapDESurveyor),
 	('/de_map',pageMapDESurveyor),
 	('/del_map',DeleteMapping),
+	('/sms',SMSMod),
 	('/add_map',AddMapping),
 	('/apiManagePM',apiManagePM),
 	('/addPM',apiAddPM),

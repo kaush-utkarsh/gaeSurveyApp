@@ -10,10 +10,10 @@ from google.appengine.api import rdbms
 
 # Login Credentials
 
-_INSTANCE_NAME = 'jpal-survey-app:web-database' 
+_INSTANCE_NAME = 'localhost' 
 dbname = 'innovaccer_jpal'
 usr='root'
-pss=''
+pss='root'
 
 #########################
 
@@ -137,7 +137,7 @@ class PostData():
 	def checkInitSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, 0 from survey_data where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))
+		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, 0 from survey_data where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))+" and survey_data_id not in (select survey_data_id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -244,6 +244,22 @@ class GetData():
 		count = cursor.fetchall()[0][0]
 		conn.close()
 		return count
+
+
+	def getFunctionalities(self,user_id):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = """select f.url from functionality f 
+					inner join role_functionality rf on rf.functionality=f.id 
+					inner join user u on u.role=rf.role where user_id= %s"""
+		cursor.execute(sqlcmd,(user_id,))
+		
+		data=[]
+		for row in cursor.fetchall():
+			data.append(row[0])
+		conn.close()
+		return data
+
 
 	def getProjectCount(self):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
