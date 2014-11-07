@@ -29,15 +29,15 @@ class PostData():
 		conn.commit()
 		conn.close() 
 
-	def addUser(self, username, first_name, last_name, email, role, DOB):
+	def addUser(self, username, first_name, last_name, email, role):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 		cursor = conn.cursor()
 		user_id = role + str(int(GetData().getUserCountWithRole(role))+ 1)
 		login_id = username
-		login_password = first_name + "_" + DOB.replace("/","") 
+		login_password = first_name
 		status = 1
 		password_flag = 0
-		sqlcmd = "insert into user(user_id, f_name, l_name,email,login_id,login_password,role, DOB, status, password_flag) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (user_id, first_name,last_name,email,login_id,login_password,role,DOB,status, password_flag)
+		sqlcmd = "insert into user(user_id, f_name, l_name,email,login_id,login_password,role, status, password_flag) values('%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (user_id, first_name,last_name,email,login_id,login_password,role,status, password_flag)
 		cursor.execute(sqlcmd)
 		conn.commit()
 		conn.close()
@@ -106,8 +106,8 @@ class PostData():
 	def saveProfileData(self,post_data):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "update user set f_name = %s , l_name = %s , DOB = %s ,primary_phone = %s, address = %s, line_1 = %s , city = %s ,state = %s, country = %s where user_id = %s "
-		cursor.execute(sqlcmd,(post_data['f_name'],post_data['l_name'],post_data['DOB'],post_data['primary_phone'],post_data['address'],post_data['line_1'],post_data['city'],post_data['state'],post_data['country'],post_data['user_id'],))
+		sqlcmd = "update user set f_name = %s , l_name = %s , primary_phone = %s, address = %s, line_1 = %s , city = %s ,state = %s, country = %s where user_id = %s "
+		cursor.execute(sqlcmd,(post_data['f_name'],post_data['l_name'],post_data['primary_phone'],post_data['address'],post_data['line_1'],post_data['city'],post_data['state'],post_data['country'],post_data['user_id'],))
 		conn.commit()
 		conn.close() 
 
@@ -344,6 +344,15 @@ class GetData():
 			return first_name + "_" + last_name
 		else: 
 			return first_name + "_" + last_name + "_" + str(int(count))
+
+	def getEmail(self,user_id):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "select email from user where user_id = '%s'" % (user_id)
+		cursor.execute(sqlcmd)
+		email = cursor.fetchall()[0][0]
+		conn.close()
+		return email
 	
 	def getUserDetails(self, username):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database = dbname, user = usr, passwd = pss)

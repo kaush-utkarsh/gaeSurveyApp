@@ -78,32 +78,22 @@ padding: 5px 0px 5px 10px;" ng-click="updateLi($index)" value="{{$index}}" ng-cl
                     <input type="hidden" name="companyId" value="">
                     <input type="hidden" name="_method" value="put">
                     <div class="form-group required">
-                        <label class="col-xs-4 control-label">editor First Name</label>
+                        <label class="col-xs-4 control-label">Editor First Name</label>
                         <div class="col-xs-8">
                             <input type="text" name="edFName" class="form-control" placeholder="Editor Name" value="" required>
                         </div>
                     </div>
                     <div class="form-group required">
-                        <label class="col-xs-4 control-label">editor Last Name</label>
+                        <label class="col-xs-4 control-label">Editor Last Name</label>
                         <div class="col-xs-8">
                             <input type="text" name="edLName" class="form-control" placeholder="Editor Name" value="" required>
                         </div>
                     </div>
+                 
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">DOB</label>
-                         <div class="col-xs-8">
-                        <p class="input-group">
-                      <input name="sDOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" disabled/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
-                      </span>
-                    </p>
-                    </div>
-                    </div>
-                    <div class="form-group required">
                         <label class="col-xs-4 control-label">Email ID</label>
                         <div class="col-xs-8">
-                               <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="edemail" class="form-control" placeholder="Email Address" value="" required>
+                               <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="edemail" class="form-control" placeholder="Email Address" value="" >
                         </div>
                     </div>
                 </div>
@@ -147,21 +137,11 @@ padding: 5px 0px 5px 10px;" ng-click="updateLi($index)" value="{{$index}}" ng-cl
                             <input type="text" name="suLName" class="form-control" placeholder="Surveyor Name" value="" required>
                         </div>
                     </div>
+                  
                     <div class="form-group">
-                        <label class="col-xs-4 control-label">DOB</label>
-                         <div class="col-xs-8">
-                        <p class="input-group">
-                      <input name="sDOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" disabled/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
-                      </span>
-                    </p>
-                    </div>
-                    </div>
-                    <div class="form-group required">
                         <label class="col-xs-4 control-label">Email ID</label>
                         <div class="col-xs-8">
-                               <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="semail" class="form-control" placeholder="Email Address" value="" required>
+                               <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="semail" class="form-control" placeholder="Email Address" value="" >
                         </div>
                     </div>
                 </div>

@@ -256,7 +256,6 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
           $scope.datum={first_name: angular.element('input[name="suFName"]').val(),
                  last_name: angular.element('input[name="suLName"]').val(),
                  email: angular.element('input[name="semail"]').val(),
-                 DOB: angular.element('input[name="sDOB"]').val(),
                 role:role,
                 pm_id:localStorage.user
                 }
@@ -281,7 +280,6 @@ surveyApp.controller('mappingController', function($scope,surveyFactory) {
           $scope.datum={first_name: angular.element('input[name="edFName"]').val(),
                  last_name: angular.element('input[name="edLName"]').val(),
                  email: angular.element('input[name="edemail"]').val(),
-                 DOB: angular.element('input[name="edDOB"]').val(),
                 role:role,
                 pm_id:localStorage.user
                 }
@@ -574,7 +572,7 @@ $scope.today = function() {
           $scope.datum={first_name: angular.element('input[name="managerFirstName"]').val(),
          last_name: angular.element('input[name="managerLastName"]').val(),
          email: angular.element('input[name="email"]').val(),
-         DOB: angular.element('input[name="DOB"]').val(),
+        
          role: 'PM',
         project:angular.element('form[id="pmProjectForm"]').find('select').val()}
           $.ajax({

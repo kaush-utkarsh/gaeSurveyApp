@@ -435,21 +435,24 @@ class AddUser(webapp2.RequestHandler):
 		last_name = self.request.get("last_name")
 		email = self.request.get("email")
 		role = self.request.get("role")
-		DOB = self.request.get("DOB")
 		username = dbHandler.GetData().getUsername(first_name,last_name)
-		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role)
+		mailer='true'
 		try:
 			pm_id=self.request.get("pm_id")
 			p_id=dbHandler.GetData().getProjectId(pm_id)
 			dbHandler.PostData().addProjectUser(p_id,user_id,role)
+			to = dbHandler.GetData().getEmail(pm_id)
+			mailer='false'
 		except Exception,e:
 			pass
 
+		if mailer=='true':
+			to = email
 
 		sender = "priyank@innovaccer.com"
-		to = email
 		subject = "User credentials for ENTRE INFO"
-		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"_"+DOB.replace("/","")+"</i></body></html>"
+		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"</i></body></html>"
 		Mail().dispatch(sender, to, subject, body, '', '')
 
 
@@ -644,14 +647,14 @@ class apiAddPM(webapp2.RequestHandler):
 		last_name = self.request.get("last_name")
 		email = self.request.get("email")
 		role = self.request.get("role")
-		DOB = self.request.get("DOB")
+		
 		project= self.request.get("project")
 		username = dbHandler.GetData().getUsername(first_name,last_name)
-		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role, DOB)
+		user_id=dbHandler.PostData().addUser(username ,first_name, last_name,email, role)
 		sender = "priyank@innovaccer.com"
 		to = email
 		subject = "User credentials for ENTRE INFO"
-		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"_"+DOB.replace("/","")+"</i></body></html>"
+		body = "<html><head></head><body><b>Username:</b><i>"+username+"</i></br><b>Password:</b><i>"+first_name+"</i></body></html>"
 		Mail().dispatch(sender, to, subject, body, '', '')
 		dbHandler.PostData().addProjectUser(project,user_id,'PM')
 

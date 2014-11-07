@@ -79,17 +79,7 @@
                             <input pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" type="email" name="semail" class="form-control" placeholder="Email Address" value="" required>
                         </div>
                     </div>
-                     <div class="form-group">
-                        <label class="col-xs-4 control-label">DOB</label>
-                         <div class="col-xs-8">
-                        <p class="input-group">
-                      <input name="sDOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" disabled/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
-                      </span>
-                    </p>
-                    </div>
-                    </div>
+                  
                     <h5 class="page-header">
                         Assigned Project
                     </h5>

@@ -32,17 +32,7 @@
                     Personal Info
                 </h5>
             </div>
-            <div class="form-group">
-                <label class="col-xs-4 control-label">Date Of Birth</label>
-                <div class="col-xs-8  required">
-                    <p class="input-group">
-                      <input name="DOB" id="DOB" type="text" data-max-date="maxDate" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened"  datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button> {{dt | date:'fullDate' }}
-                      </span>
-                    </p>
-                </div>
-            </div>
+           
             <div class="form-group required">
                 <label class="col-xs-4 control-label">Phone</label>
                 <div class="col-xs-8">
@@ -99,10 +89,7 @@
                 
             </div>
         </form>
-        <div class="col-sm-3 col-sm-offset-2" align="center">
-            <img src="images/noPic.png" class="usimg">
-            <button class="btn btn-success btn-block up">Change Image</button>
-        </div>
+
     </div>
 </div>
 
