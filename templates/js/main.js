@@ -321,8 +321,8 @@ surveyApp.controller('profileController', function($scope,$window,surveyFactory)
         $window.location.assign("/")
     }
     $scope.saveProfile = function(){
-        console.log("Saving profile")
-        $.ajax({
+
+       $.ajax({
             url: "/apiSaveProfile",
             type: "post",
             async: false,
