@@ -11,7 +11,7 @@ def getCsv(headers, results):
     # Data Rows
     writer.writerow(headers)
     for row in results:
-        line = [variable.encode("utf-8") for variable in row]
+        line = [str(variable).encode("utf-8") for variable in row]
         writer.writerow(line)
     
     contents = csvstream.getvalue()
