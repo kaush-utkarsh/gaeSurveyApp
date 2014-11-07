@@ -674,6 +674,8 @@ class ExportData(webapp2.RequestHandler):
 		project_id = self.request.get("project_id")
 		survey_id = self.request.get("survey_id")
 		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		print "all_questions"
+		print all_questions
 		#all_options = dbHandler.GetData().getOptions(survey_id)
 		#all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
 		all_participants = dbHandler.GetData().getAllSurveyData()
