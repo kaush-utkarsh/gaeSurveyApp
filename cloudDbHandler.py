@@ -279,6 +279,19 @@ class GetData():
 			final_rows.append(list(row))
 		return final_rows
 
+
+	def getAllSurveyData(self):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "select * from view_data_table"
+		cursor.execute(sqlcmd)
+		rows = cursor.fetchall()
+		conn.close()
+		final_rows = []
+		for row in rows:
+			final_rows.append(list(row))
+		return final_rows
+
 	def getSurveyDetails(self):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database = dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()

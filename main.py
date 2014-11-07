@@ -667,67 +667,77 @@ class ExportData(webapp2.RequestHandler):
 		project_id = self.request.get("project_id")
 		questions = list(self.request.get("questions"))
 		
-		data = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
-		question_id_collection = [{'question_id':question[0], 'question_text': question[1]} for question in list(data)]
-		all_questions = [question['question_text'] for question in question_id_collection]
-		left_questions = set(all_questions)-set(questions)
-		final_question_collection = []
-		for question in left_questions:
-			for item in question_id_collection:
-				if item['question_text'] == question:
-					final_question_collection.append(item['question_id'])
-		query = ''
-		for row in final_question_collection:
-			if 'sect' not in row:
-				query += ' final.q_no = "'+ row + '" or'
-		query = query[:-2]
-		all_records_based_on_selected_questions  = dbHandler.GetData().getAllRecords(survey_id, project_id, query)
-		result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in all_records_based_on_selected_questions]
-		result_dict_questions = [item['question'] for item in result_dict]
-		all_question = dbHandler.GetData().getAllQuestions(survey_id)
-		all_questions = [_tuple[0] for _tuple in all_question]
-		final_questions=[]
-		final_questions.append('Participant ID')
-		final_questions.append('Language')
-		for item in left_questions: #change
-			final_questions.append(item)
-		headers = final_questions
-		participantIDs = [row['participant_ID'] for row in result_dict]
-		participantIDs = set(participantIDs)
-		participantData_list = []
-		for participant in participantIDs:
-			language =''
-			participantData = {'participant':participant,'answers_questions':[]}
-			for item in result_dict:
-				if  item['participant_ID'] == participant:
-					participantData['answers_questions'].append({"answer":item['answer'],"question":item['question']})
-					language = item['lang_id']
-			participantData.update({'language':language})
-			_final_list = []
-			__questions_answer_list = [row for row in participantData['answers_questions']]
-			question_lis = []
-			answer_lis =[]
-			for item in __questions_answer_list:
-				question_lis.append(item['question'])
-				answer_lis.append(item['answer'])
-			for _que in left_questions:
-				if _que in question_lis:
-					_final_list.append(answer_lis[question_lis.index(_que)])
-				else :
-					_final_list.append('')
-			participantData['answers_questions'] = []
-			participantData['answers_questions'].append(_final_list)
-			participantData_list.append(participantData)
-		final_rows = []
-		for item in participantData_list:
-			sample = []
-			sample.append(item['participant'])
-			if item['language'] == None:
-				sample.append("None")
-			else: sample.append(item['language'])
-			for answer in item['answers_questions'][0]:
-				sample.append(answer)
-			final_rows.append(sample)
+
+
+		project_id = self.request.get("project_id")
+		survey_id = self.request.get("survey_id")
+		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		all_options = dbHandler.GetData().getOptions(survey_id)
+		#all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
+		all_participants = dbHandler.GetData().getAllSurveyData()
+		headers = all_questions
+		final_rows = all_participants
+		# data = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		# question_id_collection = [{'question_id':question[0], 'question_text': question[1]} for question in list(data)]
+		# all_questions = [question['question_text'] for question in question_id_collection]
+		# left_questions = set(all_questions)-set(questions)
+		# final_question_collection = []
+		# for question in left_questions:
+		# 	for item in question_id_collection:
+		# 		if item['question_text'] == question:
+		# 			final_question_collection.append(item['question_id'])
+		# query = ''
+		# for row in final_question_collection:
+		# 	if 'sect' not in row:
+		# 		query += ' final.q_no = "'+ row + '" or'
+		# query = query[:-2]
+		# all_records_based_on_selected_questions  = dbHandler.GetData().getAllRecords(survey_id, project_id, query)
+		# result_dict	=[{'participant_ID':item[0],'question':item[4],'answer':item[2],'option':item[5],'lang_id':item[6]} for item in all_records_based_on_selected_questions]
+		# result_dict_questions = [item['question'] for item in result_dict]
+		# all_question = dbHandler.GetData().getAllQuestions(survey_id)
+		# all_questions = [_tuple[0] for _tuple in all_question]
+		# final_questions=[]
+		# final_questions.append('Participant ID')
+		# final_questions.append('Language')
+		# for item in left_questions: #change
+		# 	final_questions.append(item)
+		# headers = final_questions
+		# participantIDs = [row['participant_ID'] for row in result_dict]
+		# participantIDs = set(participantIDs)
+		# participantData_list = []
+		# for participant in participantIDs:
+		# 	language =''
+		# 	participantData = {'participant':participant,'answers_questions':[]}
+		# 	for item in result_dict:
+		# 		if  item['participant_ID'] == participant:
+		# 			participantData['answers_questions'].append({"answer":item['answer'],"question":item['question']})
+		# 			language = item['lang_id']
+		# 	participantData.update({'language':language})
+		# 	_final_list = []
+		# 	__questions_answer_list = [row for row in participantData['answers_questions']]
+		# 	question_lis = []
+		# 	answer_lis =[]
+		# 	for item in __questions_answer_list:
+		# 		question_lis.append(item['question'])
+		# 		answer_lis.append(item['answer'])
+		# 	for _que in left_questions:
+		# 		if _que in question_lis:
+		# 			_final_list.append(answer_lis[question_lis.index(_que)])
+		# 		else :
+		# 			_final_list.append('')
+		# 	participantData['answers_questions'] = []
+		# 	participantData['answers_questions'].append(_final_list)
+		# 	participantData_list.append(participantData)
+		# final_rows = []
+		# for item in participantData_list:
+		# 	sample = []
+		# 	sample.append(item['participant'])
+		# 	if item['language'] == None:
+		# 		sample.append("None")
+		# 	else: sample.append(item['language'])
+		# 	for answer in item['answers_questions'][0]:
+		# 		sample.append(answer)
+		# 	final_rows.append(sample)
 		self.response.headers.add_header("Content-Type","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 		self.response.headers.add_header("Content-Disposition","attachment; filename=SurveyData.CSV")
 		#self.response.write(final_rows)
