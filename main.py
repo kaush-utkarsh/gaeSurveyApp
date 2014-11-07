@@ -396,6 +396,8 @@ class SurveyData(webapp2.RequestHandler):
 		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
 		all_options = dbHandler.GetData().getOptions(survey_id)
 		all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
+		for party in all_participants:
+			party.pop(0)
 		self.response.write(json.dumps({'questions':all_questions, 'participants':all_participants}))
 
 
@@ -672,11 +674,13 @@ class ExportData(webapp2.RequestHandler):
 		project_id = self.request.get("project_id")
 		survey_id = self.request.get("survey_id")
 		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
-		all_options = dbHandler.GetData().getOptions(survey_id)
+		#all_options = dbHandler.GetData().getOptions(survey_id)
 		#all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
 		all_participants = dbHandler.GetData().getAllSurveyData()
 		headers = all_questions
 		final_rows = all_participants
+		for party in all_participants:
+			party.pop(0)
 		# data = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
 		# question_id_collection = [{'question_id':question[0], 'question_text': question[1]} for question in list(data)]
 		# all_questions = [question['question_text'] for question in question_id_collection]
