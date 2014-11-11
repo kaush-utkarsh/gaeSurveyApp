@@ -424,6 +424,7 @@ class SurveyData(webapp2.RequestHandler):
 		starting_value = self.request.get("starting_value")
 		ending_value = self.request.get("ending_value")
 		all_questions = dbHandler.GetData().getAllQuestionsAndIds(survey_id)
+		print all_questions
 		all_options = dbHandler.GetData().getOptions(survey_id)
 		all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
 		for party in all_participants:

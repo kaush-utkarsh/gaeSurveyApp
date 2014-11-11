@@ -216,7 +216,7 @@ class GetData():
 	def getAllQuestionsAndIds(self,survey_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select ques_short_text from ques_details where survey_id='%s' and q_no not in ('X5') and q_no not like 'sect%%' order by prim_key" % (survey_id)
+		sqlcmd = "select ques_short_text from ques_details where survey_id='%s' and q_no not in ('X5', 'end') and q_no not like 'sect%%' order by prim_key" % (survey_id)
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
