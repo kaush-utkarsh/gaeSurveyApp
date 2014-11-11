@@ -137,7 +137,7 @@ class PostData():
 	def checkInitSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "INSERT INTO correction SELECT survey_data_id, survey_id, part_id, sect_id, ques_no, op_text, 0, 0 from survey_data where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))+" and survey_data_id not in (select survey_data_id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
+		sqlcmd = "INSERT INTO correction SELECT id, survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, timestamp, 0, 0 from survey_data where id in "+str(checked.replace("[","(").replace("]",")"))+" and id not in (select id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -147,7 +147,7 @@ class PostData():
 	def unCheckInitSection(self,unchecked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "DELETE FROM correction where survey_data_id in "+str(unchecked.replace("[","(").replace("]",")"))
+		sqlcmd = "DELETE FROM correction where id in "+str(unchecked.replace("[","(").replace("]",")"))
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -167,7 +167,7 @@ class PostData():
 	def approveSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update correction set corr_status_flag=1 where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))
+		sqlcmd = "Update correction set corr_status_flag=1 where id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -177,7 +177,7 @@ class PostData():
 	def disapproveSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update correction set corr_status_flag=2 where survey_data_id in "+str(checked.replace("[","(").replace("]",")"))
+		sqlcmd = "Update correction set corr_status_flag=2 where id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -299,7 +299,12 @@ class GetData():
 		conn.close()
 		final_rows = []
 		for row in rows:
-			final_rows.append(list(row))
+			row = list(row)
+			for i in range(len(row)):
+				if row[i]=='blank: ' or row[i]== 'date: ':
+					row[i]=''
+				row[i]=str(row[i]).strip(': ')
+			final_rows.append(row)
 		return final_rows
 
 
@@ -401,7 +406,7 @@ class GetData():
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.close()
-		return [{'survey_data_id':row[0],'survey_id':row[1],'part_id':row[2],'sect_id':row[3],'ques_id':row[4],"ans":row[5],"flag":row[6],"corr_status":row[7]} for row in rows]
+		return [{'id':row[0],'survey_id':row[1],'part_id':row[2],'sect_id':row[3],'ques_id':row[4],"ans":row[5],"flag":row[6],"corr_status":row[7]} for row in rows]
 
 	def getAllDE(self,p_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
@@ -576,13 +581,13 @@ class GetData():
 	def getDeSurveys(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from survey_data sda
-					join de_surveyor ds on ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
-					join survey_details sde on sde.survey_id=sda.survey_id
-					join user u on u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
-					where ds.de_id= %s 
-					and part_id not in (select part_id from correction where flag=1) and sda.survey_data_id in (select max(survey_data_id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no) 
-					group by sda.part_id
+		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from survey_data sda,de_surveyor ds, survey_details sde,user u where
+ ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+and sde.survey_id=sda.survey_id
+and u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+and ds.de_id= %s
+and part_id not in (select part_id from correction where flag=1) and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no) 
+group by sda.part_id
 					"""
 		cursor.execute(sqlcmd,(user_id,))
 		info = []
@@ -595,11 +600,11 @@ class GetData():
 					'pID': row[3],
 					'company': row[4],
 					'location': row[5],
-					'date': row[6],
+					'date': str(row[6]),
 					'deID': row[7]
 				}
 			user.append(info)
-			print user
+			# print user
 		conn.close()
 		return user
 	
@@ -627,11 +632,11 @@ class GetData():
 	def getSectionQuest(self,user_id,sect_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.survey_data_id FROM survey_data sda
+		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.id FROM survey_data sda
 			left join ques_details qde on qde.q_no=sda.ques_no
-			left join correction corr on corr.survey_data_id = sda.survey_data_id
+			left join correction corr on corr.id = sda.id
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s 
-			and sda.survey_data_id in (select max(survey_data_id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
+			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
 			"""
 		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
@@ -655,13 +660,13 @@ class GetData():
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
-					join survey_data sda on sda.survey_data_id=corr.survey_data_id 
+					join survey_data sda on sda.id=corr.id 
 					join de_surveyor ds on ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
 					join survey_details sde on sde.survey_id=corr.survey_id
 					join user u on u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
 					where ds.de_id= %s
 					and sda.correction_flag=1 and corr.flag!=0 
-					and ((corr.corr_status_flag=2 and corr.survey_data_id<sda.survey_data_id and sda.survey_data_id in (select max(survey_data_id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)) or corr.corr_status_flag=0) 
+					and ((corr.corr_status_flag=2 and corr.id<sda.id and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)) or corr.corr_status_flag=0) 
 					group by sda.part_id
 				"""
 
@@ -677,7 +682,7 @@ class GetData():
 					'pID': row[3],
 					'company': row[4],
 					'location': row[5],
-					'date': row[6],
+					'date': str(row[6]),
 					'deID': row[7]
 				}
 			user.append(info)
@@ -690,7 +695,7 @@ class GetData():
 		cursor = conn.cursor()
 		sqlcmd = """ SELECT sda.sect_id,sec.sect_name FROM survey_data sda
 				join section_details sec on sec.sect_id=sda.sect_id
-				join correction corr on corr.survey_data_id=sda.survey_data_id
+				join correction corr on corr.id=sda.id
 				 where sda.part_id = %s 
 				 and corr.flag=1 group by sda.sect_id;
 				"""
@@ -710,11 +715,11 @@ class GetData():
 	def getFlaggedQuest(self,user_id,sect_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.survey_data_id FROM survey_data sda
+		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.id FROM survey_data sda
 			left join ques_details qde on qde.q_no=sda.ques_no
-			left join correction corr on corr.survey_data_id = sda.survey_data_id
+			left join correction corr on corr.id = sda.id
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1 
-			and sda.survey_data_id in (select max(survey_data_id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
+			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
 
 			"""
 		cursor.execute(sqlcmd,(user_id, sect_id,))

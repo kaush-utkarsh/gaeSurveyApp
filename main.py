@@ -183,6 +183,7 @@ class apiViewSurveys(webapp2.RequestHandler):
 		data=dbHandler.GetData().getDeSurveys(user_id)
 		functionality=data #{'surveys' : data}
 		func = json.dumps(functionality)
+
 		self.response.write(func)
 
 class apiReturnSurvey(webapp2.RequestHandler):
@@ -209,6 +210,7 @@ class apiReturnSurvey(webapp2.RequestHandler):
 	def post(self):
 		user_id = self.request.get('part_id')
 		data=dbHandler.GetData().getSurveySections(user_id)
+		print data
 		# sect_id=data[0].sect_id
 		sect_id=data[0]['sect_id']
 		sect_name=data[0]['sect_text']
