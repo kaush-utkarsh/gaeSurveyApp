@@ -133,7 +133,23 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
                  $scope.participants = angular.copy(participantData.participants);
              },
         });
-    /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
+
+     $scope.itemsPerPage = 10
+    $scope.currentPage = 1;
+
+    $scope.pageCount = function () {
+        return Math.ceil($scope.participantsparticipants.length / $scope.itemsPerPage);
+    };
+
+        $scope.totalItems = $scope.participants.length;
+        $scope.$watch('currentPage + itemsPerPage', function() {
+          var begin = (($scope.currentPage - 1) * $scope.itemsPerPage),
+          end = begin + $scope.itemsPerPage;
+
+        $scope.filteredDatas = $scope.participants.slice(begin, end);
+        });
+
+        /*$scope.columns = [{title : 'Participant ID', field : 'participant_ID', visible : true},
               {title : 'Language ID', field : 'lang_id', visible : true}];*/
         $scope.selectedValue = null;
     //$scope.misc = [];

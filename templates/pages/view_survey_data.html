@@ -2,9 +2,9 @@
 	<h3 class="page-header">View Survey Data</h3>
 	<div>
 		<div class="row" >
-			<button class="btn btn-warning lft pull-right {{disabled}}" ng-click="getDataByFilter()"> Get Data </button>
+			<button class="btn btn-warning lft pull-right {{disabled}}" ng-click="getDataByFilter(selectedSurvey, selectedProject)"> Get Data </button>
 			<div class="pull-right">
-					<select ng-model="selectedSurvey" ng-options="item.id as item.name for item in misc.survey_details" class="pull-right lft" x-ng-change="updateSurveyID(selectedSurvey)">
+					<select ng-model="selectedSurvey" ng-options="item.id as item.name for item in misc.survey_details" class="pull-right lft form-group" x-ng-change="updateSurveyID(selectedSurvey)">
 				</select>
 				<b class="lft">Filter by Survey ID</b>
 			</div>
@@ -37,12 +37,11 @@
 	                <th class="back valign" ng-repeat="question in questions track by $index"
 	                    class="text-center sortable"  style="min-width: 250px">
 	                    <div>{{question}}</div>
-	                    <span class="pull-right"><span class="caret"></span><span class="caret-up"></span></span>
 	                </th>
 	            </tr>
 	        </thead>
 	        <tbody>
-	        	<tr ng-repeat="participant in participants">
+	        	<tr ng-repeat="participant in filteredDatas">
 	        		<td><a class="btn btn-danger"> Delete </a></td>
 	                <td ng-repeat="answer in participant track by $index" style="min-width:100px">
 	                    <span>{{answer}}</span>
@@ -50,10 +49,21 @@
 	        	</tr>
 	        </tbody>
 	    </table>
+	</div>
+		<div class="col-xs-8">
+	    	<pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+		</div>
+		<div class="col-xs-4">
+		    <div class="btn-group pull-right" style="margin: 20px 0;">
+		        <label class="btn btn-primary" ng-model="itemsPerPage" btn-radio="'10'">10</label>
+		        <label class="btn btn-primary" ng-model="itemsPerPage" btn-radio="'25'">25</label>
+		        <label class="btn btn-primary" ng-model="itemsPerPage" btn-radio="'50'">50</label>
+		        <label class="btn btn-primary" ng-model="itemsPerPage" btn-radio="'100'">100</label>
+		    </div>
+		</div>
 	    <h3 ng-if="participants.length == 0">{{errMsg}}</h3>
 	</div>
-	</div>
 	<div class="col-xs-4 col-xs-offset-4 bottom">
-	    <a class="btn btn-success btn-block top pull-right" ng-click="generateCsv()" download="test.csv">Export to CSV</a>
+	    <a class="btn btn-success btn-block top pull-right" {{disabledd}} ng-click="generateCsv()" download="test.csv">Export to CSV</a>
 	</div>
 </div>
