@@ -361,6 +361,7 @@ class GetData():
 			
 		cursor.execute(sqlcmd,(uid,))
 		rows = cursor.fetchall()
+		u=[]
 		final_rows = {}
 		for row in rows:
 			final_rows['login_id']=row[0]
@@ -369,7 +370,8 @@ class GetData():
 			final_rows['f_name']=row[3]
 			final_rows['l_name']=row[4]
 		conn.close()
-		return final_rows
+		u.append(final_rows)
+		return u
 
 
 	def getAllSurveyData(self):
