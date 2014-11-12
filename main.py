@@ -427,8 +427,8 @@ class SurveyData(webapp2.RequestHandler):
 		print all_questions
 		all_options = dbHandler.GetData().getOptions(survey_id)
 		all_participants = dbHandler.GetData().getSurveyData(starting_value,ending_value)
-		for party in all_participants:
-			party.pop(0)
+		# for party in all_participants:
+		# 	party.pop(0)
 		self.response.write(json.dumps({'questions':all_questions, 'participants':all_participants}))
 
 

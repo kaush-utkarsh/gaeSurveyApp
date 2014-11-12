@@ -128,7 +128,9 @@ surveyApp.controller('surveyDataController', function($scope, $filter, $window,s
              success: function (data) {
                  console.log(data);
                  participantData = JSON.parse(data);
-                 questions = participantData.questions.slice(1,participantData.questions.length-1);
+                 console.log(participantData.questions.length)
+                 questions = participantData.questions;
+                 // questions = participantData.questions.slice(1,participantData.questions.length-1);
                  $scope.questions =  angular.copy(questions); // Getting rid of the extra first column
                  $scope.participants = angular.copy(participantData.participants);
              },
