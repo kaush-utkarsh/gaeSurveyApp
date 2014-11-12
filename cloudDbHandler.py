@@ -21,13 +21,28 @@ pss='root'
 class PostData():
 	
 	# A good testiminy of how to keep variable/function names - Courtesy Dhruv
+	
+	# def view_data(self,query,values):
+	# 	conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+	# 	cursor = conn.cursor()
+	# 	sqlcmd = query
+	# 	cursor.execute(sqlcmd,values)
+	# 	conn.commit()
+	# 	conn.close() 
+
+
 	def view_data(self,query,values):
-		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
-		cursor = conn.cursor()
-		sqlcmd = query
-		cursor.execute(sqlcmd,values)
-		conn.commit()
-		conn.close() 
+		try:
+			conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+			cursor = conn.cursor()
+			sqlcmd = query
+			cursor.execute(sqlcmd,values)
+			conn.commit()
+			conn.close()
+			return "200"
+		except BaseException,err:
+			print err
+			return "500"
 
 	def addUser(self, username, first_name, last_name, email, role):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
@@ -78,17 +93,30 @@ class PostData():
 		conn.close()
 
 
+	# def addSurveyData(self, bulk_data):
+	# 	try:
+	# 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
+	# 		cursor = conn.cursor()
+	# 		sqlcmd = 'insert into survey_data(survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, lang_id) values (%s,%s,%s,%s,%s,%s,%s,%s)'
+	# 		cursor.executemany(sqlcmd, bulk_data)
+	# 		conn.commit()
+	# 		conn.close()
+	# 		return "200"
+	# 	except BaseException,er:
+	# 		return er
+
 	def addSurveyData(self, bulk_data):
 		try:
 			conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 			cursor = conn.cursor()
-			sqlcmd = 'insert into survey_data(survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, lang_id) values (%s,%s,%s,%s,%s,%s,%s,%s)'
+			sqlcmd = 'insert into survey_data(survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type,lang_id,timestamp,id) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 			cursor.executemany(sqlcmd, bulk_data)
 			conn.commit()
 			conn.close()
 			return "200"
-		except BaseException,er:
-			return er
+		except BaseException,err:
+			print err
+			return "500"
 
 
 
@@ -227,15 +255,29 @@ class GetData():
 			final_list.append(row[0])
 		return final_list
 
+	# def getOptions(self,survey_id):
+	# 	conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+	# 	cursor = conn.cursor()
+	# 	sqlcmd = "select ques_no,op_id,op_text from options where survey_id='%s'" %(survey_id,)
+	# 	cursor.execute(sqlcmd)
+	# 	rows = cursor.fetchall()
+	# 	conn.commit()
+	# 	conn.close()
+	# 	return rows
+
 	def getOptions(self,survey_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select ques_no,op_id,op_text from options where survey_id='%s'" %(survey_id,)
+		sqlcmd = "select ques_no,op_id,op_text from options where survey_id='%s'" % (survey_id,)
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.commit()
 		conn.close()
-		return rows
+		finalRows = []
+		for row in rows:
+			finalRows.append(row)
+		return finalRows
+
 
 	def getUserCountWithRole(self,role):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)

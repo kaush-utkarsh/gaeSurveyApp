@@ -471,29 +471,115 @@ class SurveyCorrectionSync(webapp2.RequestHandler):
 		survey_id = request['survey_id']
 		self.response.write(json.dumps(dbHandler.GetData().getCorrections(survey_id)))
 
+# class SurveyDataSync(webapp2.RequestHandler):
+# 	def post(self):
+# 		request = json.loads(self.request.body)
+# 		data = request["data"]
+# 		super_final_list = []
+# 		for item in data:
+# 			participant_ID = item['part_id']
+# 			for _data_item in item['data']:
+# 				final_list = []
+# 				final_list.append(_data_item['survey_id'])
+# 				final_list.append(participant_ID)
+# 				final_list.append(_data_item['sect_id'])
+# 				final_list.append(_data_item['ques_no'])
+# 				final_list.append(_data_item['op_value'])
+# 				final_list.append(_data_item['ans'])
+# 				final_list.append(_data_item['view_type'])
+# 				final_list.append(_data_item['language'])
+# 				#final_list.append(_data_item['timestamp'])
+# 				#final_list.append(_data_item['correction_flag'])
+# 				super_final_list.append(tuple(final_list))
+# 		response = dbHandler.PostData().addSurveyData(super_final_list)
+# 		#self.response.write(super_final_list)
+# 		self.response.write(response)
+
+
 class SurveyDataSync(webapp2.RequestHandler):
 	def post(self):
-		request = json.loads(self.request.body)
-		data = request["data"]
+		#-------------------------------------------------------------------------------
+		#print self.request.get("usersJSON")
+		print "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+		request = json.loads(self.request.get("usersJSON"))
+		data = request
 		super_final_list = []
+		participant_ID_ = ''
+		survey_id_ = ''
+		for _data_item in data:
+			final_list = []
+			final_list.append(_data_item['survey_id'])
+			final_list.append(_data_item['part_id'])
+			final_list.append(_data_item['sect_id'])
+			final_list.append(_data_item['ques_no'])
+			final_list.append(_data_item['op_value'])
+			final_list.append(_data_item['ans'])
+			final_list.append(_data_item['view_type'])
+			final_list.append(_data_item['language'])
+			final_list.append(_data_item['created_at'])
+			final_list.append(_data_item['ID'])
+			super_final_list.append(tuple(final_list))
+			participant_ID_ = _data_item['part_id']
+			survey_id_ = _data_item['survey_id']
+			print _data_item['ans']
+		print "part_id"
+		print participant_ID_
+		survey_id_ = participant_ID_.split("SU")[0]
+		surveyor_id = participant_ID_.split(survey_id_)[1]
+		surveyor_id = surveyor_id.split("EN")[0]
+		print "surveyor_id"
+		print surveyor_id
+		status1 = dbHandler.PostData().addSurveyData(super_final_list)
+		print "status from addSurveyData"+status1
+		#------------------------------------------------------------------------------
+		
+		participants_id = [item['part_id'] for item in data]
+		participants_id = list(set(participants_id))
+		participant_list = []
+		participant_list.append({'part_id':participants_id[0]})
+		lang = ''
+		#-------------------------------------change for options--------------------------
+		options_tuple = dbHandler.GetData().getOptions('GRO01')
+		print "options tuple"
+		print options_tuple
+		#-----------------------------------------
 		for item in data:
-			participant_ID = item['part_id']
-			for _data_item in item['data']:
-				final_list = []
-				final_list.append(_data_item['survey_id'])
-				final_list.append(participant_ID)
-				final_list.append(_data_item['sect_id'])
-				final_list.append(_data_item['ques_no'])
-				final_list.append(_data_item['op_value'])
-				final_list.append(_data_item['ans'])
-				final_list.append(_data_item['view_type'])
-				final_list.append(_data_item['language'])
-				#final_list.append(_data_item['timestamp'])
-				#final_list.append(_data_item['correction_flag'])
-				super_final_list.append(tuple(final_list))
-		response = dbHandler.PostData().addSurveyData(super_final_list)
-		#self.response.write(super_final_list)
-		self.response.write(response)
+			for option in options_tuple:
+				if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
+					participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
+					lang = item['language']
+		print participant_list
+		participant_list.append({'lang_id':lang})
+		#self.response.write(participant_list)
+		query = 'insert into view_data_table('
+#		for item in participant_list:
+#			query += ",".join(item[0].key())
+#		query+=') values('
+#		for item in participant_list:
+#			query+= ",".join
+		keys = [item.keys()[0] for item in participant_list]
+		values = [item.values() for item in participant_list]
+		query += "" + ",".join(["`%s`"]*len(keys)) % tuple(keys) + ") VALUES(" + ",".join(["%s"]*len(values)) + ")"
+		values_list = []
+		for item in values:
+			values_list.append(item[0])
+		status2 = dbHandler.PostData().view_data(query,tuple(values_list))
+		print ("status1: "+ status1)
+		print ("status2: "+ status2)
+		#self.response.write(json.dumps(dbHandler.GetData().getCorrections('GRO01',surveyor_id)))
+		
+		sample_mock = [{"survey_data_id":"asd","survey_id":"asd","part_id":"asd","sect_id":"asd","ques_id":"raasd","ans":"asd","flag":"asd","corr_status":"asd","op_value":"asd"}]
+		self.response.write(json.dumps(sample_mock))
+		# if status1 == "200" and status2 =="200":
+		# 	self.response.write("200")
+		# else:
+		# 	self.response.write("500")
+
+
+
+
+
+
 
 
 class SurveyDataMiscellaneous(webapp2.RequestHandler):
