@@ -817,8 +817,9 @@ class appLogin(webapp2.RequestHandler):
 		self.response.write(user_det)
 
 	def post(self):
-		l_type = self.request.get("type")
-		l_value = self.request.get("value")
+		urequest = json.loads(self.request.get("usersJSON"))
+		l_type = urequest["type"]
+		l_value = urequest["value"]
 		if l_type=='login_id':
 			print 'login'
 			user=dbHandler.GetData().getLoginDet(l_value,'login_id')
