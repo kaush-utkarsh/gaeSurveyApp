@@ -21,7 +21,7 @@ pss='root'
 class PostData():
 	
 	# A good testiminy of how to keep variable/function names - Courtesy Dhruv
-	
+
 	# def view_data(self,query,values):
 	# 	conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 	# 	cursor = conn.cursor()
@@ -348,6 +348,27 @@ class GetData():
 					row[i]=''
 				row[i]=str(row[i]).strip(': ')
 			final_rows.append(row)
+		return final_rows
+
+	def getLoginDet(self,uid,utype):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		print uid, utype
+		if utype=='user_id':
+			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where user_id = %s"""
+		else:
+			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where login_id = %s"""
+			
+		cursor.execute(sqlcmd,(uid,))
+		rows = cursor.fetchall()
+		final_rows = {}
+		for row in rows:
+			final_rows['login_id']=row[0]
+			final_rows['password']=row[1]
+			final_rows['device_id']=row[2]
+			final_rows['f_name']=row[3]
+			final_rows['l_name']=row[4]
+		conn.close()
 		return final_rows
 
 
