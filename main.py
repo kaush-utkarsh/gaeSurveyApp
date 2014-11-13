@@ -512,7 +512,10 @@ class SurveyDataSync(webapp2.RequestHandler):
 			final_list.append(_data_item['sect_id'])
 			final_list.append(_data_item['ques_no'])
 			final_list.append(_data_item['op_value'])
-			final_list.append(_data_item['ans'])
+			try:
+				final_list.append(_data_item['ans'])
+			except Exception,e:
+				final_list.append('')
 			final_list.append(_data_item['view_type'])
 			final_list.append(_data_item['language'])
 			final_list.append(_data_item['created_at'])
@@ -520,7 +523,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			super_final_list.append(tuple(final_list))
 			participant_ID_ = _data_item['part_id']
 			survey_id_ = _data_item['survey_id']
-			print _data_item['ans']
+			# print _data_item['ans']
 		print "part_id"
 		print participant_ID_
 		survey_id_ = participant_ID_.split("SU")[0]
@@ -543,7 +546,10 @@ class SurveyDataSync(webapp2.RequestHandler):
 		print options_tuple
 		#-----------------------------------------
 		for item in data:
-			participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
+			try:
+				participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
+			except:
+				participant_list.append({item['ques_no']:(item['op_value'])})
 			lang = item['language']
 			# for option in options_tuple:
 			# 	if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
