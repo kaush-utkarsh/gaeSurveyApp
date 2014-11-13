@@ -551,13 +551,14 @@ class SurveyDataSync(webapp2.RequestHandler):
 		# 	except Exception,ex:
 		# 		participant_list.append({item['ques_no']:(item['op_value'])})
 		# 	lang = item['language']
-		for option in options_tuple:
-			if (str(item['ques_no']).strip() == str(option[0]).strip()) and (str(item['op_value']).strip()==str(option[1]).strip()):
-				try:
-					participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
-				except Exception,ex:
-					participant_list.append({item['ques_no']:(option[2])})
-				lang = item['language']
+		for item in data:
+			for option in options_tuple:
+				if (str(item['ques_no']).strip() == str(option[0]).strip()) and (str(item['op_value']).strip()==str(option[1]).strip()):
+					try:
+						participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
+					except Exception,ex:
+						participant_list.append({item['ques_no']:(option[2])})
+					lang = item['language']
 		print participant_list
 		for item in participant_list:
 			if 'ignore' in item.keys():
