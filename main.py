@@ -500,12 +500,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 	def post(self):
 		#-------------------------------------------------------------------------------
 		#print self.request.get("usersJSON")
-		print "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
 		request = json.loads(self.request.get("usersJSON"))
-		print request
-		print "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
-		print self.request.get("usersJSON")
-		print "777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
 		data = request
 		super_final_list = []
 		participant_ID_ = ''
@@ -548,16 +543,14 @@ class SurveyDataSync(webapp2.RequestHandler):
 		print options_tuple
 		#-----------------------------------------
 		for item in data:
-			for option in options_tuple:
-				if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
-					participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
-					lang = item['language']
-		participant_list.append({'lang_id':lang})
-		print 'sky pilot zombie sky pilot'
+			participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
+			lang = item['language']
+			# for option in options_tuple:
+			# 	if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
+			# 		participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
+			# 		lang = item['language']
 		print participant_list
-		print 'smels like teens spirit'
-
-
+		participant_list.append({'lang_id':lang})
 		#self.response.write(participant_list)
 		query = 'insert into view_data_table('
 #		for item in participant_list:
