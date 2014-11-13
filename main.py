@@ -541,20 +541,23 @@ class SurveyDataSync(webapp2.RequestHandler):
 		participant_list.append({'part_id':participants_id[0]})
 		lang = ''
 		#-------------------------------------change for options--------------------------
-		# options_tuple = dbHandler.GetData().getOptions('GRO01')
-		# print "options tuple"
-		# print options_tuple
+		options_tuple = dbHandler.GetData().getOptions('GRO01')
+		print "options tuple"
+		print options_tuple
 		#-----------------------------------------
-		for item in data:
-			try:
-				participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
-			except Exception,ex:
-				participant_list.append({item['ques_no']:(item['op_value'])})
-			lang = item['language']
-			# for option in options_tuple:
-			# 	if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
-			# 		participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
-			# 		lang = item['language']
+		# for item in data:
+		# 	try:
+		# 		participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
+		# 	except Exception,ex:
+		# 		participant_list.append({item['ques_no']:(item['op_value'])})
+		# 	lang = item['language']
+			for option in options_tuple:
+				if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
+					try:
+						participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
+					except Exception,ex:
+						participant_list.append({item['ques_no']:(option[2])})
+					lang = item['language']
 		print participant_list
 		for item in participant_list:
 			if 'ignore' in item.keys():
