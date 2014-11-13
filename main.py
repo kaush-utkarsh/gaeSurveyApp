@@ -541,14 +541,14 @@ class SurveyDataSync(webapp2.RequestHandler):
 		participant_list.append({'part_id':participants_id[0]})
 		lang = ''
 		#-------------------------------------change for options--------------------------
-		options_tuple = dbHandler.GetData().getOptions('GRO01')
-		print "options tuple"
-		print options_tuple
+		# options_tuple = dbHandler.GetData().getOptions('GRO01')
+		# print "options tuple"
+		# print options_tuple
 		#-----------------------------------------
 		for item in data:
 			try:
 				participant_list.append({item['ques_no']:(item['op_value']+": "+item['ans']+"")})
-			except:
+			except Exception,ex:
 				participant_list.append({item['ques_no']:(item['op_value'])})
 			lang = item['language']
 			# for option in options_tuple:
@@ -556,6 +556,9 @@ class SurveyDataSync(webapp2.RequestHandler):
 			# 		participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
 			# 		lang = item['language']
 		print participant_list
+		for item in participant_list:
+			if 'ignore' in item.keys():
+				participant_list.remove(item)
 		participant_list.append({'lang_id':lang})
 		#self.response.write(participant_list)
 		query = 'insert into view_data_table('
