@@ -552,7 +552,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 		# 		participant_list.append({item['ques_no']:(item['op_value'])})
 		# 	lang = item['language']
 		for option in options_tuple:
-			if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
+			if (str(item['ques_no']).strip() == str(option[0]).strip()) and (str(item['op_value']).strip()==str(option[1]).strip()):
 				try:
 					participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
 				except Exception,ex:
