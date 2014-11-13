@@ -548,8 +548,12 @@ class SurveyDataSync(webapp2.RequestHandler):
 				if (item['ques_no'] == option[0]) and (item['op_value']==option[1]):
 					participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
 					lang = item['language']
-		print participant_list
 		participant_list.append({'lang_id':lang})
+		print 'sky pilot zombie sky pilot'
+		print participant_list
+		print 'smels like teens spirit'
+
+
 		#self.response.write(participant_list)
 		query = 'insert into view_data_table('
 #		for item in participant_list:
