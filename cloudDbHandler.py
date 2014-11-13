@@ -10,8 +10,8 @@ from google.appengine.api import rdbms
 
 # Login Credentials
 
-# _INSTANCE_NAME = 'jpal-survey-app:web-database'
-_INSTANCE_NAME = 'localhost' 
+_INSTANCE_NAME = 'jpal-survey-app:web-database'
+# _INSTANCE_NAME = 'localhost' 
 dbname = 'innovaccer_jpal'
 usr='root'
 pss='root'
