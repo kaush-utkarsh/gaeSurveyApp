@@ -682,7 +682,7 @@ group by sda.part_id
 		cursor = conn.cursor()
 		sqlcmd = """ SELECT sda.sect_id,sec.sect_name FROM survey_data sda
 					join section_details sec on sec.sect_id=sda.sect_id
-					 where part_id = %s group by sda.sect_id"""
+					 where part_id = %s and sda.sect_id!='GRO01_1' group by sda.sect_id"""
 		cursor.execute(sqlcmd,(user_id,))
 		info = []
 		user=[]
