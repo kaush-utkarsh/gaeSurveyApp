@@ -835,8 +835,8 @@ class appLogin(webapp2.RequestHandler):
 class appCorrection(webapp2.RequestHandler):
 	def post(self):
 		urequest = json.loads(self.request.get("corrJSON"))
-		surveyor_id = urequest[0]["surveyor_id"]
-		last_index = urequest[0]["last_index"]
+		surveyor_id = urequest[0]["device_id"]
+		last_index = urequest[0]["ID"]
 		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
 		surveys_det=json.dumps(surveys)
 		self.response.write(surveys_det)
