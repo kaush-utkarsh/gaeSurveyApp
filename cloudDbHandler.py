@@ -769,7 +769,7 @@ group by sda.part_id
 			final_rows['flag']=row[9]
 			final_rows['corr_status_flag']=row[10]
 			final_rows['ID']=row[0]
-			inal_rows['survey_id']=row[1]
+			final_rows['survey_id']=row[1]
 			final_rows['part_id']=row[2]
 			final_rows['sect_id']=row[3]
 			final_rows['ques_no']=row[4]
