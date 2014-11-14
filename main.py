@@ -815,21 +815,6 @@ class checkProjectID(webapp2.RequestHandler):
 # ip- type- login_id/device_id  value- corresponding id	
 # o/p- login_id password device_id f_name l_name
 class appLogin(webapp2.RequestHandler):
-	def get(self):
-		l_type = self.request.get("type")
-		l_value = self.request.get("value")
-		if l_type=='login_id':
-			print 'login'
-			user=dbHandler.GetData().getLoginDet(l_value,'login_id')
-			user_det=json.dumps(user)
-		elif l_type=='device_id':
-			print 'device'
-			user=dbHandler.GetData().getLoginDet(l_value,'user_id')
-			user_det=json.dumps(user)
-		else:
-			user_det='false'
-		self.response.write(user_det)
-
 	def post(self):
 		urequest = json.loads(self.request.get("usersJSON"))
 		l_type = urequest[0]["type"]
@@ -847,7 +832,14 @@ class appLogin(webapp2.RequestHandler):
 		self.response.write(user_det)
 
 
-
+class appCorrection(webapp2.RequestHandler):
+	def post(self):
+		urequest = json.loads(self.request.get("corrJSON"))
+		surveyor_id = urequest[0]["surveyor_id"]
+		last_index = urequest[0]["last_index"]
+		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
+		surveys_det=json.dumps(surveys)
+		self.response.write(surveys_det)
 
 
 class ExportData(webapp2.RequestHandler):
@@ -988,6 +980,7 @@ app = webapp2.WSGIApplication([
 	('/checkPwd',apiCheckPwd),
 	('/export_csv',ExportData),
 	('/checkProjectID',checkProjectID),
-	('/appLogin',appLogin)
+	('/appLogin',appLogin),
+	('/appCorrection',appCorrection)
 
 ], debug = True)

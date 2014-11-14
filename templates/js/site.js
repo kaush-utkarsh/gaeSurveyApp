@@ -381,7 +381,7 @@ function deletePM(item)
         function resetForm(item)
         {
           $(item).parents('form').find('input').each(function(i,item){
-          if($(item).attr('disabled')!='disabled')
+          if($(item).attr('disabled')!='disabled' && $(item).attr('type')!='submit')
           $(item).val("")
           })          
         toastr.success("All entries in the form cleared")

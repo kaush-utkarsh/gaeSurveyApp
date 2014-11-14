@@ -166,7 +166,7 @@ class PostData():
 	def checkInitSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "INSERT INTO correction SELECT id, survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, timestamp, 0, 0 from survey_data where id in "+str(checked.replace("[","(").replace("]",")"))+" and id not in (select id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
+		sqlcmd = "INSERT INTO correction SELECT id, survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, timestamp, 0, 0, lang_id from survey_data where id in "+str(checked.replace("[","(").replace("]",")"))+" and id not in (select id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
@@ -755,7 +755,39 @@ group by sda.part_id
 			user.append(info)
 		conn.close()
 		return user
-	
+	def getCorrectionsSur(self, surveyor_id, last_index):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = """SELECT * FROM innovaccer_jpal.correction 
+					where SUBSTR(part_id,length(survey_id)+1,length(%s))=%s and id>%s;"""
+			
+		cursor.execute(sqlcmd,(surveyor_id,surveyor_id,last_index))
+		rows = cursor.fetchall()
+		surveys=[]
+		final_rows = {}
+		for row in rows:
+			final_rows['flag']=row[9]
+			final_rows['corr_status_flag']=row[10]
+			final_rows['ID']=row[0]
+			inal_rows['survey_id']=row[1]
+			final_rows['part_id']=row[2]
+			final_rows['sect_id']=row[3]
+			final_rows['ques_no']=row[4]
+			final_rows['op_value']=row[5]
+			final_rows['ans']=row[6]
+			final_rows['view_type']=row[7]
+			final_rows['language']=row[11]
+			
+
+			surveys.append(final_rows)
+		conn.close()
+		
+		return surveys
+
+
+
+
+
 	# Query for extracting sections containing flagged questions
 	def getFlaggedSections(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
