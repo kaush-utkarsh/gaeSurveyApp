@@ -557,7 +557,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			for option in options_tuple:
 				if (str(item['ques_no']).strip() == str(option[0]).strip()) and (str(item['op_value']).strip()==str(option[1]).strip()):
 					if item['ques_no'] in radioQues:
-						if option[3] == 'text_box'
+						if option[3] == 'text_box':
 							participant_list.append({item['ques_no']:(option[2])})
 							participant_list.append({item['ques_no']+'-TB':(item['ans'])})
 
