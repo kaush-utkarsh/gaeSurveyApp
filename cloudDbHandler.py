@@ -110,7 +110,7 @@ class PostData():
 		try:
 			conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 			cursor = conn.cursor()
-			sqlcmd = 'insert into survey_data(survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type,lang_id,timestamp,id) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+			sqlcmd = 'insert into survey_data (survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type,lang_id,timestamp,survey_data_id) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 			cursor.executemany(sqlcmd, bulk_data)
 			conn.commit()
 			conn.close()
