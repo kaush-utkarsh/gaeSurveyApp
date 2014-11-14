@@ -833,6 +833,12 @@ class appLogin(webapp2.RequestHandler):
 
 
 class appCorrection(webapp2.RequestHandler):
+	def get(self):
+		surveyor_id = self.request.get("device_id")
+		last_index = self.request.get("ID")
+		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
+		surveys_det=json.dumps(surveys)
+		self.response.write(surveys_det)
 	def post(self):
 		urequest = json.loads(self.request.get("corrJSON"))
 		surveyor_id = urequest[0]["device_id"]
@@ -840,7 +846,6 @@ class appCorrection(webapp2.RequestHandler):
 		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
 		surveys_det=json.dumps(surveys)
 		self.response.write(surveys_det)
-
 
 class ExportData(webapp2.RequestHandler):
 	def get(self):
