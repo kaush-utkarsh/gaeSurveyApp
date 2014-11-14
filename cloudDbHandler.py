@@ -269,7 +269,7 @@ class GetData():
 	def getOptions(self,survey_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
 		cursor = conn.cursor()
-		sqlcmd = "select ques_no,op_id,op_value from options where survey_id='%s'" % (survey_id,)
+		sqlcmd = "select ques_no,op_id,op_value,feature from options where survey_id='%s'" % (survey_id,)
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.commit()

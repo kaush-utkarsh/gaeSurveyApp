@@ -498,6 +498,7 @@ class SurveyCorrectionSync(webapp2.RequestHandler):
 
 class SurveyDataSync(webapp2.RequestHandler):
 	def post(self):
+		radioQues=['8','11i','13','16','27','33','34','Z1','26']
 		#-------------------------------------------------------------------------------
 		#print self.request.get("usersJSON")
 		request = json.loads(self.request.get("usersJSON"))
@@ -555,10 +556,19 @@ class SurveyDataSync(webapp2.RequestHandler):
 		for item in data:
 			for option in options_tuple:
 				if (str(item['ques_no']).strip() == str(option[0]).strip()) and (str(item['op_value']).strip()==str(option[1]).strip()):
-					try:
-						participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
-					except Exception,ex:
-						participant_list.append({item['ques_no']:(option[2])})
+					if item['ques_no'] in radioQues:
+						if option[3] == 'text_box'
+							participant_list.append({item['ques_no']:(option[2])})
+							participant_list.append({item['ques_no']+'-TB':(item['ans'])})
+
+						else:
+							participant_list.append({item['ques_no']:(option[2])})
+							participant_list.append({item['ques_no']+'-TB':('')})
+					else:
+						try:
+							participant_list.append({item['ques_no']:(option[2]+": "+item['ans']+"")})
+						except Exception,ex:
+							participant_list.append({item['ques_no']:(option[2])})
 					lang = item['language']
 		print participant_list
 		for item in participant_list:
@@ -589,12 +599,6 @@ class SurveyDataSync(webapp2.RequestHandler):
 		# 	self.response.write("200")
 		# else:
 		# 	self.response.write("500")
-
-
-
-
-
-
 
 
 class SurveyDataMiscellaneous(webapp2.RequestHandler):
