@@ -764,8 +764,10 @@ group by sda.part_id
 		cursor.execute(sqlcmd,(surveyor_id,surveyor_id,last_index))
 		rows = cursor.fetchall()
 		surveys=[]
-		final_rows = {}
+
+		# final_rows = {}
 		for row in rows:
+			final_rows = {}
 			final_rows['flag']=row[9]
 			final_rows['corr_status_flag']=row[10]
 			final_rows['ID']=row[0]
@@ -777,8 +779,6 @@ group by sda.part_id
 			final_rows['ans']=row[6]
 			final_rows['view_type']=row[7]
 			final_rows['language']=row[11]
-			
-
 			surveys.append(final_rows)
 		conn.close()
 		
