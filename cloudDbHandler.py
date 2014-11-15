@@ -742,13 +742,13 @@ group by sda.part_id
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
-					join survey_data sda on sda.id=corr.id 
+					join survey_data sda on sda.id>corr.id
 					join de_surveyor ds on ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
 					join survey_details sde on sde.survey_id=corr.survey_id
 					join user u on u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
 					where ds.de_id= %s
 					and sda.correction_flag=1 and corr.flag!=0 
-					and ((corr.corr_status_flag=2 and corr.id<sda.id and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)) or corr.corr_status_flag=0) 
+					and corr.corr_status_flag=0
 					group by sda.part_id
 				"""
 
