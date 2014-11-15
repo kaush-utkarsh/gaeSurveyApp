@@ -811,9 +811,11 @@ group by sda.part_id
 		cursor = conn.cursor()
 		sqlcmd = """ SELECT sda.sect_id,sec.sect_name FROM survey_data sda
 				join section_details sec on sec.sect_id=sda.sect_id
-				join correction corr on corr.id=sda.id
+				join correction corr on corr.id<sda.id
 				 where sda.part_id = %s 
-				 and corr.flag=1 group by sda.sect_id;
+				 and corr.flag=1 
+				 and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no
+				 group by sda.sect_id;
 				"""
 		cursor.execute(sqlcmd,(user_id,))
 		info = []
