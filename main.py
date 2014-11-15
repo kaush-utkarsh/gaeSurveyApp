@@ -868,6 +868,7 @@ class appCorrection(webapp2.RequestHandler):
 		last_index = urequest[0]["ID"]
 		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
 		surveys_det=json.dumps(surveys)
+		print surveys_det
 		self.response.write(surveys_det)
 
 class ExportData(webapp2.RequestHandler):
