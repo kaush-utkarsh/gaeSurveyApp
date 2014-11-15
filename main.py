@@ -605,9 +605,9 @@ class SurveyDataSync(webapp2.RequestHandler):
 		else:
 			query = 'update view_data_table set '
 			for item in participant_list:
-				query += item.keys()[0]+' = '+item.values()[0]+','
+				query += '`'+item.keys()[0]+'` = "'+item.values()[0]+'",'
 			query=query.strip(',')
-			query += " where part_id="+prt_id
+			query += ' where part_id='+prt_id
 			status2 = dbHandler.PostData().view_data_update(query)
 			print ("status1: "+ status1)
 			print ("status2: "+ status2)
