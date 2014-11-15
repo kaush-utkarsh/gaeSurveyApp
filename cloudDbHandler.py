@@ -613,6 +613,21 @@ class GetData():
 		conn.close()
 		return data
 
+	def getAllSections(self):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = "Select sect_id, sect_name from section_details"
+		cursor.execute(sqlcmd)
+		info = {}
+		
+		for row in cursor.fetchall():
+			info[row[1]]=row[0]	
+		
+		conn.close()
+		return info
+
+
+
 
 	# Get all researchers for view researcher option, available to admin
 	def getResearchers(self):
@@ -759,7 +774,7 @@ group by sda.part_id
 		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
 		cursor = conn.cursor()
 		sqlcmd = """SELECT * FROM innovaccer_jpal.correction 
-					where SUBSTR(part_id,length(survey_id)+1,length(%s))=%s and id>%s;"""
+					where SUBSTR(part_id,length(survey_id)+1,length(%s))=%s and id>%s and flag=1 and (corr_status_flag=2 or corr_status_flag=0);"""
 			
 		cursor.execute(sqlcmd,(surveyor_id,surveyor_id,last_index))
 		rows = cursor.fetchall()

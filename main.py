@@ -502,6 +502,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 		#-------------------------------------------------------------------------------
 		#print self.request.get("usersJSON")
 		request = json.loads(self.request.get("usersJSON"))
+		sections = dbHandler.GetData().getAllSections()
 		data = request
 		super_final_list = []
 		participant_ID_ = ''
@@ -510,7 +511,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			final_list = []
 			final_list.append(_data_item['survey_id'])
 			final_list.append(_data_item['part_id'])
-			final_list.append(_data_item['sect_id'])
+			final_list.append(sections[_data_item['sect_id']])
 			final_list.append(_data_item['ques_no'])
 			final_list.append(_data_item['op_value'])
 			try:
@@ -939,10 +940,6 @@ class ExportData(webapp2.RequestHandler):
 		#self.response.write(final_rows)
 		self.response.write(getCsv(headers,final_rows))
 
-
-		
-
-
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/login', Login),
@@ -992,5 +989,6 @@ app = webapp2.WSGIApplication([
 	('/checkProjectID',checkProjectID),
 	('/appLogin',appLogin),
 	('/appCorrection',appCorrection)
+
 
 ], debug = True)
