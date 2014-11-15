@@ -833,10 +833,10 @@ group by sda.part_id
 		cursor = conn.cursor()
 		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.id FROM survey_data sda
 			left join ques_details qde on qde.q_no=sda.ques_no
-			left join correction corr on corr.id = sda.id
+			left join correction corr on corr.id < sda.id
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1 
 			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
-
+			and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no
 			"""
 		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
