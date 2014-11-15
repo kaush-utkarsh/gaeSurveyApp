@@ -196,7 +196,9 @@ class PostData():
 	def approveSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update correction set corr_status_flag=1 where id in "+str(checked.replace("[","(").replace("]",")"))
+		# sqlcmd = "Update correction set corr_status_flag=1 where id in "+str(checked.replace("[","(").replace("]",")"))
+		sqlcmd = "Update survey_data set correction_flag=2 where id in "+str(checked.replace("[","(").replace("]",")"))
+		
 		print sqlcmd
 		cursor.execute(sqlcmd)
 		conn.commit()
