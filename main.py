@@ -866,6 +866,8 @@ class appCorrection(webapp2.RequestHandler):
 		urequest = json.loads(self.request.get("corrJSON"))
 		surveyor_id = urequest[0]["device_id"]
 		last_index = urequest[0]["ID"]
+		print surveyor_id
+		print last_index
 		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
 		surveys_det=json.dumps(surveys)
 		print surveys_det
