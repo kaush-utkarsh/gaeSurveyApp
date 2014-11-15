@@ -381,8 +381,10 @@ class apiVerifySection(webapp2.RequestHandler):
 		except Exception,e:
 			pass
 		try:
-			# dbHandler.PostData().disapproveSection(unchecked)
+			
 			dbHandler.PostData().checkInitSection(unchecked)
+			dbHandler.PostData().disapproveSection(unchecked)
+
 		except Exception,e:
 			pass
 		self.response.write('true')	
