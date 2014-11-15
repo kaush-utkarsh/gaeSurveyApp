@@ -45,6 +45,19 @@ class PostData():
 			print err
 			return "500"
 
+	def view_data_update(self,query):
+		try:
+			conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss)
+			cursor = conn.cursor()
+			sqlcmd = query
+			cursor.execute(sqlcmd)
+			conn.commit()
+			conn.close()
+			return "200"
+		except BaseException,err:
+			print err
+			return "500"
+
 	def addUser(self, username, first_name, last_name, email, role):
 		conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 		cursor = conn.cursor()
@@ -320,6 +333,16 @@ class GetData():
 		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
 		cursor = conn.cursor()
 		sqlcmd = "select count(*) from project_table where user_generated_id='%s'" % (p_id)
+		cursor.execute(sqlcmd)
+		count = cursor.fetchall()[0][0]
+		conn.close()
+		return count
+
+
+	def checkViewData(self,p_id):
+		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
+		cursor = conn.cursor()
+		sqlcmd = "select count(*) from view_data_table where part_id='%s'" % (p_id)
 		cursor.execute(sqlcmd)
 		count = cursor.fetchall()[0][0]
 		conn.close()

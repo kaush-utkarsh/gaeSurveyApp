@@ -542,6 +542,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 		participants_id = [item['part_id'] for item in data]
 		participants_id = list(set(participants_id))
 		participant_list = []
+		prt_id=participants_id[0]
 		participant_list.append({'part_id':participants_id[0]})
 		lang = ''
 		#-------------------------------------change for options--------------------------
@@ -577,30 +578,43 @@ class SurveyDataSync(webapp2.RequestHandler):
 			if 'ignore' in item.keys():
 				participant_list.remove(item)
 		participant_list.append({'lang_id':lang})
-		#self.response.write(participant_list)
-		query = 'insert into view_data_table('
-#		for item in participant_list:
-#			query += ",".join(item[0].key())
-#		query+=') values('
-#		for item in participant_list:
-#			query+= ",".join
-		keys = [item.keys()[0] for item in participant_list]
-		values = [item.values() for item in participant_list]
-		query += "" + ",".join(["`%s`"]*len(keys)) % tuple(keys) + ") VALUES(" + ",".join(["%s"]*len(values)) + ")"
-		values_list = []
-		for item in values:
-			values_list.append(item[0])
-		status2 = dbHandler.PostData().view_data(query,tuple(values_list))
-		print ("status1: "+ status1)
-		print ("status2: "+ status2)
-		#self.response.write(json.dumps(dbHandler.GetData().getCorrections('GRO01',surveyor_id)))
-		
-		sample_mock = [{"survey_data_id":"asd","survey_id":"asd","part_id":"asd","sect_id":"asd","ques_id":"raasd","ans":"asd","flag":"asd","corr_status":"asd","op_value":"asd"}]
-		self.response.write(json.dumps(sample_mock))
-		# if status1 == "200" and status2 =="200":
-		# 	self.response.write("200")
-		# else:
-		# 	self.response.write("500")
+		countr=dbHandler.GetData().checkViewData(prt_id)
+		if countr==0:
+			
+			#self.response.write(participant_list)
+			query = 'insert into view_data_table('
+	#		for item in participant_list:
+	#			query += ",".join(item[0].key())
+	#		query+=') values('
+	#		for item in participant_list:
+	#			query+= ",".join
+			keys = [item.keys()[0] for item in participant_list]
+			values = [item.values() for item in participant_list]
+			query += "" + ",".join(["`%s`"]*len(keys)) % tuple(keys) + ") VALUES(" + ",".join(["%s"]*len(values)) + ")"
+			values_list = []
+			for item in values:
+				values_list.append(item[0])
+			status2 = dbHandler.PostData().view_data(query,tuple(values_list))
+			print ("status1: "+ status1)
+			print ("status2: "+ status2)
+			#self.response.write(json.dumps(dbHandler.GetData().getCorrections('GRO01',surveyor_id)))
+			
+			sample_mock = [{"survey_data_id":"asd","survey_id":"asd","part_id":"asd","sect_id":"asd","ques_id":"raasd","ans":"asd","flag":"asd","corr_status":"asd","op_value":"asd"}]
+			self.response.write(json.dumps(sample_mock))
+
+		else:
+			query = 'update view_data_table set '
+			for item in participant_list:
+				query += item.keys()[0]+' = '+item.values()+','
+			query=query.strip(',')
+			query += " where part_id="+prt_id
+			status2 = dbHandler.PostData().view_data_update(query)
+			print ("status1: "+ status1)
+			print ("status2: "+ status2)
+			#self.response.write(json.dumps(dbHandler.GetData().getCorrections('GRO01',surveyor_id)))
+			
+			sample_mock = [{"survey_data_id":"asd","survey_id":"asd","part_id":"asd","sect_id":"asd","ques_id":"raasd","ans":"asd","flag":"asd","corr_status":"asd","op_value":"asd"}]
+			self.response.write(json.dumps(sample_mock))
 
 
 class SurveyDataMiscellaneous(webapp2.RequestHandler):
