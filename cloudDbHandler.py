@@ -689,12 +689,12 @@ class GetData():
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from survey_data sda,de_surveyor ds, survey_details sde,user u where
- ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
-and sde.survey_id=sda.survey_id
-and u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
-and ds.de_id= %s
-and part_id not in (select part_id from correction where flag=1) and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no) 
-group by sda.part_id
+			 ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+			and sde.survey_id=sda.survey_id
+			and u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+			and ds.de_id= %s
+			and part_id not in (select part_id from correction where flag=1) and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no) 
+			group by sda.part_id
 					"""
 		cursor.execute(sqlcmd,(user_id,))
 		info = []
@@ -840,6 +840,7 @@ group by sda.part_id
 				 where sda.part_id = %s 
 				 and corr.flag=1 
 				 and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no
+				 and sda.correction_flag=1
 				 group by sda.sect_id;
 				"""
 		cursor.execute(sqlcmd,(user_id,))
@@ -863,7 +864,7 @@ group by sda.part_id
 			left join correction corr on corr.id < sda.id
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1 
 			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
-			and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no
+			and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no and sda.correction_flag=1
 			"""
 		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
