@@ -337,7 +337,7 @@ class GetData():
 	def getSurveyData(self,starting_count,ending_count):
 		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
 		cursor = conn.cursor()
-		sqlcmd = "select part_id,lang_id,X1,X2,X3,X4,1A,1B,2,3A,3B,3C,4A,4B,5A,5B,6A,6B,6C,6D,6E,6F,7A,7B,7C,7D,7E,8,9,10,11a,11b,11c,11d,11e,11f,11g,11h,11i,12,13,14,15,16,17,18a,18iia,18b,18iib,18c,18iic,18d,18iid,18e,18iie,19,20,21,22,23a,23b,23c,23d,23e,24,25,26,27,28a,28b,28c,28d,28e,28f,29a,29b,29c,29d,29e,29f,30a,30b,30c,30d,30e,30f,30g,31,32,33,34,35,36,37,38,39,40,41,42,43,Z1,Z2A,Z2B,Z2C,Z2D,Z2E,Z2F from view_data_table limit "+starting_count+","+ending_count
+		sqlcmd = "select part_id,lang_id,X1,X2,X3,X4,1A,1B,2,3A,3B,3C,4A,4B,5A,5B,6A,6B,6C,6D,6E,6F,7A,7B,7C,7D,7E,8,`8-TB`,9,10,11a,11b,11c,11d,11e,11f,11g,11h,11i,`11i-TB`,12,13,`13-TB`,14,15,16,`16-TB`,17,18a,18iia,18b,18iib,18c,18iic,18d,18iid,18e,18iie,19,20,21,22,23a,23b,23c,23d,23e,24,25,26,`26-TB`,27,`27-TB`,28a,28b,28c,28d,28e,28f,29a,29b,29c,29d,29e,29f,30a,30b,30c,30d,30e,30f,30g,31,32,33,`33-TB`,34,`34-TB`,35,36,37,38,39,40,41,42,43,Z1,`Z1-TB`,Z2A,Z2B,Z2C,Z2D,Z2E,Z2F from view_data_table limit "+starting_count+","+ending_count
 		cursor.execute(sqlcmd)
 		rows = cursor.fetchall()
 		conn.close()
