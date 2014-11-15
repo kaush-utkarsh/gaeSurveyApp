@@ -511,7 +511,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			final_list = []
 			final_list.append(_data_item['survey_id'])
 			final_list.append(_data_item['part_id'])
-			final_list.append(sections[_data_item['sect_id']])
+			final_list.append(sections[(_data_item['sect_id']).lower()])
 			final_list.append(_data_item['ques_no'])
 			final_list.append(_data_item['op_value'])
 			try:

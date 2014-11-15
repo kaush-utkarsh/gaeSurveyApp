@@ -621,7 +621,7 @@ class GetData():
 		info = {}
 		
 		for row in cursor.fetchall():
-			info[row[1]]=row[0]	
+			info[row[1].lower()]=row[0]	
 		
 		conn.close()
 		return info
