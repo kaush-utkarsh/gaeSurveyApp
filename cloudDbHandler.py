@@ -852,7 +852,6 @@ class GetData():
 				 where sda.part_id = %s 
 				 and corr.flag=1 
 				 and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no
-				 and sda.correction_flag=1
 				 group by sda.sect_id;
 				"""
 		cursor.execute(sqlcmd,(user_id,))
