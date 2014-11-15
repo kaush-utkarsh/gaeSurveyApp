@@ -185,6 +185,16 @@ class PostData():
 		conn.commit()
 		conn.close()  
 
+
+	def checkInitSection(self,checked):
+		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
+		cursor = conn.cursor()
+		sqlcmd = "INSERT INTO correction SELECT id, survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, timestamp, 1, 0, lang_id from survey_data where id in "+str(checked.replace("[","(").replace("]",")"))+" and id not in (select id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
+		print sqlcmd
+		cursor.execute(sqlcmd)
+		conn.commit()
+		conn.close()  
+
 	# Submit section in case of view surveys: deletes entry from correction table for unchecked questions
 	def unCheckInitSection(self,unchecked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
