@@ -719,7 +719,7 @@ group by sda.part_id
 			left join correction corr on corr.id = sda.id
 			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s 
 			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
-			
+			and sda.op_id not in ('ignore','section') 
 			"""
 			# and (sda.ques_no not like 'sec%' or sda.ques_no not like 'igno%')
 		cursor.execute(sqlcmd,(user_id, sect_id,))
