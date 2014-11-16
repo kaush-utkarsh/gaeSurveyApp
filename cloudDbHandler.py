@@ -186,7 +186,7 @@ class PostData():
 		conn.close()  
 
 
-	def checkInitSection(self,checked):
+	def checkAppSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
 		sqlcmd = "INSERT INTO correction SELECT id, survey_id, part_id, sect_id, ques_no, op_id, op_text, view_type, timestamp, 1, 0, lang_id from survey_data where id in "+str(checked.replace("[","(").replace("]",")"))+" and id not in (select id from correction where (flag=1 or flag=0) and (corr_status_flag=0 or corr_status_flag=2))"
@@ -231,7 +231,7 @@ class PostData():
 	def disapproveSection(self,checked):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update survey_data set correction_flag=0 where id in "+str(checked.replace("[","(").replace("]",")"))
+		sqlcmd = "Update survey_data set correction_flag=3 where id in "+str(checked.replace("[","(").replace("]",")"))
 		
 		# sqlcmd = "Update correction set corr_status_flag=2 where id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
@@ -780,17 +780,25 @@ class GetData():
 	def getVerifySurveys(self,user_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
-					join survey_data sda on sda.id>corr.id
+		# sqlcmd = """SELECT corr.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  corr.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from correction corr 
+		# 			join survey_data sda on sda.id>corr.id
+		# 			join de_surveyor ds on ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+		# 			join survey_details sde on sde.survey_id=corr.survey_id
+		# 			join user u on u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
+		# 			where ds.de_id= %s
+		# 			and sda.correction_flag=1 and corr.flag!=0 
+		# 			and corr.corr_status_flag=0
+		# 			group by sda.part_id
+		# 		"""
+		sqlcmd = """SELECT sda.survey_id, sde.survey_name, CONCAT(u.f_name,' ',u.l_name) as surveyor_name,  sda.part_id, u.company, CONCAT(u.city,',',u.state) as location, sda.timestamp, ds.de_id from survey_data sda 
 					join de_surveyor ds on ds.surveyor_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
-					join survey_details sde on sde.survey_id=corr.survey_id
+					join survey_details sde on sde.survey_id=sda.survey_id
 					join user u on u.user_id=SUBSTR(sda.part_id,length(sda.survey_id)+1,length(ds.surveyor_id))
 					where ds.de_id= %s
-					and sda.correction_flag=1 and corr.flag!=0 
-					and corr.corr_status_flag=0
+					and sda.correction_flag=1
+					and sda.id not in (Select id from correction)
 					group by sda.part_id
 				"""
-
 		# print sqlcmd
 		cursor.execute(sqlcmd,(user_id,))
 		info = []
