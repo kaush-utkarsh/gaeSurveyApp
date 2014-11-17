@@ -770,7 +770,7 @@ class GetData():
 					'ques_no': row[2].encode('utf-8'),
 					'ques_text': row[3].encode('utf-8'),
 					'op_id': row[4],
-					'ans_text': ((row[5].encode('utf-8')).strip('blank')).strip(':'),
+					'ans_text': ((row[5]).strip('blank')).strip(':'),
 					'flag': row[6],
 					'sda_id':row[7]
 				}
@@ -898,7 +898,7 @@ class GetData():
 					'ques_no': row[2],
 					'ques_text': row[3],
 					'op_id': row[4],
-					'ans_text': ((row[5].encode('utf-8')).strip('blank')).strip(':'),
+					'ans_text': ((row[5]).strip('blank')).strip(':'),
 					'flag': row[6],
 					'sda_id':row[7]
 				}
