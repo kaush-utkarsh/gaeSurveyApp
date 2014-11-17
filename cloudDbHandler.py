@@ -766,14 +766,24 @@ class GetData():
 		user=[]
 		for row in cursor.fetchall():
 			print row
-			info={
-					'ques_no': row[2].encode('utf-8'),
-					'ques_text': row[3].encode('utf-8'),
-					'op_id': row[4],
-					'ans_text': ((row[5]).strip('blank')).strip(':'),
-					'flag': row[6],
-					'sda_id':row[7]
-				}
+			try:
+				info={
+						'ques_no': row[2].encode('utf-8'),
+						'ques_text': row[3].encode('utf-8'),
+						'op_id': row[4],
+						'ans_text': ((row[5]).strip('blank')).strip(':'),
+						'flag': row[6],
+						'sda_id':row[7]
+					}
+			except Exception,e:
+				info={
+						'ques_no': row[2].encode('utf-8'),
+						'ques_text': row[3].encode('utf-8'),
+						'op_id': row[4],
+						'ans_text': row[5],
+						'flag': row[6],
+						'sda_id':row[7]
+					}
 			user.append(info)
 		conn.close()
 		return user
@@ -894,14 +904,24 @@ class GetData():
 		user=[]
 		for row in cursor.fetchall():
 			print row
-			info={
-					'ques_no': row[2],
-					'ques_text': row[3],
-					'op_id': row[4],
-					'ans_text': ((row[5]).strip('blank')).strip(':'),
-					'flag': row[6],
-					'sda_id':row[7]
-				}
+			try:
+				info={
+						'ques_no': row[2],
+						'ques_text': row[3],
+						'op_id': row[4],
+						'ans_text': ((row[5]).strip('blank')).strip(':'),
+						'flag': row[6],
+						'sda_id':row[7]
+					}
+			except Exception,e:
+				info={
+						'ques_no': row[2],
+						'ques_text': row[3],
+						'op_id': row[4],
+						'ans_text': row[5],
+						'flag': row[6],
+						'sda_id':row[7]
+					}
 			user.append(info)
 		conn.close()
 		return user
