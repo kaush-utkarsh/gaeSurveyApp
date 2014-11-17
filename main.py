@@ -508,6 +508,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 		request = json.loads(self.request.get("usersJSON"))
 		# sections = dbHandler.GetData().getAllSections()
 		data = request
+		print data
 		super_final_list = []
 		participant_ID_ = ''
 		survey_id_ = ''
