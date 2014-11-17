@@ -209,7 +209,7 @@ class PostData():
 	def submitFlag(self,part_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update correction set flag = 1 where part_id = %s"
+		sqlcmd = "Update correction set flag = 1 where part_id = %s and flag = 0"
 		print sqlcmd
 		cursor.execute(sqlcmd,(part_id,))
 		conn.commit()

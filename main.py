@@ -289,6 +289,7 @@ class apiCheckSection(webapp2.RequestHandler):
 			pass
 		try:
 			dbHandler.PostData().unCheckInitSection(unchecked)
+			dbHandler.PostData().approveSection(unchecked)
 		except Exception,e:
 			pass
 		self.response.write('true')
