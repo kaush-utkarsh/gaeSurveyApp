@@ -880,13 +880,15 @@ class GetData():
 	def getFlaggedQuest(self,user_id,sect_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.id FROM survey_data sda
-			left join ques_details qde on qde.q_no=sda.ques_no
-			left join correction corr on corr.id < sda.id
-			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1 
-			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
-			and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no and sda.correction_flag=1
-			"""
+		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, concat(op.op_text,":",sda.op_text) as ans_text, corr.flag,sda.id FROM survey_data sda
+					left join ques_details qde on qde.q_no=sda.ques_no
+					left join options op on op.ques_no=sda.ques_no
+					left join correction corr on corr.id < sda.id
+					where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s and corr.flag=1 
+					and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
+					and corr.part_id=sda.part_id and corr.ques_id=sda.ques_no and sda.correction_flag=1
+					and op.survey_id=sda.survey_id and op.op_id=sda.op_id 
+				"""
 		cursor.execute(sqlcmd,(user_id, sect_id,))
 		info = []
 		user=[]
