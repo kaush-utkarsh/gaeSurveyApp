@@ -767,14 +767,24 @@ class GetData():
 		for row in cursor.fetchall():
 			print row
 			try:
-				info={
-						'ques_no': row[2].encode('utf-8'),
-						'ques_text': row[3].encode('utf-8'),
-						'op_id': row[4],
-						'ans_text': ((row[5]).strip('blank')).strip(':'),
-						'flag': row[6],
-						'sda_id':row[7]
-					}
+				if 'blank' in row[5].split(':'):
+					info={
+							'ques_no': row[2],
+							'ques_text': row[3],
+							'op_id': row[4],
+							'ans_text': ((row[5]).split('blank:')[1]).strip(':'),
+							'flag': row[6],
+							'sda_id':row[7]
+						}
+				else:
+					info={
+							'ques_no': row[2],
+							'ques_text': row[3],
+							'op_id': row[4],
+							'ans_text': (row[5]).strip(':'),
+							'flag': row[6],
+							'sda_id':row[7]
+						}
 			except Exception,e:
 				info={
 						'ques_no': row[2].encode('utf-8'),
@@ -905,14 +915,24 @@ class GetData():
 		for row in cursor.fetchall():
 			print row
 			try:
-				info={
-						'ques_no': row[2],
-						'ques_text': row[3],
-						'op_id': row[4],
-						'ans_text': ((row[5]).strip('blank')).strip(':'),
-						'flag': row[6],
-						'sda_id':row[7]
-					}
+				if 'blank' in row[5].split(':'):
+					info={
+							'ques_no': row[2],
+							'ques_text': row[3],
+							'op_id': row[4],
+							'ans_text': ((row[5]).split('blank:')[1]).strip(':'),
+							'flag': row[6],
+							'sda_id':row[7]
+						}
+				else:
+					info={
+							'ques_no': row[2],
+							'ques_text': row[3],
+							'op_id': row[4],
+							'ans_text': (row[5]).strip(':'),
+							'flag': row[6],
+							'sda_id':row[7]
+						}
 			except Exception,e:
 				info={
 						'ques_no': row[2],
