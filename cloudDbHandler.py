@@ -393,9 +393,9 @@ class GetData():
 		cursor = conn.cursor()
 		print uid, utype
 		if utype=='user_id':
-			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where user_id = %s"""
+			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where user_id = %s and role='SU' """
 		else:
-			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where login_id = %s"""
+			sqlcmd = """select login_id,login_password,user_id, f_name,l_name from user where login_id = %s and role='SU'"""
 			
 		cursor.execute(sqlcmd,(uid,))
 		rows = cursor.fetchall()
