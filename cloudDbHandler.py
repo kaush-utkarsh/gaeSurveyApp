@@ -751,12 +751,14 @@ class GetData():
 	def getSectionQuest(self,user_id,sect_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, sda.op_text as ans_text, corr.flag,sda.id FROM survey_data sda
-			left join ques_details qde on qde.q_no=sda.ques_no
-			left join correction corr on corr.id = sda.id
-			where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s 
-			and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
-			and sda.op_id not in ('ignore','section') 
+		sqlcmd = """SELECT sda.sect_id, qde.sect_text, sda.ques_no, qde.ques_text,sda.op_id, concat(op.op_text,":",sda.op_text) as ans_text, corr.flag,sda.id FROM survey_data sda
+					left join ques_details qde on qde.q_no=sda.ques_no
+					left join options op on op.ques_no=sda.ques_no
+					left join correction corr on corr.id = sda.id
+					where qde.survey_id=sda.survey_id and sda.part_id= %s and sda.sect_id= %s 
+					and sda.id in (select max(id) from survey_data sd where sda.part_id=sd.part_id and sd.sect_id=sda.sect_id and sd.ques_no=sda.ques_no)
+					and sda.op_id not in ('ignore','section')
+					and op.survey_id=sda.survey_id and op.op_id=sda.op_id
 			"""
 			# and (sda.ques_no not like 'sec%' or sda.ques_no not like 'igno%')
 		cursor.execute(sqlcmd,(user_id, sect_id,))
@@ -768,7 +770,7 @@ class GetData():
 					'ques_no': row[2].encode('utf-8'),
 					'ques_text': row[3].encode('utf-8'),
 					'op_id': row[4],
-					'ans_text': row[5].encode('utf-8'),
+					'ans_text': ((row[5].encode('utf-8')).strip('blank')).strip(':'),
 					'flag': row[6],
 					'sda_id':row[7]
 				}
