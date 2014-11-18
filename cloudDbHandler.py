@@ -920,7 +920,7 @@ class GetData():
 			final_rows['ans']=row[6]
 			final_rows['view_type']=row[7]
 			final_rows['language']=row[10]
-			final_rows['timestamp']=row[8]
+			final_rows['timestamp']=str(row[8])
 			surveys.append(final_rows)
 		conn.close()
 		
