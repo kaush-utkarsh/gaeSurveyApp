@@ -898,7 +898,7 @@ class GetData():
 		conn = rdbms.connect(instance = _INSTANCE_NAME, database= dbname, user= usr, passwd= pss)
 		cursor = conn.cursor()
 		sqlcmd = """SELECT * FROM survey_data 
-					where SUBSTR(part_id,length(survey_id)+1,length(%s))=%s and id>%s 
+					where SUBSTR(part_id,length(survey_id)+1,length(%s))=%s and timestamp>%s 
 					and status_flag=1"""
 			
 		cursor.execute(sqlcmd,(surveyor_id,surveyor_id,last_index))

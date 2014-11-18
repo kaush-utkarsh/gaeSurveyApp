@@ -882,17 +882,17 @@ class appLogin(webapp2.RequestHandler):
 class appCorrection(webapp2.RequestHandler):
 	def get(self):
 		surveyor_id = self.request.get("device_id")
-		last_index = self.request.get("ID")
-		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
+		last_index = self.request.get("created_at")
+		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,last_index)
 		surveys_det=json.dumps(surveys)
 		self.response.write(surveys_det)
 	def post(self):
 		urequest = json.loads(self.request.get("corrJSON"))
 		surveyor_id = urequest[0]["device_id"]
-		last_index = urequest[0]["ID"]
+		last_index = urequest[0]["created_at"]
 		print surveyor_id
 		print last_index
-		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,str(last_index))
+		surveys=dbHandler.GetData().getCorrectionsSur(surveyor_id,last_index)
 		surveys_det=json.dumps(surveys)
 		print surveys_det
 		self.response.write(surveys_det)
