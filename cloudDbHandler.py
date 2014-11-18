@@ -137,7 +137,7 @@ class PostData():
 			conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 			cursor = conn.cursor()
 			print bulk_data
-			sqlcmd = "update survey_data set survey_id = %s, part_id = %s, sect_id = %s, ques_no = %s, op_id = %s, op_text = %s, view_type = %s, lang_id = %s, timestamp = %s, correction_flag = %s, survey_data_id = %s, status_flag = %s where part_id = %s and survey_id = %s and q_no = %s"
+			sqlcmd = "update survey_data set survey_id = %s, part_id = %s, sect_id = %s, ques_no = %s, op_id = %s, op_text = %s, view_type = %s, lang_id = %s, timestamp = %s, correction_flag = %s, survey_data_id = %s, status_flag = %s where part_id = %s and survey_id = %s and ques_no = %s"
 			print sqlcmd
 			cursor.executemany(sqlcmd, bulk_data)
 			conn.commit()
