@@ -273,7 +273,7 @@ class PostData():
 	def disapproveSection(self,part_id):
 		conn = rdbms.connect(instance=_INSTANCE_NAME, database=dbname, user=usr, passwd=pss, charset='utf8')
 		cursor = conn.cursor()
-		sqlcmd = "Update survey_data set status_flag=1, counter=counter+1 where part_id = %s and id in (Select id from Correction where part_id=%s )"
+		sqlcmd = "Update survey_data set status_flag=1, counter=counter+1 where part_id = %s and id in (Select id from correction where part_id=%s )"
 		
 		# sqlcmd = "Update correction set corr_status_flag=2 where id in "+str(checked.replace("[","(").replace("]",")"))
 		print sqlcmd
