@@ -285,11 +285,12 @@ class apiCheckSection(webapp2.RequestHandler):
 		unchecked = self.request.get('unchecked')
 		try:
 			dbHandler.PostData().checkInitSection(checked)
+			# dbHandler.PostData().disapproveSection(unchecked)
 		except Exception,e:
 			pass
 		try:
 			dbHandler.PostData().unCheckInitSection(unchecked)
-			dbHandler.PostData().approveSection(unchecked)
+			# dbHandler.PostData().approveSection(unchecked)
 		except Exception,e:
 			pass
 		self.response.write('true')
@@ -298,6 +299,9 @@ class apiSubmitFlag(webapp2.RequestHandler):
 
 	def post(self):
 		part_id = self.request.get('part_id')
+		# dbHandler.PostData().submitFlag(part_id)
+		dbHandler.PostData().approveSection(part_id)
+		dbHandler.PostData().disapproveSection(part_id)
 		dbHandler.PostData().submitFlag(part_id)
 		self.response.write('true')
 
@@ -378,13 +382,13 @@ class apiVerifySection(webapp2.RequestHandler):
 		# self.response.write(checked)
 		unchecked = self.request.get('unchecked')
 		try:
-			dbHandler.PostData().approveSection(checked)
+			dbHandler.PostData().approvalSection(checked)
 		except Exception,e:
 			pass
 		try:
 			
-			dbHandler.PostData().checkAppSection(unchecked)
-			dbHandler.PostData().disapproveSection(unchecked)
+			# dbHandler.PostData().checkAppSection(unchecked)
+			dbHandler.PostData().disapprovalSection(unchecked)
 
 		except Exception,e:
 			pass
@@ -512,6 +516,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 		super_final_list = []
 		participant_ID_ = ''
 		survey_id_ = ''
+		ques_no_ = ''
 		for _data_item in data:
 			final_list = []
 			final_list.append(_data_item['survey_id'])
@@ -528,9 +533,14 @@ class SurveyDataSync(webapp2.RequestHandler):
 			final_list.append(_data_item['created_at'])
 			final_list.append(_data_item['correction_flag'])
 			final_list.append(_data_item['ID'])
-			super_final_list.append(tuple(final_list))
 			participant_ID_ = _data_item['part_id']
 			survey_id_ = _data_item['survey_id']
+			ques_no_ = _data_item['ques_no']
+			cnt =  dbHandler.GetData().checkSurveyData(participant_ID_, survey_id_, ques_no_)
+			if cnt!=0:
+				stat_flg =  3
+				final_list.append(str(stat_flg))
+			super_final_list.append(tuple(final_list))
 			# print _data_item['ans']
 		print "part_id"
 		print participant_ID_
@@ -539,7 +549,16 @@ class SurveyDataSync(webapp2.RequestHandler):
 		surveyor_id = surveyor_id.split("EN")[0]
 		print "surveyor_id"
 		print surveyor_id
-		status1 = dbHandler.PostData().addSurveyData(super_final_list)
+
+
+		if cnt==0:
+			print "Inserting new tuple"
+			status1 = dbHandler.PostData().addSurveyData(super_final_list)
+		else: 
+			print "Updating survey data tuple"
+			status1 = dbHandler.PostData().updateSurveyData(super_final_list,participant_ID_, survey_id_, ques_no_)
+
+
 		print "status from addSurveyData"+status1
 		#------------------------------------------------------------------------------
 		
