@@ -132,14 +132,14 @@ class PostData():
 			print err
 			return "500"
 
-	def updateSurveyData(self, bulk_data,p_id,s_id,q_no):
+	def updateSurveyData(self, bulk_data):
 		try:
 			conn = rdbms.connect(instance= _INSTANCE_NAME, database= dbname, user=usr, passwd= pss)
 			cursor = conn.cursor()
 			sqlcmd = """update survey_data set survey_id = %s, part_id = %s, sect_id = %s, 
 					ques_no = %s, op_id = %s, op_text = %s, view_type = %s, lang_id = %s, 
 					correction_flag = %s, survey_data_id = %s, status_flag = %s 
-					where part_id = """+p_id+""" and survey_id = """+s_id+""" and q_no = """+q_no+"""
+					where part_id = %s and survey_id = %s and q_no = %s
 					"""
 			cursor.executemany(sqlcmd, bulk_data)
 			conn.commit()
@@ -910,8 +910,7 @@ class GetData():
 		# final_rows = {}
 		for row in rows:
 			final_rows = {}
-			final_rows['flag']=row[9]
-			final_rows['corr_status_flag']=row[10]
+			final_rows['counter']=row[13]
 			final_rows['ID']=row[0]
 			final_rows['survey_id']=row[1]
 			final_rows['part_id']=row[2]
@@ -920,7 +919,8 @@ class GetData():
 			final_rows['op_value']=row[5]
 			final_rows['ans']=row[6]
 			final_rows['view_type']=row[7]
-			final_rows['language']=row[11]
+			final_rows['language']=row[10]
+			final_rows['timestamp']=row[8]
 			surveys.append(final_rows)
 		conn.close()
 		

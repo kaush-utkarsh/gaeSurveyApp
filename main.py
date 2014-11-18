@@ -540,6 +540,9 @@ class SurveyDataSync(webapp2.RequestHandler):
 			if cnt!=0:
 				stat_flg =  3
 				final_list.append(str(stat_flg))
+				final_list.append(participant_ID_)
+				final_list.append(survey_id_)
+				final_list.append(ques_no_ )
 			super_final_list.append(tuple(final_list))
 			# print _data_item['ans']
 		print "part_id"
@@ -556,7 +559,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			status1 = dbHandler.PostData().addSurveyData(super_final_list)
 		else: 
 			print "Updating survey data tuple"
-			status1 = dbHandler.PostData().updateSurveyData(super_final_list,participant_ID_, survey_id_, ques_no_)
+			status1 = dbHandler.PostData().updateSurveyData(super_final_list)
 
 
 		print "status from addSurveyData"+status1
