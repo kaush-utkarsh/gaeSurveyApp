@@ -531,7 +531,7 @@ class SurveyDataSync(webapp2.RequestHandler):
 			final_list.append(_data_item['view_type'])
 			final_list.append(_data_item['language'])
 			final_list.append(_data_item['created_at'])
-			final_list.append(_data_item['correction_flag'])
+			final_list.append(str(_data_item['correction_flag']))
 			final_list.append(_data_item['ID'])
 			participant_ID_ = _data_item['part_id']
 			survey_id_ = _data_item['survey_id']
